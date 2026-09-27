@@ -7,11 +7,11 @@
   "author": "Elifsi Technologies Private Limited",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Elifsi/Elifsi-app.git"
+    "url": "https://github.com/Elifsi/Evryy.git"
   },
-  "homepage": "https://github.com/Elifsi/Elifsi-app#readme",
+  "homepage": "https://github.com/Elifsi/Evryy#readme",
   "bugs": {
-    "url": "https://github.com/Elifsi/Elifsi-app/issues"
+    "url": "https://github.com/Elifsi/Evryy/issues"
   },
   "keywords": [
     "nextjs",
