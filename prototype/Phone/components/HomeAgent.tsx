@@ -155,7 +155,7 @@ export default function HomeAgent() {
   async function handleShareTranscript() {
     const text = chatMessages.map((m) => `${m.role === "user" ? "You" : "Concierge"}: ${m.content}`).join("\n");
     await shareOrCopyText(text, {
-      title: "Pocket Concierge conversation",
+      title: "evryy conversation",
       onCopied: () => {
         setShareCopied(true);
         window.setTimeout(() => setShareCopied(false), 2000);
@@ -757,7 +757,7 @@ export default function HomeAgent() {
             className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium tracking-wide text-white/80 backdrop-blur"
           >
             <Sparkles size={12} className="text-accent" />
-            POCKET CONCIERGE
+            EVRYY
           </motion.div>
         )}
 

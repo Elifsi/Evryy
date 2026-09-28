@@ -1,6 +1,6 @@
 # apps/web/ — Production Web Applications
 
-This directory contains the production web applications of the Pocket Concierge platform:
+This directory contains the production web applications of the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**:
 
 ```
 apps/web/

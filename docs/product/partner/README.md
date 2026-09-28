@@ -1,6 +1,6 @@
 # Product Requirements — Partner Application
 
-The Partner Application provides business management and fulfillment tools for merchant partners on the Pocket Concierge platform.
+The Partner Application provides business management and fulfillment tools for merchant partners on the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**.
 
 ---
 

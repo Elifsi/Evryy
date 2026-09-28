@@ -6,8 +6,8 @@ import ActiveRideBar from "@/components/ActiveRideBar";
 import CartFloatingBar from "@/components/CartFloatingBar";
 
 export const metadata: Metadata = {
-  title: "Pocket Concierge",
-  description: "AI-native super app — personal pocket concierge (demo)",
+  title: "evryy",
+  description: "AI-native super app by Elifsi Technologies Private Limited",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

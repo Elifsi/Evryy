@@ -1,17 +1,20 @@
-# Elifsi App — Platform Monorepo
+# evryy — Super App Platform Monorepo
+
+> **An open-source, AI-first super-app platform developed by [Elifsi Technologies Private Limited](https://github.com/Elifsi).**  
+> Unifying Food Delivery, Quick-Commerce Grocery, Rides, Hotels & Stays, Room Rentals, Vehicle Rentals, WhatsApp-style Encrypted Chat, and Camera/Snap experiences into a single ecosystem.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Status: Active Development](https://img.shields.io/badge/Status-Active%20Development-green.svg)](./docs/roadmap/README.md)
 [![Organization](https://img.shields.io/badge/Organization-Elifsi%20Technologies-purple.svg)](https://github.com/Elifsi)
-
-An open-source, AI-first super-app platform connecting consumers and local businesses across dining, grocery, retail, hospitality, mobility, and on-demand services.
+[![Repository](https://img.shields.io/badge/GitHub-Elifsi%2FEvryy-blue.svg)](https://github.com/Elifsi/Evryy)
 
 ---
 
 > ### 📍 Quick Navigation: Where is Everything?
 >
-> | What you are looking for | Directory | Status | Description |
+> | What you are looking for | Directory / Document | Status | Description |
 > |---|---|---|---|
+> | **Super App Specification** | [`docs/architecture/superapp-specification.md`](./docs/architecture/superapp-specification.md) | 📐 **Architecture Blueprint** | Full multi-vertical specification, tech stack protocols, and official repository reference matrix. |
 > | **Working Reference Prototype** | [`prototype/Phone/`](./prototype/Phone/) | ✅ **Current & Runnable** | Complete working Next.js 16 prototype with catalog, voice AI concierge, encrypted chat, WebRTC, and ride/order simulations. |
 > | **Consumer Mobile Apps** | [`apps/consumer/`](./apps/consumer/) | 🔮 Planned | Production native apps: [Android (Kotlin/Compose)](./apps/consumer/android/) and [iOS (Swift/SwiftUI)](./apps/consumer/ios/). |
 > | **Partner / Merchant Apps** | [`apps/partner/`](./apps/partner/) | 🔮 Planned | Production business apps: [Android (KDS/POS)](./apps/partner/android/) and [iOS (Merchant)](./apps/partner/ios/). |
@@ -56,7 +59,7 @@ The platform unifies multiple native and web clients around a single, centralize
 ## Complete Repository Directory Tree
 
 ```
-Elifsi-app/
+Evryy/
 │
 ├── prototype/
 │   └── Phone/                 ← 🟢 START HERE: Working Next.js reference prototype
@@ -191,6 +194,7 @@ npm run build        # Production Next.js Turbopack build (41 routes compiled)
 ## Documentation Index
 
 Explore the complete platform documentation:
+- 📐 [Super App Specification & Reference Matrix](./docs/architecture/superapp-specification.md)
 - 🏛️ [System Architecture Overview](./docs/architecture/system-overview.md)
 - 👤 [Consumer Architecture](./docs/architecture/consumer.md)
 - 🏪 [Partner Architecture](./docs/architecture/partner.md)

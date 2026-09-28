@@ -42,7 +42,7 @@ export const useAppStore = create<AppState>()(
     // Unchanged from before the slice split: no partialize, so every field
     // above persists to localStorage as-is. Bump `version` (with a
     // `migrate`) if a future change needs to reshape saved state.
-    { name: "pocket-concierge-store", version: 3 }
+    { name: "evryy-store", version: 3 }
   )
 );
 

@@ -47,6 +47,6 @@ export const useSnapStore = create<SnapState>()(
         set((s) => ({ snaps: [{ id: uid("snap"), dataUrl, filterName, createdAt: Date.now() }, ...s.snaps].slice(0, 60) })),
       deleteSnap: (id) => set((s) => ({ snaps: s.snaps.filter((sn) => sn.id !== id) })),
     }),
-    { name: "pocket-concierge-snap", version: 1 }
+    { name: "evryy-snap", version: 1 }
   )
 );

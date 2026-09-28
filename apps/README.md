@@ -1,6 +1,6 @@
 # apps/ — Production Applications Directory
 
-This directory contains the production clients for the Pocket Concierge platform.
+This directory contains the production clients for the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**.
 
 ```
 apps/

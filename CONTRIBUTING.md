@@ -1,19 +1,20 @@
-# Contributing to Pocket Concierge
+# Contributing to evryy
 
-Thank you for contributing to the Pocket Concierge platform! This document outlines our development workflows, coding standards, and security policies.
+Thank you for contributing to **evryy**, an open-source Super App platform developed by **Elifsi Technologies Private Limited**! This document outlines our development workflows, coding standards, and security policies.
 
 ---
 
 ## 1. Repository Layout
 
 ```
-Elifsi-app/
+Evryy/
 ├── prototype/
-│   └── web/                 ← Working Next.js reference implementation (active)
+│   └── Phone/               ← Working Next.js reference implementation (active)
 ├── apps/
 │   ├── consumer/            ← Planned Consumer applications (Android / iOS)
 │   ├── partner/             ← Planned Partner applications (Android / iOS)
 │   └── web/                 ← Planned Production Web applications (Consumer / Partner)
+├── services/                ← Background microservices (AI Voice Gateway, Notifications)
 ├── supabase/                ← Centralized backend (Migrations, Functions, RLS)
 └── docs/                    ← Architecture, product, and developer documentation
 ```
@@ -27,8 +28,8 @@ The interactive reference prototype is located at `prototype/Phone/`.
 ### Local Setup
 ```bash
 # Clone the repository
-git clone https://github.com/Elifsi/Elifsi-app.git
-cd Elifsi-app/prototype/Phone
+git clone https://github.com/Elifsi/Evryy.git
+cd Evryy/prototype/Phone
 
 # Install dependencies
 npm install

@@ -125,8 +125,8 @@ async function callOpenRouter(apiKey: string, model: string, messages: OpenRoute
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://pocket-concierge.local",
-        "X-Title": "Pocket Concierge",
+        "HTTP-Referer": "https://evryy.local",
+        "X-Title": "evryy",
       },
       body: JSON.stringify({ model, messages, tools: OPENAI_TOOLS, tool_choice: "auto" }),
       signal: controller.signal,

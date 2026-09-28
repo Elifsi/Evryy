@@ -1,6 +1,6 @@
 # supabase/ — Centralized Shared Backend
 
-This directory contains the version-controlled configuration, database migrations, and Edge Functions for the **shared Supabase backend** powering the entire Pocket Concierge platform.
+This directory contains the version-controlled configuration, database migrations, and Edge Functions for the **shared Supabase backend** powering the entire **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**.
 
 ```
 Consumer Android ──────┐

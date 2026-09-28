@@ -1,12 +1,13 @@
-# Pocket Concierge Documentation
+# evryy Documentation
 
-Welcome to the Pocket Concierge platform documentation.
+Welcome to the **evryy** Super App platform documentation, developed by **Elifsi Technologies Private Limited**.
 
 ---
 
 ## Documentation Index
 
-### 1. Architecture
+### 1. Architecture & Specifications
+- [Super App Specification & Reference Matrix](./architecture/superapp-specification.md) — Comprehensive technical architecture, tech stack protocols, and official repository reference matrix.
 - [System Architecture Overview](./architecture/system-overview.md) — Topology, platform pillars, and component separation.
 - [Consumer Architecture](./architecture/consumer.md) — Consumer clients, subsystems, and security boundaries.
 - [Partner Architecture](./architecture/partner.md) — Partner clients, merchant workflows, and tenant isolation.

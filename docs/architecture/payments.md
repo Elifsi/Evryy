@@ -1,16 +1,17 @@
 # Payment Gateway Architecture
 
-Pocket Concierge implements a modular **Payment Service** abstraction with provider adapters designed to handle regional wallets, bank networks, and card payments cleanly without tight coupling or unnecessary duplication.
+**evryy** (developed by **Elifsi Technologies Private Limited**) implements a modular **Payment Service** abstraction with provider adapters designed to handle regional wallets, bank networks, and card payments cleanly without tight coupling or unnecessary duplication.
 
 ---
 
 ## 1. Supported Payment Methods & Rails
 
 The platform supports the following customer-facing payment options:
-- **eSewa** (Mobile wallet & QR ePay flow)
-- **Khalti** (Mobile wallet, e-banking, and facilitated card payments via Khalti Checkout)
+- **Khalti Epay v2** (Mobile wallet, e-banking, SCT cards, Visa/Mastercard via Khalti Checkout)
+- **eSewa Direct** (Mobile wallet, signed HMAC-SHA256 token verification, ePay flow)
 - **Fonepay** (Interbank QR rails & merchant payment network)
-- **Card Payments** (Debit/Credit cards)
+- **Card Payments** (Debit/Credit cards facilitated via Khalti/eSewa or dedicated Card Gateway)
+- **In-App evryy Wallet** (Instant balance stored in Supabase with double-entry ledger)
 
 ### Important Architectural Nuance: Card Handling
 Card payments are **not** assumed to be a completely separate gateway by default:
@@ -62,11 +63,11 @@ Card payments are **not** assumed to be a completely separate gateway by default
 - Client applications (Android, iOS, Web) NEVER receive, store, or inspect provider credentials.
 
 ### B. Hosted / Tokenized Security (Zero Raw Card Storage)
-- **Never collect, transmit, or store raw card numbers (PAN), CVV, or card expiration dates** in the Pocket Concierge database or application servers.
+- **Never collect, transmit, or store raw card numbers (PAN), CVV, or card expiration dates** in the evryy database or application servers.
 - All card flows utilize:
   1. Provider-hosted payment pages (Khalti / eSewa / Fonepay / Gateway redirect), OR
   2. PCI-DSS Level 1 compliant tokenized SDK elements if direct in-app card entry is later required.
-- The Pocket Concierge database stores only non-sensitive tokens (e.g., `provider_transaction_id`, payment method label like `"Khalti (Visa *4242)"`, status, and timestamp).
+- The evryy database stores only non-sensitive tokens (e.g., `provider_transaction_id`, payment method label like `"Khalti (Visa *4242)"`, status, and timestamp).
 
 ### C. Server-Side Financial Authority
 - The server is the sole authority on order pricing: subtotals, item customizations, delivery fees, service fees, discounts, and taxes are calculated server-side before initiating any payment session.
@@ -144,3 +145,25 @@ export interface PaymentProviderAdapter {
 3. **Customer Authorization**: The customer authorizes payment via wallet deep-link, web redirect, or scanned QR code.
 4. **Server Verification**: `supabase/functions/payment-verify/` receives the callback/webhook, cryptographically validates signatures, ensures idempotency, and updates `payments.status = 'completed'`.
 5. **Ledger & Order Advancement**: A database trigger or Edge Function records the immutable transaction in `transactions` and transitions the order to `acknowledged`.
+
+---
+
+## 6. Nepal Fintech Endpoint Contracts & Automated Refunds
+
+### A. Khalti Epay v2 Flow
+1. **Initiate**: Mobile client calls `/api/v2/epay/initiate/` on the server backend.
+   - Request: `return_url`, `website_url`, `amount` (in paisa), `purchase_order_id`, `purchase_order_name`.
+   - Backend receives `pidx` (Payment Index) and `payment_url`.
+2. **Checkout**: Mobile client mounts `payment_url` in an in-app browser or native Khalti bottom sheet.
+3. **Webhook Callback**: On authorization, Khalti dispatches a secure POST to `/api/v1/payments/khalti/callback` containing `{ pidx, txnId, amount, status }`.
+4. **Verification**: Server issues a lookup request to Khalti's `/api/v2/epay/lookup/` with `{ pidx }` to verify authenticity before unlocking order fulfillment.
+
+### B. eSewa Direct Integration
+- Signed HMAC-SHA256 signature calculated over:
+  `total_amount,transaction_uuid,product_code`
+- Verified server-side against eSewa's public verification endpoint.
+
+### C. Automated Refunds Engine
+When a merchant declines an order or no delivery rider accepts within 7 minutes:
+- **Option 1 (Instant / Default)**: Instant credit to the customer's in-app **evryy Wallet** balance in PostgreSQL, usable immediately across any other service vertical with zero gateway turnaround.
+- **Option 2 (Gateway Reversal)**: Automated API invocation to Khalti's `/api/v2/payment/refund/` using the original `pidx` and reference ID, releasing funds directly back to the source bank/wallet within standard banking settlement windows.

@@ -1,6 +1,6 @@
 # supabase/migrations/ — Database Schema & Migration Guide
 
-This directory contains version-controlled, forward-only SQL migrations for the centralized Supabase backend powering all Pocket Concierge clients (Android, iOS, Web).
+This directory contains version-controlled, forward-only SQL migrations for the centralized Supabase backend powering all **evryy** clients (Android, iOS, Web), developed by **Elifsi Technologies Private Limited**.
 
 ## Status
 

@@ -1,6 +1,6 @@
 # Platform Roadmap
 
-This document outlines the phased development roadmap for Pocket Concierge.
+This document outlines the phased development roadmap for **evryy**, developed by **Elifsi Technologies Private Limited**.
 
 ---
 

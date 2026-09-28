@@ -1,0 +1,124 @@
+version: '3.8'
+
+# ==============================================================================
+# evryy Super App — Local Infrastructure & Microservices Stack
+# Developed by Elifsi Technologies Private Limited
+# ==============================================================================
+
+services:
+  # ── In-Memory Geospatial Cache & Task Queue ────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: evryy-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    networks:
+      - evryy-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── OSRM Self-Hosted Routing Engine (Zero Google Polyline Fees) ───────────
+  osrm:
+    image: ghcr.io/project-osrm/osrm-backend:latest
+    container_name: evryy-osrm
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./infra/osrm/data:/data:ro
+    command: ["osrm-routed", "--algorithm", "mld", "/data/nepal-latest.osrm"]
+    networks:
+      - evryy-network
+
+  # ── Local LLM Inference Engine (vLLM / Ollama) ─────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: evryy-llm
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    networks:
+      - evryy-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # ── AI Voice Gateway (FastAPI, Whisper, AI4Bharat, Piper) ──────────────────
+  ai-voice-gateway:
+    build:
+      context: ./services/ai-voice-gateway
+      dockerfile: Dockerfile
+    container_name: evryy-voice-gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_HOST=http://ollama:11434
+      - SUPABASE_URL=${SUPABASE_URL:-http://host.docker.internal:54321}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    depends_on:
+      - redis
+      - ollama
+    networks:
+      - evryy-network
+
+  # ── Push Notification & Background Worker ──────────────────────────────────
+  notification-worker:
+    build:
+      context: ./services/notification-worker
+      dockerfile: Dockerfile
+    container_name: evryy-notification-worker
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - SUPABASE_URL=${SUPABASE_URL:-http://host.docker.internal:54321}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - FIREBASE_CREDENTIALS_PATH=/secrets/firebase-service-account.json
+    volumes:
+      - ./infra/secrets:/secrets:ro
+    depends_on:
+      - redis
+    networks:
+      - evryy-network
+
+  # ── Caddy Reverse Proxy & SSL Termination ──────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: evryy-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - ai-voice-gateway
+      - osrm
+    networks:
+      - evryy-network
+
+networks:
+  evryy-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  ollama-models:
+  caddy-data:
+  caddy-config:

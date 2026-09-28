@@ -1,74 +1,123 @@
 # System Architecture Overview
 
-Pocket Concierge is an AI-first super-app platform connecting consumers and service partners across multiple verticals (dining, grocery, retail, hospitality, rides, and on-demand services).
+> **Platform**: evryy Super App Ecosystem  
+> **Company**: Elifsi Technologies Private Limited  
+> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+
+**evryy** is an AI-first super-app platform connecting consumers and service partners across dining, grocery quick-commerce, ride-sharing, hotels and stays, room rentals, vehicle rentals, encrypted P2P chat, and social camera experiences.
 
 ---
 
 ## 1. Top-Level Platform Topology
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    CLIENT APPLICATIONS                      │
-│                                                             │
-│   ┌─────────────────────┐         ┌─────────────────────┐   │
-│   │    CONSUMER APPS    │         │    PARTNER APPS     │   │
-│   │  Android (Kotlin)   │         │  Android (Kotlin)   │   │
-│   │  iOS (Swift)        │         │  iOS (Swift)        │   │
-│   │  Web (Next.js)      │         │  Web (Next.js)      │   │
-│   └──────────┬──────────┘         └──────────┬──────────┘   │
-└──────────────┼───────────────────────────────┼──────────────┘
-               │                               │
-               │  HTTPS / WSS (Supabase SDKs)  │
-               ▼                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 CENTRALIZED SUPABASE BACKEND                │
-│                                                             │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │                    Supabase Auth                      │  │
-│  │    (Consumer & Partner identity, JWT claims, RBAC)    │  │
-│  └───────────────────────────┬───────────────────────────┘  │
-│                              │                              │
-│  ┌───────────────────────────┴───────────────────────────┐  │
-│  │               PostgreSQL Database + RLS               │  │
-│  │  - User Profiles            - Partner Outlets         │  │
-│  │  - Catalog & Items          - Inventory & Pricing     │  │
-│  │  - Orders & Items           - Realtime State          │  │
-│  │  - Payment Records          - Financial Ledger        │  │
-│  │  - Partner Earnings         - Settlements & Payouts   │  │
-│  └───────────────────────────┬───────────────────────────┘  │
-│                              │                              │
-│  ┌───────────────────────────┴───────────────────────────┐  │
-│  │                 Supabase Edge Functions               │  │
-│  │       (Server-side trusted operations & secrets)      │  │
-│  │  - payment-initiate / verify (eSewa, Khalti, Fonepay) │  │
-│  │  - payout-execute (Bank settlement & disbursements)   │  │
-│  │  - ai-concierge (LLM tool-calling loop)               │  │
-│  │  - push-notify (FCM / APNs critical dispatch)         │  │
-│  └───────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                             CLIENT APPLICATIONS                             │
+│                                                                             │
+│   ┌───────────────────────────────────┐   ┌─────────────────────────────┐   │
+│   │           CONSUMER APPS           │   │        PARTNER APPS         │   │
+│   │  • Android (Kotlin + Compose)     │   │  • Android (KDS, POS, Rider)│   │
+│   │  • iOS (Swift + SwiftUI)          │   │  • iOS (iPad Ops Counter)   │   │
+│   │  • Web (Next.js App Router)       │   │  • Web Merchant Portal      │   │
+│   └─────────────────┬─────────────────┘   └──────────────┬──────────────┘   │
+└─────────────────────┼────────────────────────────────────┼──────────────────┘
+                      │                                    │
+                      │    HTTPS / WSS (Supabase SDKs)     │
+                      ▼                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CENTRALIZED SUPABASE BACKEND (PostgreSQL)                │
+│                                                                             │
+│   • Supabase Auth (Consumer & Partner RBAC, JWT claims)                     │
+│   • PostgreSQL Database with PostGIS & strict Row Level Security (RLS)      │
+│   • Supabase Realtime (WebSockets for order events & chat)                  │
+│   • Supabase Storage (Catalog media, vehicle photos, snap storage)          │
+│   • Supabase Edge Functions (eSewa / Khalti verification, payouts)          │
+└──────────────┬──────────────────────────────────────────────┬───────────────┘
+               │                                              │
+               ▼                                              ▼
+┌─────────────────────────────────────────┐  ┌────────────────────────────────┐
+│      LOCAL MICROSERVICES & ROUTING      │  │     FINTECH & NOTIFICATIONS    │
+│                                         │  │                                │
+│  • AI Voice Gateway (FastAPI, 16kHz)    │  │  • Khalti Epay v2 & Webhook    │
+│    ├── Faster-Whisper & IndicConformer  │  │  • eSewa HMAC-SHA256 Token     │
+│    ├── AI4Bharat IndicXlit & Parler-TTS │  │  • connectIPS / Khalti Payouts │
+│    └── Local vLLM Qwen 2.5 Inference    │  │  • Push Worker (FCM & APNs)    │
+│  • Redis (GEOADD Driver GPS, Sockets)   │  │  • Evryy In-App Wallet Engine  │
+│  • OSRM Backend (Zero Google Fees)      │  │                                │
+└─────────────────────────────────────────┘  └────────────────────────────────┘
 ```
 
 ---
 
-## 2. Core Architectural Pillars
+## 2. Master End-to-End System Workflow
+
+```
+========================================================================================================
+                                     THE EVRYY PLATFORM WORKFLOW
+========================================================================================================
+
+ [MOBILE CLIENTS: KOTLIN / SWIFT]
+   │
+   ├── (A) VOICE ORDERING FLOW
+   │     1. Mic records audio -> Streams 16kHz PCM bytes over WebSocket -> /ws/voice-agent
+   │     2. [ai-voice-gateway]:
+   │        ├── Transcribes audio via Faster-Whisper or AI4Bharat IndicConformer
+   │        ├── Transliterates Romanized speech (e.g., "momo" -> मोमो) via IndicXlit
+   │        ├── Passes text to local Qwen 2.5 (vLLM / Ollama)
+   │        ├── Qwen calls tool: search_menu_items(query="momo", sort="rating_asc")
+   │        ├── Python executes read-only query on Supabase (ai_agent_reader role)
+   │        ├── Qwen calls tool: add_to_cart(dish_id, qty)
+   │        ├── Emits UI_ACTION JSON event -> Client updates cart bar dynamically
+   │        └── Synthesizes reply audio via Piper / Indic-Parler-TTS -> Plays on phone speaker
+   │
+   ├── (B) CHECKOUT & PAYMENT FLOW
+   │     1. User taps "Pay via Khalti / eSewa"
+   │     2. Backend initiates transaction -> Returns payment sheet URL & pidx
+   │     3. User authorizes transaction -> Gateway fires webhook back to /payments/callback
+   │     4. Backend writes new row to `orders` table (Read-Write role)
+   │     5. Push Worker fires FCM alert to Restaurant: "New Order #1042 Received!"
+   │
+   ├── (C) REAL-TIME RIDER TRACKING & MAPS
+   │     1. Rider accepts order -> Background GPS sends lat/lng to Redis every 3 seconds
+   │     2. Customer Map View:
+   │        ├── Free Google Maps Mobile SDK displays street background
+   │        ├── Polyline & ETA calculated on server via OSRM Docker container (Zero Google Fees)
+   │        └── Animated bike marker glides smoothly along coordinates streamed from Redis
+   │
+   └── (D) FAMILY SAFETY & LOCATION SHARING
+         1. Customer hits "Share Ride with Family"
+         2. IN-APP: Pushes live ride session into encrypted family chat thread (updates in real time)
+         3. EXTERNAL: Generates signed web token: https://evryy.app/track/{token}
+            └── Opens in WhatsApp / SMS / Safari without requiring family members to install the app
+========================================================================================================
+```
+
+---
+
+## 3. Core Architectural Pillars
 
 ### A. Consumer vs. Partner Separation
-- **Consumer Applications**: Optimized for discovery, AI interaction, multi-vendor cart building, checkout, and live order tracking.
-- **Partner Applications**: Tailored for business operations: inventory management, incoming order queues, kitchen display systems, dispatching, financial ledger tracking, and staff role management.
-- They are separate products with distinct UI flows, permissions, and operational constraints.
+- **Consumer Applications**: Optimized for discovery, voice AI interaction, multi-vendor cart building, checkout, real-time ride tracking, and camera/snap creation.
+- **Partner Applications**: Tailored for business operations: inventory management, incoming order queues, kitchen display systems (KDS), dispatching, double-entry ledger tracking, and role-based staff permissions.
 
 ### B. Centralized Shared Backend
 - A single, centralized Supabase infrastructure powers all clients.
-- Data separation and multi-tenant security are guaranteed at the database layer via **PostgreSQL Row Level Security (RLS)** rather than siloed backend code.
-- Client applications access the database directly via Supabase PostgREST clients using public `anon` credentials, scoped by JWT authentication tokens.
+- Data separation and multi-tenant security are guaranteed at the database layer via **PostgreSQL Row Level Security (RLS)**.
+- Client applications access the database directly via Supabase SDKs using public `anon` credentials, scoped strictly by JWT authentication tokens.
 
-### C. Server-Side Financial Authority
-- **Zero Client Financial Trust**: Prices, totals, discounts, taxes, fees, and partner earnings are computed and validated exclusively on the server.
-- **Auditable Ledger**: Every monetary event (consumer charge, platform fee deduction, partner earning credit, refund, payout) produces an immutable ledger record.
-- **Payment Abstraction**: The platform abstracts payment processing behind a unified server-side adapter layer supporting eSewa, Khalti, Fonepay, and Card gateways.
-- **Independent Payout Subsystem**: Partner payouts are decoupled from consumer checkout transactions through an auditable settlement lifecycle.
+### C. Zero-Fee Open Routing (OSRM)
+- Instead of paying high per-request fees to Google Maps Directions API, road polylines, navigation paths, and ETAs are calculated on self-hosted OSRM containers running the `nepal-latest.osm.pbf` dataset.
 
-### D. Prototype vs. Production Delineation
-- [`prototype/Phone/`](../../prototype/Phone/) is the working Next.js interactive prototype and visual/functional reference.
-- [`apps/`](../../apps/) contains the production clients (Consumer Android/iOS/Web and Partner Android/iOS/Web).
-- The prototype is kept separate and fully functional so team members can experience the end-to-end design without requiring production infrastructure.
+### D. Reference Prototype Delineation
+- [`prototype/Phone/`](../../prototype/Phone/) is the working Next.js interactive prototype and visual/functional reference (75 tests passing).
+- [`apps/`](../../apps/) contains the planned production native and web clients.
+
+---
+
+## 4. Key Reference Documents
+- [Super App Specification & Reference Matrix](./superapp-specification.md)
+- [Master Dependencies Specification](./dependencies-master.md)
+- [Consumer Architecture](./consumer.md)
+- [Partner Architecture](./partner.md)
+- [Payment Architecture](./payments.md)
+- [Partner Payout & Financial Architecture](./payouts.md)

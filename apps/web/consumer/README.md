@@ -15,7 +15,7 @@
 
 ## Core Responsibilities
 
-- Fully responsive web version of the Pocket Concierge consumer experience.
+- Fully responsive web version of the **evryy** consumer experience (by **Elifsi Technologies Private Limited**).
 - Web-based AI concierge chat interface with browser voice integration (Web Speech API).
 - Search, browse, and multi-vertical checkout across food, grocery, hotels, electronics, and services.
 - User account management, address book, saved cards, order tracking, and notification center.

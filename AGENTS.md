@@ -8,7 +8,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-> **Monorepo note**: This repository contains the Pocket Concierge platform:
+> **Monorepo note**: This repository contains the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**:
 >
 > | Path | Purpose | Status |
 > |------|---------|--------|

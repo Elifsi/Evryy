@@ -1,13 +1,14 @@
-# System Architecture
+# evryy — System Architecture
 
-This document describes the comprehensive system architecture of the Pocket Concierge platform, spanning client applications, backend services, payments, payouts, and the reference prototype.
+This document describes the comprehensive system architecture of the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**, spanning client applications, backend services, payments, payouts, and the reference prototype.
 
 ---
 
 ## 1. High-Level Architecture Topology
 
 ```
-                         POCKET CONCIERGE PLATFORM
+                         EVRYY SUPER APP PLATFORM
+                   (Elifsi Technologies Private Limited)
                                      │
       ┌──────────────────────────────┼──────────────────────────────┐
       │                              │                              │
@@ -95,7 +96,7 @@ PostgreSQL Payments, Transactions & Orders Update
 
 ### Key Architectural Directives:
 - **Card Handling Nuance**: Cards are not assumed to require an entirely separate gateway. Gateways like Khalti or Fonepay may facilitate debit/credit card processing. The architecture avoids duplicating card handling where active providers already cover it, avoids assuming they cover every card use case, and remains extensible so a dedicated Card Gateway Adapter can be introduced when a specific card processor is chosen.
-- **Zero Raw Card Storage**: Raw card numbers (PAN), CVV, and expiry dates are **never** received or stored in the Pocket Concierge database. The platform relies on provider-hosted or tokenized flows.
+- **Zero Raw Card Storage**: Raw card numbers (PAN), CVV, and expiry dates are **never** received or stored in the evryy database. The platform relies on provider-hosted or tokenized flows.
 - **No Client Secrets**: Client applications never possess provider secret keys or merchant API secrets.
 - **Server Financial Authority**: The server alone computes all payable amounts, discounts, taxes, and fees.
 - **Separation of Concepts**: Inward payments, refunds, transaction ledgers, settlements, and outward partner payouts are isolated backend entities.

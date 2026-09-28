@@ -1,6 +1,6 @@
 # apps/consumer/ — Consumer Applications
 
-The **Consumer Application** provides the customer-facing Pocket Concierge experience.
+The **Consumer Application** provides the customer-facing **evryy** Super App experience, developed by **Elifsi Technologies Private Limited**.
 
 ## Target Platforms
 

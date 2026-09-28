@@ -1,0 +1,29 @@
+# AI Voice Gateway Backend Dependencies
+# Platform: evryy Super App (Elifsi Technologies Private Limited)
+
+# Async Web Framework & WebSocket Engine
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+
+# Speech-to-Text (STT) Engines
+faster-whisper>=1.0.0
+
+# Neural Text-to-Speech (TTS) Engines
+piper-tts>=1.2.0
+parler-tts>=0.2.0
+
+# LLM Inference Client (Connects to local vLLM / Ollama instance)
+openai>=1.14.0
+
+# Database Access (High-speed asynchronous connection to Supabase PostgreSQL)
+asyncpg>=0.29.0
+
+# Audio Manipulation & Tensor Computation
+numpy>=1.26.0
+torch>=2.2.0
+torchaudio>=2.2.0
+soundfile>=0.12.1
+
+# AI4Bharat Indic Stack (IndicConformer, Indic-Parler-TTS, IndicXlit)
+transformers>=4.40.0
+ai4bharat-transliteration>=1.1.3
