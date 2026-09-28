@@ -1,155 +1,333 @@
-# supabase/migrations/ — Database Schema & Migration Guide
+# supabase/migrations/ — Database Schema & Migration Specification
 
-This directory contains version-controlled, forward-only SQL migrations for the centralized Supabase backend powering all **evryy** clients (Android, iOS, Web), developed by **Elifsi Technologies Private Limited**.
-
-## Status
-
-🔮 **Awaiting Open-Source Contributor / Developer Implementation.**
-This guide serves as the technical specification for developers implementing the initial SQL migrations.
+> **Platform**: evryy Super App Ecosystem  
+> **Company**: Elifsi Technologies Private Limited  
+> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Database Engine**: PostgreSQL 15+ with PostGIS, `pgcrypto`, `btree_gist`, and `pgvector`  
 
 ---
 
-## Technical Specifications for Schema Contributors
+## 1. Core Database Extensions & Administrative Spine
 
-When implementing migrations, organize them into logical, timestamped files using the Supabase CLI:
-
-```bash
-supabase migration new initial_auth_profiles
-supabase migration new partners_and_rbac
-supabase migration new catalog_and_services
-supabase migration new orders_and_fulfillment
-supabase migration new mobility_and_rides
-supabase migration new payments_and_ledger
-supabase migration new partner_payouts
-supabase migration new social_chat_and_snaps
-supabase migration new ai_memory_and_audit
-```
-
----
-
-### Domain Breakdown & Table Specifications
-
-#### 1. Identity, Auth & Profiles
-* **`public.profiles`**:
-  * `id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE`
-  * `username TEXT UNIQUE NOT NULL`
-  * `full_name TEXT`, `phone TEXT`, `avatar_url TEXT`
-  * `public_key_jwk JSONB` & `signing_key_jwk JSONB` (for E2EE direct messages)
-  * `is_creator BOOLEAN DEFAULT FALSE`, `creator_bio TEXT`, `creator_category TEXT`
-  * `created_at TIMESTAMPTZ DEFAULT NOW()`, `updated_at TIMESTAMPTZ DEFAULT NOW()`
-* **`public.user_preferences`**:
-  * `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE`, `key TEXT NOT NULL`, `value TEXT NOT NULL`
-  * `PRIMARY KEY (user_id, key)`
-
-#### 2. Partners & Role-Based Access Control (RBAC)
-* **`public.partners`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
-  * `business_name TEXT NOT NULL`, `slug TEXT UNIQUE NOT NULL`
-  * `business_type TEXT NOT NULL` (`restaurant`, `grocery`, `retail`, `hotel`, `mobility`, `service`)
-  * `rating NUMERIC(3,2) DEFAULT 5.0`, `rating_count INTEGER DEFAULT 0`
-  * `address TEXT`, `area TEXT`, `latitude NUMERIC(10,8)`, `longitude NUMERIC(11,8)`
-  * `metadata JSONB` (cuisines, star rating, amenities, price for two, gradient colors)
-  * `status TEXT DEFAULT 'active'` (`pending`, `active`, `suspended`)
-* **`public.partner_members`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
-  * `partner_id UUID REFERENCES public.partners(id) ON DELETE CASCADE`
-  * `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE`
-  * `role TEXT NOT NULL` (`owner`, `manager`, `staff`, `cashier`, `driver`)
-  * `UNIQUE (partner_id, user_id)`
-
-#### 3. Service Catalog & Products
-* **`public.categories`**:
-  * `id TEXT PRIMARY KEY` (`food`, `grocery`, `electronics`, `fashion`, `hotels`, `rides`, `services`)
-  * `label TEXT NOT NULL`, `icon TEXT`
-* **`public.catalog_items`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
-  * `partner_id UUID REFERENCES public.partners(id) ON DELETE CASCADE`
-  * `category_id TEXT REFERENCES public.categories(id)`
-  * `title TEXT NOT NULL`, `subtitle TEXT`
-  * `price_in_paisa INTEGER NOT NULL`, `mrp_in_paisa INTEGER`
-  * `currency TEXT DEFAULT 'NPR'`
-  * `is_available BOOLEAN DEFAULT TRUE`, `veg BOOLEAN`
-  * `menu_section TEXT`, `is_bestseller BOOLEAN DEFAULT FALSE`
-  * `weight_volume TEXT`, `attributes JSONB`, `image_url TEXT`
-
-#### 4. Orders & Shopping Cart
-* **`public.orders`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `order_number TEXT UNIQUE NOT NULL`
-  * `user_id UUID REFERENCES auth.users(id)`
-  * `partner_id UUID REFERENCES public.partners(id)`
-  * `order_type TEXT NOT NULL` (`ORDER`, `BOOKING`, `RIDE`)
-  * `status TEXT NOT NULL DEFAULT 'draft'` (`draft`, `pending_authorization`, `pending_vendor`, `confirmed`, `in_progress`, `completed`, `cancelled`)
-  * `subtotal_in_paisa INTEGER NOT NULL`, `delivery_fee_in_paisa INTEGER DEFAULT 0`
-  * `platform_fee_in_paisa INTEGER DEFAULT 0`, `tax_in_paisa INTEGER DEFAULT 0`, `total_in_paisa INTEGER NOT NULL`
-  * `delivery_address JSONB`, `eta_minutes INTEGER`, `placed_by TEXT DEFAULT 'USER'` (`USER`, `AI_AGENT`)
-* **`public.order_items`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE`
-  * `catalog_item_id UUID REFERENCES public.catalog_items(id)`
-  * `title TEXT NOT NULL`, `unit_price_in_paisa INTEGER NOT NULL`, `quantity INTEGER NOT NULL`, `total_in_paisa INTEGER NOT NULL`
-* **`public.order_status_logs`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE`
-  * `status TEXT NOT NULL`, `note TEXT`, `created_at TIMESTAMPTZ DEFAULT NOW()`
-
-#### 5. Mobility & Ride Booking
-* **`public.rides`**:
-  * `id UUID PRIMARY KEY REFERENCES public.orders(id) ON DELETE CASCADE`
-  * `user_id UUID REFERENCES auth.users(id)`, `driver_id UUID REFERENCES auth.users(id)`
-  * `ride_type TEXT NOT NULL` (`standard`, `comfort`, `electric`, `bike`, `xl`)
-  * `phase TEXT NOT NULL` (`searching`, `driver_assigned`, `en_route_to_pickup`, `driver_arrived`, `in_progress`, `completed`, `cancelled`)
-  * `pickup_name TEXT NOT NULL`, `drop_name TEXT NOT NULL`
-  * `pickup_lat NUMERIC(10,8)`, `pickup_lng NUMERIC(11,8)`, `drop_lat NUMERIC(10,8)`, `drop_lng NUMERIC(11,8)`
-  * `distance_km NUMERIC(5,2)`, `fare_in_paisa INTEGER NOT NULL`, `otp TEXT`
-
-#### 6. Payments & Financial Ledger
-* **`public.payments`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `order_id UUID REFERENCES public.orders(id)`
-  * `user_id UUID REFERENCES auth.users(id)`, `provider TEXT NOT NULL` (`esewa`, `khalti`, `fonepay`, `card`)
-  * `provider_transaction_id TEXT`, `amount_in_paisa INTEGER NOT NULL`, `status TEXT NOT NULL` (`pending`, `completed`, `failed`, `refunded`)
-* **`public.transactions`**:
-  * Immutable double-entry ledger table. `account_type TEXT`, `entry_type TEXT` (`DEBIT`/`CREDIT`), `amount_in_paisa INTEGER`.
-* **`public.refunds`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `payment_id UUID REFERENCES public.payments(id)`, `amount_in_paisa INTEGER`, `status TEXT`.
-
-#### 7. Partner Settlements & Payouts
-* **`public.partner_earnings`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `partner_id UUID REFERENCES public.partners(id)`, `order_id UUID REFERENCES public.orders(id)`
-  * `gross_amount_in_paisa INTEGER NOT NULL`, `platform_fee_in_paisa INTEGER NOT NULL`, `tax_withheld_in_paisa INTEGER NOT NULL`, `net_payable_in_paisa INTEGER NOT NULL`
-* **`public.settlements`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `partner_id UUID REFERENCES public.partners(id)`
-  * `cycle_start TIMESTAMPTZ`, `cycle_end TIMESTAMPTZ`, `net_payout_in_paisa INTEGER NOT NULL`, `status TEXT NOT NULL`
-* **`public.payouts`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `settlement_id UUID REFERENCES public.settlements(id)`
-  * `amount_in_paisa INTEGER NOT NULL`, `payout_method TEXT NOT NULL`, `bank_reference_number TEXT`, `status TEXT NOT NULL`
-
-#### 8. Social, Chat & Ephemeral Stories
-* **`public.contacts`**:
-  * `user_id UUID REFERENCES auth.users(id)`, `contact_user_id UUID REFERENCES auth.users(id)`, `PRIMARY KEY (user_id, contact_user_id)`
-* **`public.messages`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `sender_id UUID REFERENCES auth.users(id)`, `recipient_id UUID REFERENCES auth.users(id)`
-  * `encrypted_payload TEXT NOT NULL`, `status TEXT DEFAULT 'sent'` (`sent`, `delivered`, `read`)
-* **`public.stories`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `user_id UUID REFERENCES auth.users(id)`
-  * `media_url TEXT NOT NULL`, `expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '24 hours')`
-* **`public.notes`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `user_id UUID REFERENCES auth.users(id)`
-  * `text TEXT NOT NULL`, `emoji TEXT`, `color TEXT`, `expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '24 hours')`
-
-#### 9. AI Memory & Audit Logs
-* **`public.user_memories`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `user_id UUID REFERENCES auth.users(id)`
-  * `fact TEXT NOT NULL`, `confidence NUMERIC(3,2)`, `provenance TEXT` (`explicit`, `inferred`)
-* **`public.ai_audit_logs`**:
-  * `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`, `user_id UUID REFERENCES auth.users(id)`
-  * `actor_type TEXT NOT NULL`, `action TEXT NOT NULL`, `policy_decision TEXT NOT NULL`, `detail TEXT`
-
----
-
-## Mandatory Row Level Security (RLS) Rules
-
-Every table **must** enable RLS and enforce tenant isolation:
+### A. Required PostgreSQL Extensions
+All initial migrations must install the requisite extensions:
 ```sql
-ALTER TABLE public.<table_name> ENABLE ROW LEVEL SECURITY;
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS vector;
 ```
-* **Consumers**: Only access records where `user_id = auth.uid()`.
-* **Partners**: Only access records where `partner_id IN (SELECT partner_id FROM public.partner_members WHERE user_id = auth.uid())`.
-* **Public Read**: Catalog items and categories can be read by all authenticated or anonymous users (`auth.role() IN ('authenticated', 'anon')`).
+
+### B. Administrative Spine of Nepal (`bibekoli/local-levels-of-nepal-dataset`)
+The administrative foundation forms the foreign-key relational anchor for all addresses, stores, properties, rooms, and search boundaries across Nepal:
+
+```sql
+-- 7 Provinces
+CREATE TABLE public.provinces (
+  id SMALLINT PRIMARY KEY,
+  name_en TEXT NOT NULL,
+  name_ne TEXT NOT NULL
+);
+
+-- 77 Districts
+CREATE TABLE public.districts (
+  id SMALLINT PRIMARY KEY,
+  province_id SMALLINT NOT NULL REFERENCES public.provinces(id),
+  name_en TEXT NOT NULL,
+  name_ne TEXT NOT NULL
+);
+
+-- 753 Local Levels (Metros, Sub-Metros, Municipalities, Rural Palikas)
+CREATE TABLE public.local_levels (
+  id INT PRIMARY KEY,
+  district_id SMALLINT NOT NULL REFERENCES public.districts(id),
+  name_en TEXT NOT NULL,
+  name_ne TEXT NOT NULL,
+  type TEXT NOT NULL, -- 'Metropolitan City', 'Sub-Metropolitan City', 'Municipality', 'Rural Municipality'
+  wards_count SMALLINT NOT NULL DEFAULT 1,
+  boundary GEOMETRY(MultiPolygon, 4326)
+);
+
+CREATE INDEX idx_local_levels_district ON public.local_levels(district_id);
+CREATE INDEX idx_local_levels_boundary ON public.local_levels USING GIST(boundary);
+```
+
+---
+
+## 2. Shared Horizontal Engine (Identity, Roles & Wallets)
+
+### A. Typed Role Enum & Unified Profiles
+```sql
+CREATE TYPE public.user_role AS ENUM (
+  'consumer', 'rider', 'driver', 'merchant', 'landlord', 'host', 'admin'
+);
+
+CREATE TABLE public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  role public.user_role NOT NULL DEFAULT 'consumer',
+  username TEXT UNIQUE NOT NULL,
+  full_name TEXT NOT NULL,
+  phone TEXT,
+  avatar_url TEXT,
+  public_key_jwk JSONB,
+  signing_key_jwk JSONB,
+  local_level_id INT REFERENCES public.local_levels(id),
+  ward_number SMALLINT,
+  is_verified BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### B. Shared In-App Wallet & Double-Entry Ledger
+```sql
+CREATE TABLE public.wallets (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  balance_in_paisa BIGINT NOT NULL DEFAULT 0 CHECK (balance_in_paisa >= 0),
+  currency TEXT NOT NULL DEFAULT 'NPR',
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE public.wallet_transactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  wallet_id UUID NOT NULL REFERENCES public.wallets(user_id) ON DELETE CASCADE,
+  amount_in_paisa BIGINT NOT NULL,
+  entry_type TEXT NOT NULL CHECK (entry_type IN ('CREDIT', 'DEBIT')),
+  source_type TEXT NOT NULL CHECK (source_type IN (
+    'ORDER_PAYMENT', 'RIDE_FARE', 'GROCERY_REFUND', 'RENTAL_DEPOSIT', 
+    'RENTAL_PAYMENT', 'TOPUP', 'WITHDRAWAL', 'TIP'
+  )),
+  reference_id TEXT NOT NULL,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_wallet_tx_wallet_id ON public.wallet_transactions(wallet_id);
+```
+
+---
+
+## 3. Multi-Vertical Domain Schemas & Concurrency Contracts
+
+### A. Quick-Commerce Grocery (`Aakash901/BlinkitClone`)
+Atomic inventory reservation with row-level locking to prevent overselling:
+```sql
+CREATE TABLE public.inventory_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  partner_id UUID NOT NULL REFERENCES public.partners(id),
+  title TEXT NOT NULL,
+  sku TEXT UNIQUE NOT NULL,
+  stock_quantity INT NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
+  price_in_paisa INT NOT NULL,
+  mrp_in_paisa INT,
+  is_available BOOLEAN DEFAULT TRUE,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Atomic Inventory Deduction Stored Procedure
+CREATE OR REPLACE FUNCTION public.deduct_grocery_stock(p_item_id UUID, p_quantity INT)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  v_current_stock INT;
+BEGIN
+  SELECT stock_quantity INTO v_current_stock
+  FROM public.inventory_items
+  WHERE id = p_item_id
+  FOR UPDATE;
+
+  IF v_current_stock IS NULL OR v_current_stock < p_quantity THEN
+    RETURN FALSE;
+  END IF;
+
+  UPDATE public.inventory_items
+  SET stock_quantity = stock_quantity - p_quantity,
+      updated_at = NOW()
+  WHERE id = p_item_id;
+
+  RETURN TRUE;
+END;
+$$;
+```
+
+### B. Hotel Stays & Calendar Engine (`aumsoni2002/Airbnb-Clone` & `OthmaneNissoukin`)
+PostgreSQL `daterange` with `btree_gist` exclusion constraint to prevent double-booking:
+```sql
+CREATE TABLE public.rooms (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  property_id UUID NOT NULL REFERENCES public.properties(id) ON DELETE CASCADE,
+  room_number TEXT NOT NULL,
+  room_type TEXT NOT NULL, -- Deluxe, Suite, Standard
+  max_guests INT NOT NULL DEFAULT 2,
+  price_per_night_in_paisa INT NOT NULL
+);
+
+CREATE TABLE public.room_reservations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  room_id UUID NOT NULL REFERENCES public.rooms(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  reservation_period DATERANGE NOT NULL,
+  total_in_paisa INT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'checked_in', 'completed', 'cancelled')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT no_double_booking EXCLUDE USING gist (room_id WITH =, reservation_period WITH &&)
+);
+```
+
+### C. Vehicle Rentals (`vikasrana07/luxeride` & `arman-dogru/car-rental`)
+PostgreSQL `tsrange` (timestamp range) exclusion constraint to prevent overlapping reservations:
+```sql
+CREATE TABLE public.rental_vehicles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  agency_id UUID NOT NULL REFERENCES public.partners(id),
+  model_name TEXT NOT NULL,
+  vehicle_category TEXT NOT NULL, -- 'motorcycle', 'scooter', 'sedan', 'suv'
+  license_plate TEXT UNIQUE NOT NULL,
+  hourly_rate_in_paisa INT NOT NULL,
+  daily_rate_in_paisa INT NOT NULL,
+  deposit_amount_in_paisa INT NOT NULL,
+  location GEOGRAPHY(Point, 4326) NOT NULL
+);
+
+CREATE INDEX idx_rental_vehicles_geo ON public.rental_vehicles USING GIST(location);
+
+CREATE TABLE public.vehicle_rentals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  vehicle_id UUID NOT NULL REFERENCES public.rental_vehicles(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  rental_period TSRANGE NOT NULL,
+  total_in_paisa INT NOT NULL,
+  deposit_status TEXT NOT NULL DEFAULT 'held' CHECK (deposit_status IN ('held', 'refunded', 'forfeited')),
+  status TEXT NOT NULL DEFAULT 'booked' CHECK (status IN ('booked', 'active', 'completed', 'cancelled')),
+  CONSTRAINT no_vehicle_overlap EXCLUDE USING gist (vehicle_id WITH =, rental_period WITH &&)
+);
+```
+
+### D. Room Rental Finder (`Samizen/RoomRental`, `remediios/vista`, `EmpSwarup/roomfinder`)
+Long-term flat and room leasing with Nepal ward-level anchors:
+```sql
+CREATE TABLE public.room_listings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  landlord_id UUID NOT NULL REFERENCES auth.users(id),
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  room_type TEXT NOT NULL CHECK (room_type IN ('Single Room', '1RK', '1BHK', '2BHK', 'Flat', 'House')),
+  tenant_constraint TEXT NOT NULL CHECK (tenant_constraint IN ('any', 'family', 'bachelor', 'female_only', 'students')),
+  monthly_rent_in_paisa INT NOT NULL,
+  local_level_id INT NOT NULL REFERENCES public.local_levels(id),
+  ward_number SMALLINT NOT NULL,
+  location GEOGRAPHY(Point, 4326) NOT NULL,
+  utilities JSONB NOT NULL DEFAULT '{"water": true, "parking": false, "electricity": "separate_meter"}',
+  images TEXT[] DEFAULT '{}',
+  is_available BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_room_listings_geo ON public.room_listings USING GIST(location);
+CREATE INDEX idx_room_listings_local_level ON public.room_listings(local_level_id, ward_number);
+```
+
+### E. Ride Sharing & Real-Time Bidding (`WaqasSiddiqi/inDrive-Clone` & `amitshekhariitbhu`)
+```sql
+CREATE TABLE public.rides (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  passenger_id UUID NOT NULL REFERENCES auth.users(id),
+  driver_id UUID REFERENCES auth.users(id),
+  ride_type TEXT NOT NULL CHECK (ride_type IN ('bike', 'taxi_standard', 'taxi_comfort', 'electric')),
+  pickup_name TEXT NOT NULL,
+  drop_name TEXT NOT NULL,
+  pickup_location GEOGRAPHY(Point, 4326) NOT NULL,
+  drop_location GEOGRAPHY(Point, 4326) NOT NULL,
+  offered_fare_in_paisa INT NOT NULL,
+  final_fare_in_paisa INT,
+  phase TEXT NOT NULL DEFAULT 'bidding' CHECK (phase IN (
+    'bidding', 'driver_assigned', 'en_route_to_pickup', 
+    'arrived_at_pickup', 'in_progress', 'completed', 'cancelled'
+  )),
+  otp TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE public.ride_bids (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  ride_id UUID NOT NULL REFERENCES public.rides(id) ON DELETE CASCADE,
+  driver_id UUID NOT NULL REFERENCES auth.users(id),
+  counter_fare_in_paisa INT NOT NULL,
+  driver_lat NUMERIC(10,8) NOT NULL,
+  driver_lng NUMERIC(11,8) NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected', 'expired')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### F. Realtime Messaging & Ephemeral Snaps (`Debanshu777` & `GetStream`)
+```sql
+CREATE TABLE public.chats (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type TEXT NOT NULL CHECK (type IN ('DIRECT', 'ORDER_SUPPORT', 'RIDE_COORDINATION')),
+  reference_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE public.messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  chat_id UUID NOT NULL REFERENCES public.chats(id) ON DELETE CASCADE,
+  sender_id UUID NOT NULL REFERENCES auth.users(id),
+  encrypted_payload TEXT NOT NULL,
+  message_type TEXT NOT NULL DEFAULT 'TEXT' CHECK (message_type IN ('TEXT', 'IMAGE', 'VOICE_NOTE', 'LIVE_RIDE_SHARE')),
+  status TEXT NOT NULL DEFAULT 'sent' CHECK (status IN ('sent', 'delivered', 'read')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE public.snaps (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  sender_id UUID NOT NULL REFERENCES auth.users(id),
+  recipient_id UUID NOT NULL REFERENCES auth.users(id),
+  storage_path TEXT NOT NULL,
+  filter_name TEXT,
+  opened_at TIMESTAMPTZ,
+  is_burned BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Ephemeral Media Auto-Burn RPC
+CREATE OR REPLACE FUNCTION public.open_and_burn_snap(p_snap_id UUID, p_viewer_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  UPDATE public.snaps
+  SET opened_at = NOW(),
+      is_burned = TRUE
+  WHERE id = p_snap_id AND recipient_id = p_viewer_id AND is_burned = FALSE;
+  
+  RETURN FOUND;
+END;
+$$;
+```
+
+---
+
+## 4. Row Level Security (RLS) Policy Blueprint
+
+Every table has RLS explicitly enabled:
+```sql
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.wallets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.wallet_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.room_reservations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vehicle_rentals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.room_listings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rides ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ride_bids ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.snaps ENABLE ROW LEVEL SECURITY;
+```
+
+### RLS Policies
+- **Profiles**: `SELECT` is public; `UPDATE` restricted to `id = auth.uid()`.
+- **Wallets & Transactions**: `SELECT` restricted to `user_id = auth.uid()`. Inserts/updates executed exclusively via server-side procedures/Edge Functions.
+- **Room Listings**: Public `SELECT` where `is_available = true`; `INSERT/UPDATE/DELETE` restricted to `landlord_id = auth.uid()`.
+- **Messages**: `SELECT` where `sender_id = auth.uid() OR recipient_id = auth.uid()`.
+- **Snaps**: `SELECT` where `(sender_id = auth.uid() OR recipient_id = auth.uid()) AND is_burned = false`.
