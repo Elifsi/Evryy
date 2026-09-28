@@ -173,16 +173,18 @@ npm run build        # Production Next.js Turbopack build (41 routes compiled)
 
 ## Financial & Security Architecture
 
-1. **Payment Service Abstraction** ([`docs/architecture/payments.md`](./docs/architecture/payments.md)):
-   - Unified Payment Service supporting **eSewa**, **Khalti**, **Fonepay**, and **Card Gateways**.
-   - No unnecessary card duplication where providers (like Khalti) facilitate card checkout directly.
-   - Zero raw card storage (PAN/CVV) in application databases.
-   - All gateway secret keys and signature verifications run exclusively server-side in Supabase Edge Functions.
+1. **Streamlined Payment Ingestion** ([`docs/architecture/payments.md`](./docs/architecture/payments.md)):
+   - **Zero Stored-Value Wallet**: In-app customer wallets are removed to eliminate NRB PSP licensing and escrow liabilities.
+   - **Fonepay Dynamic QR**: Real-time EMVCo QR with locked payable amount and system remarks; blurs on scan, auto-processes on server webhook (IMS Supermarket billing model); supports screenshot sharing to bank apps via gallery scan.
+   - **Hosted Redirection & Deep Linking**: Direct wallet checkout via **eSewa**, **Khalti**, and **Fonepay Direct** (login/OTP handled exclusively on gateway servers before returning via `evryy://checkout/callback`).
+   - **Cards via Khalti & eSewa**: 3D-Secure Visa, Mastercard, and SCT card checkouts hosted directly by certified gateway sheets (zero raw card storage).
+   - **Cash on Delivery (COD)**: Physical cash collection on delivery verified with a 4-digit recipient OTP handshake.
 
-2. **Partner Payout Subsystem** ([`docs/architecture/payouts.md`](./docs/architecture/payouts.md)):
+2. **Partner Payout & Cash Reconciliation Subsystem** ([`docs/architecture/payouts.md`](./docs/architecture/payouts.md)):
    - Inward payments and outward partner payouts are decoupled.
    - Server-side settlement engine with double-entry immutable ledger accounting.
-   - Scheduled disbursements via bank transfer / IPS adapters with full audit history.
+   - Midnight automated batch disbursements via **connectIPS (NCHL API)** and Khalti Payout API.
+   - Full rider cash reconciliation offsetting collected COD cash against earned delivery fees.
 
 3. **Multi-Tenant Authorization & Row Level Security**:
    - Consumers can only access their own profile, cart, orders, and chats.

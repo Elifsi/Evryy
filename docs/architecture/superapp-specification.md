@@ -82,7 +82,12 @@ When generating SQL schemas, Supabase Edge Functions, or client queries, adhere 
 
 ### C. Shared Horizontal Engine
 - **Identity & Roles:** A single `public.profiles` table linked to `auth.users(id)` with a typed role enum (`consumer`, `rider`, `driver`, `merchant`, `landlord`, `host`, `admin`).
-- **In-App Wallet:** A shared `wallets` balance table and immutable `wallet_transactions` double-entry ledger handling refunds, ride fares, grocery payments, and rental deposits.
+- **Direct Payment Rails & COD (Zero Stored-Value Wallet):** In-app customer wallets are removed to eliminate NRB stored-value PSP licensing liabilities. Payment checkouts are executed directly via:
+  1. **Fonepay Dynamic QR**: Dynamic EMVCo QR generated with locked total amount and system remarks; blurs on scan, auto-processes on server webhook IPN; supports screenshot gallery uploads.
+  2. **Hosted Redirection & Deep Linking**: Direct wallet checkouts via eSewa, Khalti, and Fonepay Direct where login and SMS OTP authentication happen exclusively on provider-hosted pages before deep-linking back to `evryy://checkout/callback`.
+  3. **3D-Secure Cards**: Visa, Mastercard, and SCT card checkouts facilitated through Khalti/eSewa hosted sheets (zero raw card storage).
+  4. **Cash on Delivery (COD)**: Available for physical goods delivery with 4-digit recipient OTP handshake upon rider arrival.
+  5. **Platform Accounting Ledger**: An immutable `public.platform_ledger` double-entry table recording merchant commissions, rider COD collections, and midnight connectIPS disbursements.
 - **Messaging:** A unified `chats` and `messages` table with Supabase Realtime replication powering both social WhatsApp-style P2P messaging and contextual order/ride communication.
 - **Ephemeral TTL & Cleanup:** Ephemeral media (`snaps`) must use auto-burn RPCs (`open_and_burn_snap`), while `stories` enforce a 24-hour expiration filter (`expires_at > now()`).
 - **Row Level Security (RLS):** Every table must have RLS enabled with explicit policies scoping read/write access via `auth.uid()`.

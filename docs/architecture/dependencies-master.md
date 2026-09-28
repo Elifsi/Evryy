@@ -101,33 +101,35 @@ Push notifications cannot rely on open WebSockets because mobile operating syste
 
 ---
 
-## 4. Payments, Payouts & Refunds (Nepal Fintech Integration)
+## 4. Payments, Payouts & Cash on Delivery (Nepal Fintech Integration)
 
-### A. Consumer Payments (Khalti, eSewa, Cards)
-1. **Khalti Epay v2**:
-   - The mobile app calls `/api/v2/epay/initiate/` on the backend.
-   - The backend returns a `payment_url` and `pidx` (payment index).
-   - The mobile app opens Khalti inside an in-app browser or native SDK sheet.
-   - After payment, Khalti calls the secure webhook (`/api/v1/payments/khalti/callback`) with the `pidx`.
-   - The server verifies transaction status with Khalti and marks the order as `PAID`.
-2. **eSewa Direct Web Integration**:
-   - Uses signed HMAC-SHA256 tokens (`total_amount`, `transaction_uuid`, `product_code`).
-   - On success, eSewa redirects to the callback URL to verify and lock the order.
-3. **Cards & Mobile Banking**: Both Khalti and eSewa gateway layers natively accept SCT cards, Visa/Mastercard, and direct bank logins.
+*(Note: In-app customer wallets have been completely eliminated to remove NRB stored-value PSP licensing liabilities. All checkouts flow directly through payment gateways, cards, or Cash on Delivery).*
 
-### B. Driver & Restaurant Payouts
-Manual bank transfers to hundreds of delivery riders and merchants every night are not scalable.
+### A. Consumer Payment Rails
+1. **Fonepay Dynamic QR (Supermarket IMS Model)**:
+   - Server calls Fonepay API with locked `total_amount` and unique system `remarks` (e.g. `EVRYY-ORD-10492`).
+   - Customer can scan from any bank app, or screenshot and send via WhatsApp/Viber to friends (who upload via **"Scan from Gallery"**).
+   - Screen blurs on scan, auto-advances upon instant server webhook IPN receipt.
+2. **Direct Wallet / App Hosted Redirection (eSewa, Khalti, Fonepay Direct)**:
+   - The mobile app redirects to the gateway's official secure hosted page/app via deep link.
+   - User login and SMS OTP verification occur strictly on the provider's server (zero credentials in evryy).
+   - Deep links back to `evryy://checkout/callback?status=success&pidx=...`.
+3. **Card Payments (Visa, Mastercard, SCT)**:
+   - Hosted 3D-Secure card sheets powered directly via Khalti & eSewa (zero raw card storage).
+4. **Cash on Delivery (COD)**:
+   - Physical cash collected by delivery rider upon arrival; verified with a 4-digit recipient OTP handshake.
 
+### B. Driver & Restaurant Payouts & Cash Reconciliation
 - **connectIPS (NCHL API) or Khalti Connect Payout API**:
-  - Riders register their Bank Account Number and IFSC/Branch Code in the partner app.
-  - At midnight, the backend runs an automated payout cron job:
-    $$\text{Net Payout} = (\text{Completed Trips Fare}) - (\text{Platform Commission \%}) + (\text{Tips})$$
-  - The system batches payouts and fires them through the connectIPS / Khalti Payout API, crediting driver accounts automatically with full audit ledger tracking.
+  - Partners register legal Bank Account Number and Branch Code.
+  - At midnight, the automated settlement engine runs:
+    - **Merchants**: Digital payout of total sales minus commission.
+    - **Riders**: Net Delivery Fares minus COD Cash Collected in Hand. Excess COD cash collected is offset against next shift earnings or deposited via dynamic Fonepay QR.
 
-### C. Automated Refunds
+### C. Automated Direct Refunds
 If a restaurant rejects an order or no rider is found within 7 minutes:
-- **Option 1 (Fastest)**: Immediate credit to the user's in-app **evryy Wallet** balance (stored in Supabase, usable instantly for any other service).
-- **Option 2 (Gateway Reversal)**: The backend issues an automated API call to Khalti's `/api/v2/payment/refund/` using the original transaction reference.
+- **Direct Gateway Reversal**: The backend issues an automated API call to Khalti's `/api/v2/payment/refund/` or eSewa/Fonepay reversal API using the original transaction reference, crediting the customer's bank account directly.
+- **COD Orders**: Zero transaction reversal needed if order is cancelled prior to rider arrival.
 
 ---
 

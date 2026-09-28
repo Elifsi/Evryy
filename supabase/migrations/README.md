@@ -54,7 +54,7 @@ CREATE INDEX idx_local_levels_boundary ON public.local_levels USING GIST(boundar
 
 ---
 
-## 2. Shared Horizontal Engine (Identity, Roles & Wallets)
+## 2. Shared Horizontal Engine (Identity, Roles & Payment Ingestion)
 
 ### A. Typed Role Enum & Unified Profiles
 ```sql
@@ -79,30 +79,47 @@ CREATE TABLE public.profiles (
 );
 ```
 
-### B. Shared In-App Wallet & Double-Entry Ledger
+### B. Direct Payment Transactions & Platform Accounting Ledger
+*(Note: In-app customer wallets are eliminated to remove NRB stored-value PSP licensing liabilities. All checkouts flow directly through payment gateways, cards, or Cash on Delivery).*
+
 ```sql
-CREATE TABLE public.wallets (
-  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  balance_in_paisa BIGINT NOT NULL DEFAULT 0 CHECK (balance_in_paisa >= 0),
-  currency TEXT NOT NULL DEFAULT 'NPR',
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+CREATE TABLE public.payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID NOT NULL,
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  provider TEXT NOT NULL CHECK (provider IN (
+    'fonepay_qr', 'fonepay_direct', 'esewa', 'khalti', 'card', 'cod'
+  )),
+  provider_reference_id TEXT, -- Fonepay trace ID, Khalti pidx, eSewa transaction_uuid
+  qr_payload TEXT,            -- Dynamic EMVCo QR string (for Fonepay Dynamic QR)
+  amount_in_paisa BIGINT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN (
+    'pending', 'completed', 'failed', 'refunded', 'pending_cod_collection'
+  )),
+  remarks TEXT NOT NULL,      -- System-generated immutable remark (e.g. 'EVRYY-ORD-10492')
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  completed_at TIMESTAMPTZ
 );
 
-CREATE TABLE public.wallet_transactions (
+CREATE INDEX idx_payments_order_id ON public.payments(order_id);
+CREATE INDEX idx_payments_provider_ref ON public.payments(provider_reference_id);
+
+CREATE TABLE public.platform_ledger (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  wallet_id UUID NOT NULL REFERENCES public.wallets(user_id) ON DELETE CASCADE,
-  amount_in_paisa BIGINT NOT NULL,
+  order_id UUID,
+  payment_id UUID REFERENCES public.payments(id),
   entry_type TEXT NOT NULL CHECK (entry_type IN ('CREDIT', 'DEBIT')),
+  amount_in_paisa BIGINT NOT NULL,
   source_type TEXT NOT NULL CHECK (source_type IN (
-    'ORDER_PAYMENT', 'RIDE_FARE', 'GROCERY_REFUND', 'RENTAL_DEPOSIT', 
-    'RENTAL_PAYMENT', 'TOPUP', 'WITHDRAWAL', 'TIP'
+    'ONLINE_COLLECTION', 'RIDER_COD_COLLECTED', 'MERCHANT_DISBURSEMENT', 
+    'RIDER_PAYOUT', 'PLATFORM_COMMISSION', 'GATEWAY_REFUND'
   )),
-  reference_id TEXT NOT NULL,
-  notes TEXT,
+  account_id UUID NOT NULL, -- references partner_id, rider user_id, or platform master account
+  reference_number TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_wallet_tx_wallet_id ON public.wallet_transactions(wallet_id);
+CREATE INDEX idx_platform_ledger_account ON public.platform_ledger(account_id);
 ```
 
 ---
@@ -314,8 +331,8 @@ $$;
 Every table has RLS explicitly enabled:
 ```sql
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.wallets ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.wallet_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.platform_ledger ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.room_reservations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.vehicle_rentals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.room_listings ENABLE ROW LEVEL SECURITY;
@@ -327,7 +344,8 @@ ALTER TABLE public.snaps ENABLE ROW LEVEL SECURITY;
 
 ### RLS Policies
 - **Profiles**: `SELECT` is public; `UPDATE` restricted to `id = auth.uid()`.
-- **Wallets & Transactions**: `SELECT` restricted to `user_id = auth.uid()`. Inserts/updates executed exclusively via server-side procedures/Edge Functions.
+- **Payments**: `SELECT` restricted to `user_id = auth.uid()`. Inserts/updates executed exclusively via server-side procedures/Edge Functions.
+- **Platform Ledger**: Read-only access for authenticated partners where `account_id = auth.uid()`; mutations restricted strictly to backend service roles.
 - **Room Listings**: Public `SELECT` where `is_available = true`; `INSERT/UPDATE/DELETE` restricted to `landlord_id = auth.uid()`.
 - **Messages**: `SELECT` where `sender_id = auth.uid() OR recipient_id = auth.uid()`.
 - **Snaps**: `SELECT` where `(sender_id = auth.uid() OR recipient_id = auth.uid()) AND is_burned = false`.

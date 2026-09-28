@@ -1,169 +1,135 @@
 # Payment Gateway Architecture
 
-**evryy** (developed by **Elifsi Technologies Private Limited**) implements a modular **Payment Service** abstraction with provider adapters designed to handle regional wallets, bank networks, and card payments cleanly without tight coupling or unnecessary duplication.
+> **Platform**: evryy Super App Ecosystem  
+> **Company**: Elifsi Technologies Private Limited  
+> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+
+**evryy** implements a streamlined, zero-liability **Payment Service** architecture. To eliminate the heavy regulatory burdens of operating a stored-value customer wallet under Nepal Rastra Bank (NRB) guidelines, **the in-app customer wallet has been completely removed**. Instead, all payments are initiated directly through trusted payment aggregators (**Fonepay**, **eSewa**, **Khalti**), card rails (**Visa, Mastercard, SCT** facilitated by eSewa & Khalti), and **Cash on Delivery (COD)**.
 
 ---
 
-## 1. Supported Payment Methods & Rails
-
-The platform supports the following customer-facing payment options:
-- **Khalti Epay v2** (Mobile wallet, e-banking, SCT cards, Visa/Mastercard via Khalti Checkout)
-- **eSewa Direct** (Mobile wallet, signed HMAC-SHA256 token verification, ePay flow)
-- **Fonepay** (Interbank QR rails & merchant payment network)
-- **Card Payments** (Debit/Credit cards facilitated via Khalti/eSewa or dedicated Card Gateway)
-- **In-App evryy Wallet** (Instant balance stored in Supabase with double-entry ledger)
-
-### Important Architectural Nuance: Card Handling
-Card payments are **not** assumed to be a completely separate gateway by default:
-- **Provider-Facilitated Cards**: In many regional integrations, gateways like **Khalti** or **Fonepay** already provide or facilitate card payment processing (Visa, Mastercard, SCT, UnionPay, domestic/international debit and credit cards) directly within their hosted checkout workflows.
-- **No Unnecessary Duplication**: The platform does not create redundant, parallel card infrastructure when an active gateway adapter (e.g. Khalti) already handles card processing under the merchant agreement.
-- **No Over-Assumption**: We do not assume Khalti or Fonepay will cover every future card scenario (e.g. specialized international cards, multi-currency processing, or direct merchant acquirers).
-- **Extensible Card Gateway Adapter**: The architecture cleanly accommodates a dedicated, standalone **Card Gateway Adapter** (e.g. Stripe, Cybersource, Himalayan Bank Payment Gateway) as an optional/future component when a specific dedicated card processor is selected.
-
----
-
-## 2. Payment Service & Provider Adapter Hierarchy
+## 1. Supported Customer Payment Methods
 
 ```
-                          ┌───────────────────────────┐
-                          │    Consumer Application   │
-                          │   (Android / iOS / Web)   │
-                          └─────────────┬─────────────┘
-                                        │ 1. Select payment method
-                                        │    (eSewa, Khalti, Fonepay, Card)
-                                        ▼
-                          ┌───────────────────────────┐
-                          │      Payment Service      │
-                          │ (Server-Side / Edge Fns)  │
-                          └─────────────┬─────────────┘
-                                        │ 2. Dispatches to selected adapter
-            ┌───────────────────────────┼───────────────────────────┐
-            ▼                           ▼                           ▼
-   ┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
-   │  eSewa Adapter  │         │ Khalti Adapter  │         │ Fonepay Adapter │
-   │ (ePay v2 / QR)  │         │ (Wallet + Cards/│         │ (Interbank QR / │
-   │                 │         │  Bank checkout) │         │  Direct Rails)  │
-   └─────────────────┘         └─────────────────┘         └─────────────────┘
-                                        │
-                                        ▼ (Optional / Future)
-                               ┌─────────────────┐
-                               │  Card Gateway   │
-                               │     Adapter     │
-                               │ (Dedicated card │
-                               │  processor)     │
-                               └─────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                        evryy CHECKOUT MODAL                            │
+│                                                                        │
+│   [ 🟢 Pay via QR (Fonepay Dynamic QR) ]   ← RECOMMENDED (Any Bank)    │
+│   • Displays instant dynamic QR (amount & system remark locked)        │
+│   • Scan from any Nepali bank app, or screenshot & share to friends    │
+│   • Screen blurs on scan, auto-advances upon payment (like IMS POS)    │
+│                                                                        │
+│   ── OR PAY VIA WALLET / DIRECT APP REDIRECT ───────────────────────── │
+│   [ 🔴 eSewa ]       → Redirects to eSewa hosted login & SMS OTP       │
+│   [ 🟣 Khalti ]      → Redirects to Khalti hosted login & SMS OTP      │
+│   [ 🔵 Fonepay ]     → Redirects to Fonepay direct authorization       │
+│                                                                        │
+│   ── OR PAY VIA CARD ───────────────────────────────────────────────── │
+│   [ 💳 Cards (Visa / Mastercard / SCT) ]                               │
+│   • Hosted 3D-Secure card sheet powered directly via Khalti / eSewa    │
+│                                                                        │
+│   ── OR PAY UPON DELIVERY ──────────────────────────────────────────── │
+│   [ 💵 Cash on Delivery (COD) ]                                        │
+│   • Pay cash directly to the delivery rider upon physical arrival      │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Core Architecture Rules
+## 2. Core Payment Rails Breakdown
 
-### A. Provider Credential Isolation
-- All API keys, merchant codes, secret keys, and webhook verification secrets reside **exclusively on the server** (stored securely via `supabase secrets set`).
-- Client applications (Android, iOS, Web) NEVER receive, store, or inspect provider credentials.
+### A. Fonepay Dynamic QR (Supermarket IMS Billing Model)
+- **Zero Customer Friction**: Customers do not need an eSewa or Khalti account; any of Nepal's 50+ commercial and development bank apps (Global Smart Plus, NIC Asia MoBank, Nabil SmartBank, Prabhu, Sanima, Everest, etc.) can scan and pay.
+- **Dynamic Lock**: The server invokes Fonepay's Merchant API to generate a dynamic EMVCo QR with:
+  1. `total_amount`: Exact payable total locked down to the paisa (e.g. `NPR 1,250.00`).
+  2. `remarks`: System-generated immutable invoice reference (e.g. `EVRYY-ORD-10492`).
+  3. `expires_at`: 5 to 10 minute auto-expiration timestamp.
+- **Screenshot & Friend Sharing**: Customers can take a screenshot of the QR and send it via WhatsApp or Viber to friends or family. The recipient opens their bank app, taps **"Scan from Gallery"**, and authorizes the exact amount with their MPIN/biometrics.
+- **Blurring & Auto-Processing**:
+  - While awaiting payment confirmation, the QR screen displays an animated progress overlay (*"Processing payment... Please do not close"*).
+  - The millisecond the bank approves the transfer, Fonepay fires an encrypted server-to-server webhook (IPN).
+  - The server verifies the HMAC signature, updates `orders.status = 'paid'`, and emits a Supabase Realtime broadcast.
+  - The customer's screen instantly triggers a success checkmark and auto-advances to the order tracking/receipt view without requiring any manual button click.
 
-### B. Hosted / Tokenized Security (Zero Raw Card Storage)
-- **Never collect, transmit, or store raw card numbers (PAN), CVV, or card expiration dates** in the evryy database or application servers.
-- All card flows utilize:
-  1. Provider-hosted payment pages (Khalti / eSewa / Fonepay / Gateway redirect), OR
-  2. PCI-DSS Level 1 compliant tokenized SDK elements if direct in-app card entry is later required.
-- The evryy database stores only non-sensitive tokens (e.g., `provider_transaction_id`, payment method label like `"Khalti (Visa *4242)"`, status, and timestamp).
+### B. Hosted Redirect Flow (eSewa, Khalti, Fonepay Direct)
+- **Zero-Credential Security**: **evryy NEVER collects, sees, or handles customer passwords, PINs, or SMS OTPs.**
+- **Redirection & Deep-Linking**:
+  1. The user selects **eSewa**, **Khalti**, or **Fonepay Direct**.
+  2. The server requests a payment session and returns a secured URL or custom scheme (`esewa://`, `khalti://`, `fonepay://`).
+  3. The mobile app opens the provider's official hosted sheet via Chrome Custom Tabs or Safari View Controller.
+  4. The customer logs in and enters their SMS OTP on the **gateway's official server page**.
+  5. Upon authorization, the gateway redirects back to evryy via deep-link callback:
+     `evryy://checkout/callback?status=success&pidx=...`
+  6. Simultaneously, the gateway fires an asynchronous server webhook to confirm transaction settlement.
 
-### C. Server-Side Financial Authority
-- The server is the sole authority on order pricing: subtotals, item customizations, delivery fees, service fees, discounts, and taxes are calculated server-side before initiating any payment session.
-- The client cannot alter the payable amount sent to the gateway.
+### C. Cards via Khalti & eSewa (3D-Secure Hosted Gateway)
+- Rather than maintaining custom card storage or foreign payment gateways, **evryy** leverages the built-in card processing rails of **Khalti** and **eSewa**:
+  - Supports **Visa**, **Mastercard**, **SCT (Smart Choice Technologies)**, and domestic UnionPay cards.
+  - Hosted directly within the certified PCI-DSS Level 1 gateway sheets of Khalti and eSewa.
+  - Bank 3D-Secure OTP verification occurs entirely on the issuer bank's portal.
+  - Zero raw cardholder data (PAN, CVV, expiry dates) is ever stored or transmitted through evryy servers.
 
-### D. Separation of Backend Financial Concepts
-The backend treats the following as **distinct, decoupled entities**:
-- **`payments`**: Individual inward payment attempts from a customer to the platform.
-- **`refunds`**: Reversals of customer payments back to the original funding source.
-- **`transactions`**: Immutable double-entry ledger entries documenting debits and credits.
-- **`settlements`**: Scheduled aggregation cycles calculating net merchant balances.
-- **`payouts`**: Outward bank disbursements from the platform to partner bank accounts.
+### D. Cash on Delivery (COD)
+- Available for physical goods delivery (Food, Grocery, Retail).
+- **Order Placement**: Order transitions immediately to `confirmed` with `payment_method = 'cod'` and `payment_status = 'pending_delivery'`.
+- **Fulfillment**: The delivery rider collects physical cash upon arrival.
+- **Handshake Verification**: The customer provides a 4-digit delivery OTP to the rider; the rider inputs the OTP in the Rider HUD to confirm handoff and cash collection.
+- **Midnight Rider Cash Reconciliation**: The rider's platform cash account is debited for the collected order total and platform commission during the midnight settlement cycle.
 
 ---
 
-## 4. Payment Adapter Interface (Conceptual Contract)
+## 3. End-to-End Architecture Flowchart
 
-```typescript
-export type PaymentMethodSelection = 'esewa' | 'khalti' | 'fonepay' | 'card';
-
-export interface PaymentInitiationRequest {
-  paymentId: string;
-  orderId: string;
-  amountInPaisa: number;
-  currency: 'NPR' | 'USD';
-  customer: {
-    id: string;
-    name: string;
-    email?: string;
-    phone?: string;
-  };
-  callbackUrl: string;
-  returnUrl: string;
-}
-
-export interface PaymentInitiationResult {
-  paymentId: string;
-  provider: PaymentMethodSelection;
-  providerSessionId?: string;
-  redirectUrl?: string;
-  qrData?: string;
-  expiresAt: string;
-}
-
-export interface PaymentVerificationResult {
-  paymentId: string;
-  providerTransactionId: string;
-  status: 'completed' | 'failed' | 'cancelled' | 'pending';
-  verifiedAmount: number;
-  paidVia?: string; // e.g. "wallet", "card_visa", "bank_transfer"
-  rawResponse: Record<string, unknown>;
-}
-
-export interface PaymentProviderAdapter {
-  providerId: PaymentMethodSelection;
-  
-  // Initiates an authenticated payment session with the provider
-  initiate(request: PaymentInitiationRequest): Promise<PaymentInitiationResult>;
-  
-  // Verifies the payment with the provider via server webhook or status query
-  verify(payload: Record<string, unknown>, signature?: string): Promise<PaymentVerificationResult>;
-  
-  // Initiates a partial or full refund through the provider if supported
-  refund?(paymentId: string, amountInPaisa: number, reason: string): Promise<boolean>;
-}
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           CUSTOMER CHECKOUT IN evryy                            │
+└──────────────┬─────────────────────────┬─────────────────────────┬──────────────┘
+               │                         │                         │
+     [ Fonepay Dynamic QR ]    [ eSewa / Khalti Redirect ]      [ Cash on Delivery ]
+               │                         │                         │
+               ▼                         ▼                         ▼
+┌─────────────────────────────┐ ┌─────────────────────────┐ ┌─────────────────────┐
+│ 1. Server generates QR with │ │ 1. Server creates pidx/ │ │ 1. Order marked as  │
+│    locked amount & remark   │ │    session URL          │ │    COD confirmed    │
+│ 2. User scans or shares     │ │ 2. User redirected to   │ │ 2. Kitchen prepares │
+│    screenshot via gallery   │ │    eSewa/Khalti hosted  │ │    food / order     │
+│ 3. Bank app authorizes PIN  │ │    page for Login & OTP │ │ 3. Rider dispatched │
+└──────────────┬──────────────┘ └────────────┬────────────┘ └──────────┬──────────┘
+               │                             │                         │
+               ▼                             ▼                         │
+┌─────────────────────────────┐ ┌─────────────────────────┐            │
+│ Fonepay Instant Server IPN  │ │ Gateway Redirects to    │            │
+│ Webhook (/payments/callback)│ │ evryy://checkout/success│            │
+└──────────────┬──────────────┘ └────────────┬────────────┘            │
+               │                             │                         │
+               ▼                             ▼                         ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                      POSTGRESQL ORDERS & PAYMENTS UPDATE                        │
+│                                                                                 │
+│   • Set `orders.status = 'paid'` (or `'cash_pending_delivery'` for COD)        │
+│   • Realtime WebSocket broadcasts event to mobile screen                        │
+│   • Screen blurs QR / dismisses sheet and displays success animation            │
+│   • KDS ticket printed & rider dispatch sequence triggered                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. Execution Flow
+## 4. Automated Refunds via Direct Gateway Reversals
 
-1. **Order Checkout**: Consumer requests order placement in `apps/consumer/` or `apps/web/consumer/`.
-2. **Server Initiation**: `supabase/functions/payment-initiate/` calculates total, creates a `pending` row in `payments`, and delegates to the appropriate provider adapter.
-   - If the user selects **Card**, the Payment Service evaluates whether card processing is routed through an enabled gateway (e.g. Khalti Checkout with Card enabled) or through a dedicated Card Gateway Adapter.
-3. **Customer Authorization**: The customer authorizes payment via wallet deep-link, web redirect, or scanned QR code.
-4. **Server Verification**: `supabase/functions/payment-verify/` receives the callback/webhook, cryptographically validates signatures, ensures idempotency, and updates `payments.status = 'completed'`.
-5. **Ledger & Order Advancement**: A database trigger or Edge Function records the immutable transaction in `transactions` and transitions the order to `acknowledged`.
+Since the in-app stored wallet is removed, refunds are executed directly back to the original source instrument:
+
+1. **Khalti Orders**: The backend invokes Khalti's automated refund endpoint:
+   - `POST /api/v2/payment/refund/`
+   - Payload: `{ "pidx": "<original_pidx>", "amount": <amount_in_paisa>, "remarks": "Order cancelled" }`
+   - Funds are instantly credited back to the customer's Khalti wallet or card.
+2. **eSewa & Fonepay Orders**: Automated reversal API / merchant dispute settlement credit applied directly to the originating bank transaction reference.
+3. **Cash on Delivery (COD)**: If cancelled before dispatch, no monetary movement occurs. If returned post-delivery, the partner or rider handles physical cash return or store credit voucher.
 
 ---
 
-## 6. Nepal Fintech Endpoint Contracts & Automated Refunds
+## 5. Security & Regulatory Compliance
 
-### A. Khalti Epay v2 Flow
-1. **Initiate**: Mobile client calls `/api/v2/epay/initiate/` on the server backend.
-   - Request: `return_url`, `website_url`, `amount` (in paisa), `purchase_order_id`, `purchase_order_name`.
-   - Backend receives `pidx` (Payment Index) and `payment_url`.
-2. **Checkout**: Mobile client mounts `payment_url` in an in-app browser or native Khalti bottom sheet.
-3. **Webhook Callback**: On authorization, Khalti dispatches a secure POST to `/api/v1/payments/khalti/callback` containing `{ pidx, txnId, amount, status }`.
-4. **Verification**: Server issues a lookup request to Khalti's `/api/v2/epay/lookup/` with `{ pidx }` to verify authenticity before unlocking order fulfillment.
-
-### B. eSewa Direct Integration
-- Signed HMAC-SHA256 signature calculated over:
-  `total_amount,transaction_uuid,product_code`
-- Verified server-side against eSewa's public verification endpoint.
-
-### C. Automated Refunds Engine
-When a merchant declines an order or no delivery rider accepts within 7 minutes:
-- **Option 1 (Instant / Default)**: Instant credit to the customer's in-app **evryy Wallet** balance in PostgreSQL, usable immediately across any other service vertical with zero gateway turnaround.
-- **Option 2 (Gateway Reversal)**: Automated API invocation to Khalti's `/api/v2/payment/refund/` using the original `pidx` and reference ID, releasing funds directly back to the source bank/wallet within standard banking settlement windows.
+- **No NRB Stored-Value Wallet Burden**: Because evryy does not hold customer funds in in-app wallets, it operates as a standard technology marketplace platform under Nepal Rastra Bank e-commerce regulations.
+- **Credential Isolation**: Customer bank passwords, PINs, and OTPs never touch evryy servers or client apps.
+- **Cryptographic Signature Verification**: Every webhook payload from eSewa, Khalti, and Fonepay is verified against provider public certificates and HMAC-SHA256 secret keys stored in Supabase secrets.

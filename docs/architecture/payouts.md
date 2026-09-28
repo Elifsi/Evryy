@@ -89,9 +89,16 @@ Partners, drivers, and riders submit bank credentials through the partner app:
 - Bank Account Number
 
 ### B. Midnight Batch Settlement Engine (connectIPS / Khalti Payout API)
-Every midnight (`00:00 NPT`), a scheduled Supabase Edge Function / Celery worker triggers the settlement pipeline:
+Every midnight (`00:00 NPT`), a scheduled Supabase Edge Function / Celery worker triggers the automated settlement pipeline:
 
-$$\text{Net Payout} = (\text{Completed Trips / Orders Fare}) - (\text{Platform Commission \%}) + (\text{Customer Tips})$$
+#### 1. Merchant / Restaurant Settlement Formula
+$$\text{Net Merchant Payout} = (\text{Total Online + COD Sales}) - (\text{Platform Commission \%}) - (\text{Refund Deductions})$$
+- Merchants receive their full payout digitally via connectIPS/Khalti regardless of whether customers paid online or via Cash on Delivery (COD).
+
+#### 2. Delivery Rider Settlement & Cash Reconciliation Formula
+$$\text{Net Rider Payout} = (\text{Delivery Fares Earned}) + (\text{Tips}) - (\text{Cash on Delivery Collected in Hand})$$
+- If the rider collected more physical cash from customers than their earned delivery fees, their net balance is negative (they owe the platform cash), which is deducted from their next shift's earnings or settled via dynamic Fonepay QR deposit.
+- If their earned delivery fees exceed the cash in hand, the difference is automatically deposited directly to their registered bank account via connectIPS.
 
 1. **Aggregation**: Aggregates all completed orders between `yesterday 00:00` and `23:59:59` that are not flagged or in dispute.
 2. **Double-Entry Record**: Deducts pending partner balance and credits an outward payout record in `payouts` with status `processing`.
