@@ -115,3 +115,15 @@ When writing client-side code:
 - Use App Router (`app/` directory), React Server Components (RSC) for initial page loads, and Client Components (`'use client'`) for live tracking and chat.
 - Use `@supabase/ssr` to manage cookies and session validation across Server and Client boundaries.
 - Mapbox GL / Leaflet for interactive maps and location picker dialogs.
+
+---
+
+## 5. Architectural Subsystem Blueprints
+
+For in-depth domain specifications, reference these dedicated subsystem documents:
+- [Social, Messaging, Gamified Loyalty, Referrals & Vouchers](file:///home/rahul/codes/Evryy/docs/architecture/loyalty-social-referrals.md)
+- [Fintech, Payment Rails & COD Specification](file:///home/rahul/codes/Evryy/docs/architecture/payments.md)
+- [Automated Settlement & Payouts Architecture](file:///home/rahul/codes/Evryy/docs/architecture/payouts.md)
+- [AI Voice Gateway, Dependencies & Docker Engines](file:///home/rahul/codes/Evryy/docs/architecture/dependencies-master.md)
+- [Consumer Client Architecture](file:///home/rahul/codes/Evryy/docs/architecture/consumer.md)
+- [Partner Client Architecture](file:///home/rahul/codes/Evryy/docs/architecture/partner.md)

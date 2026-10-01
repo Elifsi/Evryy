@@ -84,11 +84,15 @@
    │        ├── Polyline & ETA calculated on server via OSRM Docker container (Zero Google Fees)
    │        └── Animated bike marker glides smoothly along coordinates streamed from Redis
    │
-   └── (D) FAMILY SAFETY & LOCATION SHARING
-         1. Customer hits "Share Ride with Family"
-         2. IN-APP: Pushes live ride session into encrypted family chat thread (updates in real time)
-         3. EXTERNAL: Generates signed web token: https://evryy.app/track/{token}
-            └── Opens in WhatsApp / SMS / Safari without requiring family members to install the app
+   ├── (D) DUAL-MODE CALLING & COMMUNICATIONS (VOIP + CELLULAR SIM)
+   │     1. In-App VoIP Call: WebRTC encrypted voice over data (Zero carrier fees, phone numbers masked).
+   │     2. Cellular Fallback Call: Native dialer trigger (tel:+977...) if 4G/3G data is weak or offline.
+   │
+   └── (E) HYBRID GPS & SMS LOCATION TRACKING (ZERO-DATA RESILIENCY)
+         1. Continuous Satellite GPS: FusedLocationProviderClient records coordinates offline to local SQLite cache.
+         2. Live WebSocket Stream: Streams lat/lng to Supabase/Redis when mobile data is active.
+         3. Burst Reconnect Sync: Flushes cached offline coordinates in batches upon network reconnection.
+         4. Zero-Data SMS Fallback: Dispatches emergency SMS with raw satellite lat/lng and maps link if data is dead.
 ========================================================================================================
 ```
 
