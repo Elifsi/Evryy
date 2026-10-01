@@ -11,7 +11,9 @@ import CreatorSection from "@/components/profile/CreatorSection";
 import MemorySection from "@/components/profile/MemorySection";
 import SettingsSection from "@/components/profile/SettingsSection";
 import AuditSection from "@/components/profile/AuditSection";
-import { User, ListChecks, Wallet } from "lucide-react";
+import { User, ListChecks, Wallet, QrCode } from "lucide-react";
+import VouchersSection from "@/components/profile/VouchersSection";
+import QrCodeModal from "@/components/profile/QrCodeModal";
 
 export default function ProfilePage() {
   const displayName = useAppStore((s) => s.displayName);
@@ -22,6 +24,7 @@ export default function ProfilePage() {
   const connect = useChatStore((s) => s.connect);
 
   const [openSection, setOpenSection] = useState<string | null>(null);
+  const [showQr, setShowQr] = useState(false);
 
   // Connect on mount, not on submit — claimUsername needs an already-OPEN
   // socket, and new WebSocket(...) takes a beat to connect. The old chat
@@ -60,7 +63,16 @@ export default function ProfilePage() {
           <p className="truncate text-base font-semibold text-white">{displayName || "Add your name"}</p>
           <p className="truncate text-xs text-white/70">{identity?.username ? `@${identity.username}` : "No username set"}</p>
         </div>
-        <span className="shrink-0 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-bold text-white">{tier.label}</span>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            onClick={() => setShowQr(true)}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm hover:bg-white/30 active:scale-95 transition"
+            title="WeChat-Style Personal QR Code"
+          >
+            <QrCode size={16} />
+          </button>
+          <span className="rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-bold text-white">{tier.label}</span>
+        </div>
       </div>
 
       <div className="mt-4 space-y-2.5">
@@ -70,6 +82,8 @@ export default function ProfilePage() {
           title="Account"
           subtitle={identity?.username ? `@${identity.username}` : "Name & username"}
         />
+
+        <VouchersSection open={openSection === "vouchers"} onToggle={() => toggle("vouchers")} />
 
         <RewardsSection open={openSection === "rewards"} onToggle={() => toggle("rewards")} />
 
@@ -82,6 +96,13 @@ export default function ProfilePage() {
         <SettingsSection open={openSection === "settings"} onToggle={() => toggle("settings")} />
         <AuditSection open={openSection === "audit"} onToggle={() => toggle("audit")} />
       </div>
+
+      <QrCodeModal
+        displayName={displayName || "Your Name"}
+        username={identity?.username ? `@${identity.username}` : "@evryy_user"}
+        isOpen={showQr}
+        onClose={() => setShowQr(false)}
+      />
     </div>
   );
 }

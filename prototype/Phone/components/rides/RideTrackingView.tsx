@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, Star, Phone, MapPin, Navigation, ShieldAlert, Share2 } from "lucide-react";
+import { ChevronLeft, Star, Phone, PhoneCall, Radio, MapPin, Navigation, ShieldAlert, Share2 } from "lucide-react";
 import { useAppStore } from "@/lib/store/useAppStore";
 import { RIDE_TYPE_ICON } from "@/lib/data/rideTypes";
 import { priceRide } from "@/lib/pricing";
@@ -111,9 +111,30 @@ export default function RideTrackingView() {
                   <Star size={10} className="fill-white" /> {ride.driver.rating}
                 </span>
               </div>
-              <button className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full border border-black/10 py-2 text-xs font-medium text-ink/70">
-                <Phone size={13} /> Call driver (demo)
-              </button>
+              <div className="mt-3 flex gap-2">
+                <button
+                  onClick={() => alert("Starting encrypted In-App VoIP Call (Zero carrier airtime charges · Phone number masked).")}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-emerald-600 py-2 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700 active:scale-95 transition"
+                >
+                  <PhoneCall size={13} /> In-App Call
+                </button>
+                <button
+                  onClick={() => alert("Opening cellular mobile dialer (tel:+97798XXXXXXXX) for offline / weak internet fallback.")}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-black/15 bg-white py-2 text-xs font-medium text-ink/70 hover:bg-black/5 active:scale-95 transition"
+                >
+                  <Phone size={13} /> Mobile (SIM)
+                </button>
+              </div>
+              <p className="mt-1.5 text-center text-[10px] text-ink/40">
+                Privacy protected: Numbers masked in In-App call · Cellular fallback if data drops
+              </p>
+
+              <div className="mt-2.5 flex items-center justify-between rounded-lg bg-black/5 px-2.5 py-1.5 text-[10px] text-ink/60">
+                <span className="flex items-center gap-1 font-medium text-emerald-700">
+                  <Radio size={11} className="animate-pulse text-emerald-600" /> Satellite GPS Active
+                </span>
+                <span className="text-ink/40">Offline Breadcrumbs & SMS Fallback Ready</span>
+              </div>
             </div>
           )}
 
