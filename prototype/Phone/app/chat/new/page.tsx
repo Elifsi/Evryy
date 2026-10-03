@@ -77,7 +77,7 @@ export default function NewChatPage() {
         <button
           type="submit"
           disabled={adding || !query.trim()}
-          className="flex shrink-0 items-center gap-1 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink disabled:opacity-40"
+          className="flex shrink-0 items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
         >
           <UserPlus size={13} /> {adding ? "Adding…" : "Add"}
         </button>
@@ -103,7 +103,7 @@ export default function NewChatPage() {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={c.avatarDataUrl} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
               ) : (
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accentSoft text-sm font-semibold text-accentDark">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brandSoft text-sm font-semibold text-brand">
                   {c.username.slice(0, 1).toUpperCase()}
                 </div>
               )}

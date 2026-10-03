@@ -43,7 +43,7 @@ export default function OtpEntry({ otp, onVerified }: { otp: string; onVerified:
             maxLength={1}
             className={clsx(
               "h-12 w-11 rounded-xl2 border bg-white text-center text-lg font-bold text-ink outline-none",
-              err ? "border-red-400" : "border-black/15 focus:border-accentDark"
+              err ? "border-red-400" : "border-black/15 focus:border-brand"
             )}
           />
         ))}
@@ -52,7 +52,7 @@ export default function OtpEntry({ otp, onVerified }: { otp: string; onVerified:
       <button
         onClick={() => verify(digits.join(""))}
         disabled={digits.some((d) => !d)}
-        className="mt-3 flex w-full items-center justify-center rounded-full bg-accent py-3 text-sm font-semibold text-ink transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+        className="mt-3 flex w-full items-center justify-center rounded-full bg-brand py-3 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
       >
         Verify &amp; start ride
       </button>

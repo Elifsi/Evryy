@@ -25,7 +25,7 @@ export default function AccordionSection({
     <div className="overflow-hidden rounded-xl2 border border-black/5 bg-white shadow-sm">
       <button onClick={onToggle} className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left">
         <span className="inline-flex min-w-0 items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accentSoft text-accentDark">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brandSoft text-brand">
             <Icon size={16} strokeWidth={1.8} />
           </span>
           <span className="min-w-0">

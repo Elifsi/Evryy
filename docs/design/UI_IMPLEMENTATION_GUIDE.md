@@ -11,7 +11,7 @@ Applies the system in [`UI_DESIGN_SYSTEM.md`](UI_DESIGN_SYSTEM.md) to the repo. 
 | Fonts | No Inter bundled yet |
 | Brand assets | `assets/App identity.jpg` only |
 
-The EVRRY direction (white + navy + blue) **replaces** the saffron palette. This guide documents the migration; **it has not been applied** to the prototype (so CI/tests stay green until you approve).
+The EVRRY direction (white + navy + blue) **has been applied to the prototype** (tokens in `tailwind.config.ts`, Inter via `@fontsource-variable/inter`). Legacy saffron names were migrated: `accent`→`brand`, `accentDark`→`brand`, `accentSoft`→`brandSoft`; `ink`/`paper` keep their names with new values. Solid blue fills use `text-white`. Tier gradients, restaurant/hotel card gradients and the map placeholder remain content colours.
 
 ## 2. Single source of truth
 [`UI_COLOR_TOKENS.json`](UI_COLOR_TOKENS.json) is canonical. Generate platform files from it (e.g. Style Dictionary) — don't hand-copy hex.
@@ -59,7 +59,7 @@ borderRadius: { lg: "16px", xl: "20px", xl2: "24px" },
 ```
 Fonts: `next/font/google` → `Inter({ subsets:["latin"], variable:"--font-inter", weight:["300","400","500","600","700"] })` (self-hosted at build, no runtime request).
 
-**Migration map (prototype)**: `accent`→`brand`, `accentDark`→`brand` (text) / `primaryPressed`, `accentSoft`→`primarySoft #EFF6FF`, `paper #fffdf6`→`#FFFFFF`, `ink #1a1508`→`#0B172A`. Search for `bg-accent`, `text-accentDark`, `bg-accentSoft` (≈ every component) — replace via codemod, run `npm run lint && npx tsc --noEmit && npm test`. Tier gradients in `lib/loyalty.ts` are *content* colours; keep.
+**Migration map (applied)**: see above; remaining items: dark-mode screens (voice/call overlays use provisional navy), wallet UI still present in prototype (scheduled for removal).
 
 ## 4. Android (Compose)
 - Define `object EvrryColors` + map to Material 3 `lightColorScheme(primary=…, onPrimary=White, secondary=…, surface=…, outline=…, error=…)`.

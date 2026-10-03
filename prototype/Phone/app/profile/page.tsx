@@ -46,7 +46,7 @@ export default function ProfilePage() {
 
   return (
     <div className="px-5 pt-6 pb-8">
-      <p className="text-xs font-medium uppercase tracking-wide text-accentDark">You</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">You</p>
       <h1 className="mt-1 text-2xl font-semibold text-ink">Profile</h1>
 
       {/* Fully tier-colored, matching the Rewards section's "current tier"

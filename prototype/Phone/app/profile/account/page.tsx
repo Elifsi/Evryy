@@ -57,7 +57,7 @@ export default function ProfileAccountPage() {
       <Link href="/profile" className="inline-flex items-center gap-1 text-sm text-ink/50 hover:text-ink">
         <ChevronLeft size={16} /> Profile
       </Link>
-      <p className="mt-3 text-xs font-medium uppercase tracking-wide text-accentDark">Name & username</p>
+      <p className="mt-3 text-xs font-medium uppercase tracking-wide text-brand">Name & username</p>
       <h1 className="mt-1 text-2xl font-semibold text-ink">Account</h1>
 
       <div className="mt-6 rounded-xl2 border border-black/5 bg-white p-4 shadow-sm">
@@ -67,7 +67,7 @@ export default function ProfileAccountPage() {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={identity.avatarDataUrl} alt="" className="h-14 w-14 rounded-full object-cover" />
             ) : (
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accentSoft text-lg font-semibold text-accentDark">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brandSoft text-lg font-semibold text-brand">
                 {(displayName || "?").slice(0, 1).toUpperCase()}
               </div>
             )}
@@ -84,7 +84,7 @@ export default function ProfileAccountPage() {
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           placeholder="Aman"
-          className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-accentDark"
+          className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand"
         />
 
         <div className="mt-5">
@@ -93,7 +93,7 @@ export default function ProfileAccountPage() {
 
           {!editingUsername && identity?.username ? (
             <div className="mt-2 flex items-center gap-2">
-              <div className="flex-1 rounded-lg bg-accentSoft px-3 py-2 text-sm font-medium text-ink">@{identity.username}</div>
+              <div className="flex-1 rounded-lg bg-brandSoft px-3 py-2 text-sm font-medium text-ink">@{identity.username}</div>
               <button
                 onClick={() => {
                   setUsernameInput(identity.username ?? "");
@@ -112,12 +112,12 @@ export default function ProfileAccountPage() {
                   value={usernameInput}
                   onChange={(e) => setUsernameInput(e.target.value)}
                   placeholder="e.g. aman_k"
-                  className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accentDark"
+                  className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand"
                 />
                 <button
                   type="submit"
                   disabled={usernameStatus === "checking" || !usernameInput.trim()}
-                  className="flex h-9 shrink-0 items-center justify-center rounded-lg bg-accent px-3 text-xs font-semibold text-ink disabled:opacity-40"
+                  className="flex h-9 shrink-0 items-center justify-center rounded-lg bg-brand px-3 text-xs font-semibold text-white disabled:opacity-40"
                 >
                   {usernameStatus === "checking" ? "Checking…" : "Save"}
                 </button>
@@ -143,7 +143,7 @@ export default function ProfileAccountPage() {
             value={identity?.phone ?? ""}
             onChange={(e) => setOwnPhone(e.target.value)}
             placeholder="+91 98765 43210"
-            className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-accentDark"
+            className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand"
           />
         </div>
       </div>

@@ -48,23 +48,23 @@ export default function CreatorSection({ open, onToggle }: { open: boolean; onTo
             value={handle}
             onChange={(e) => setHandle(e.target.value)}
             placeholder="Creator handle (e.g. aman.designs)"
-            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accentDark"
+            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand"
           />
           <input
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             placeholder="Category (e.g. Photography, Fashion, Travel)"
-            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accentDark"
+            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand"
           />
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             placeholder="Short bio (optional)"
             rows={2}
-            className="w-full resize-none rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accentDark"
+            className="w-full resize-none rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand"
           />
           {creatorError && <p className="text-xs text-red-500">{creatorError}</p>}
-          <button type="submit" className="rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink hover:brightness-95">
+          <button type="submit" className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:brightness-95">
             Register as creator
           </button>
         </form>
@@ -74,7 +74,7 @@ export default function CreatorSection({ open, onToggle }: { open: boolean; onTo
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm font-semibold text-ink">{creatorProfile.handle}</p>
-                <p className="text-xs text-accentDark">{creatorProfile.category}</p>
+                <p className="text-xs text-brand">{creatorProfile.category}</p>
                 {creatorProfile.bio && <p className="mt-1 text-xs text-ink/50">{creatorProfile.bio}</p>}
               </div>
               <button onClick={unregisterCreator} className="text-ink/30 hover:text-red-500" title="Unregister">

@@ -30,7 +30,7 @@ export default function GroceryPage() {
 
       <Link
         href="/"
-        className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accentSoft px-3 py-1.5 text-xs font-medium text-accentDark transition hover:brightness-95"
+        className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-brandSoft px-3 py-1.5 text-xs font-medium text-brand transition hover:brightness-95"
       >
         <Sparkles size={12} /> Prefer to just ask? Try the AI tab
       </Link>
@@ -62,9 +62,9 @@ export default function GroceryPage() {
                 <Link
                   key={c.id}
                   href={`/explore/grocery/${c.id}`}
-                  className="flex w-[76px] shrink-0 flex-col items-center gap-1.5 rounded-xl2 border border-black/5 bg-white px-2 py-2.5 shadow-sm transition hover:border-accentDark/40"
+                  className="flex w-[76px] shrink-0 flex-col items-center gap-1.5 rounded-xl2 border border-black/5 bg-white px-2 py-2.5 shadow-sm transition hover:border-brand/40"
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accentSoft text-accentDark">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brandSoft text-brand">
                     <Icon size={18} strokeWidth={1.8} />
                   </span>
                   <span className="text-center text-[10px] font-medium leading-tight text-ink/70">{c.label}</span>
@@ -81,7 +81,7 @@ export default function GroceryPage() {
                 <div key={c.id}>
                   <div className="flex items-center justify-between">
                     <h2 className="text-sm font-bold text-ink">{c.label}</h2>
-                    <Link href={`/explore/grocery/${c.id}`} className="text-xs font-medium text-accentDark">
+                    <Link href={`/explore/grocery/${c.id}`} className="text-xs font-medium text-brand">
                       See all
                     </Link>
                   </div>

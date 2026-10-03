@@ -66,7 +66,7 @@ export default function ActivityList() {
                 <>
                   <button
                     onClick={() => setConfirmingId(t.id)}
-                    className="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink hover:brightness-95"
+                    className="inline-flex items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:brightness-95"
                   >
                     <ShieldCheck size={13} /> Authorize & pay
                   </button>
@@ -80,7 +80,7 @@ export default function ActivityList() {
               )}
 
               {t.status === "draft" && confirmingId === t.id && (
-                <div className="w-full rounded-xl bg-accentSoft p-3">
+                <div className="w-full rounded-xl bg-brandSoft p-3">
                   <p className="text-xs text-ink/70">
                     Confirm ₹{t.amount.toLocaleString("en-IN")} to {t.providerName}? This is the explicit
                     authorization step the AI can never skip (PRD §8).
@@ -137,7 +137,7 @@ export default function ActivityList() {
                         }
                       }}
                       disabled={!hasAnyOption || !selected}
-                      className="rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       Confirm ₹{t.amount.toLocaleString("en-IN")}
                     </button>
@@ -162,7 +162,7 @@ export default function ActivityList() {
               {t.type === "RIDE" && activeRide?.transactionId === t.id ? (
                 <Link
                   href="/explore/rides"
-                  className="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1.5 text-xs text-ink/60 hover:border-accentDark hover:text-accentDark"
+                  className="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1.5 text-xs text-ink/60 hover:border-brand hover:text-brand"
                 >
                   <Navigation size={13} /> Track ride
                 </Link>
@@ -171,7 +171,7 @@ export default function ActivityList() {
                 !["draft", "completed", "cancelled"].includes(t.status) && (
                   <button
                     onClick={() => advanceTransaction(t.id)}
-                    className="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1.5 text-xs text-ink/60 hover:border-accentDark hover:text-accentDark"
+                    className="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1.5 text-xs text-ink/60 hover:border-brand hover:text-brand"
                   >
                     <PlayCircle size={13} /> Simulate next step
                   </button>

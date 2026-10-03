@@ -27,7 +27,7 @@ export default function MenuItemRow({ item, onRestaurantSwitch }: { item: Catalo
       </div>
 
       <div className="flex w-24 shrink-0 flex-col items-center gap-2">
-        <div className="flex h-20 w-24 items-center justify-center rounded-xl bg-accentSoft text-accentDark">
+        <div className="flex h-20 w-24 items-center justify-center rounded-xl bg-brandSoft text-brand">
           <UtensilsCrossed size={26} strokeWidth={1.5} />
         </div>
         <QtyStepper itemId={item.id} onRestaurantSwitch={onRestaurantSwitch} />

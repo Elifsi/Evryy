@@ -100,7 +100,7 @@ export default function VoiceRecorder({ onSend }: { onSend: (dataUrl: string, du
         onPointerLeave={() => recording && finishRecording(true)}
         className={
           "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition active:scale-95 " +
-          (recording ? "bg-red-500 text-white" : "bg-accent text-ink")
+          (recording ? "bg-red-500 text-white" : "bg-brand text-white")
         }
         title="Hold to record a voice note"
       >

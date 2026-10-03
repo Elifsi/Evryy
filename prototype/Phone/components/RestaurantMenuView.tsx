@@ -60,7 +60,7 @@ export default function RestaurantMenuView({ restaurant, items }: { restaurant: 
           <span>₹{restaurant.priceForTwo} for two</span>
         </div>
         {restaurant.offer && (
-          <p className="mt-2 inline-block rounded-full bg-accentSoft px-3 py-1 text-xs font-semibold text-accentDark">{restaurant.offer}</p>
+          <p className="mt-2 inline-block rounded-full bg-brandSoft px-3 py-1 text-xs font-semibold text-brand">{restaurant.offer}</p>
         )}
       </div>
 

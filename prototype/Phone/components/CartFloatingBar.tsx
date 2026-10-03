@@ -31,10 +31,10 @@ export default function CartFloatingBar() {
         className="flex items-center justify-between rounded-xl2 bg-ink px-4 py-3 text-white shadow-lg transition hover:brightness-110"
       >
         <span className="inline-flex items-center gap-2 text-sm font-medium">
-          <ShoppingBag size={16} className="text-accent" />
+          <ShoppingBag size={16} className="text-brand" />
           {count} item{count > 1 ? "s" : ""} · ₹{total.toLocaleString("en-IN")}
         </span>
-        <span className="text-sm font-semibold text-accent">View Cart →</span>
+        <span className="text-sm font-semibold text-brand">View Cart →</span>
       </Link>
     </div>
   );

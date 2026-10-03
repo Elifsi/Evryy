@@ -50,7 +50,7 @@ export default function ItemCard({
 
   return (
     <div className="flex gap-3 rounded-xl2 border border-black/5 bg-white p-3 shadow-sm">
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-accentSoft text-accentDark">
+      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-brandSoft text-brand">
         <Icon size={22} strokeWidth={1.7} />
       </div>
       <div className="min-w-0 flex-1">
@@ -84,7 +84,7 @@ export default function ItemCard({
           checkoutRoute ? (
             <Link
               href={checkoutRoute}
-              className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink transition hover:brightness-95"
+              className="mt-2 inline-flex items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-95"
             >
               {item.category === "rides" ? "Book a ride" : "Order food"} <ArrowRight size={13} />
             </Link>
@@ -96,7 +96,7 @@ export default function ItemCard({
                 setAdded(true);
                 setTimeout(() => setAdded(false), 1800);
               }}
-              className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink transition hover:brightness-95"
+              className="mt-2 inline-flex items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-95"
             >
               {added ? (
                 <>

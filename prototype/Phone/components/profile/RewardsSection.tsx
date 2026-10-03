@@ -43,7 +43,7 @@ export default function RewardsSection({ open, onToggle }: { open: boolean; onTo
           </p>
         </div>
       ) : (
-        <p className="mt-3 text-[11px] font-medium text-accentDark">You&apos;ve reached the top tier — Diamond.</p>
+        <p className="mt-3 text-[11px] font-medium text-brand">You&apos;ve reached the top tier — Diamond.</p>
       )}
 
       <p className="mt-4 text-xs font-medium text-ink/60">You earn 1 point for every ₹10 spent on orders, bookings and rides.</p>
@@ -54,7 +54,7 @@ export default function RewardsSection({ open, onToggle }: { open: boolean; onTo
             key={t.id}
             className={clsx(
               "flex items-center justify-between rounded-lg px-3 py-2 text-xs",
-              t.id === tier.id ? "bg-accentSoft font-semibold text-ink" : "text-ink/50"
+              t.id === tier.id ? "bg-brandSoft font-semibold text-ink" : "text-ink/50"
             )}
           >
             <span className="inline-flex items-center gap-2">

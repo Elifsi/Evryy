@@ -8,7 +8,7 @@ export default function NavRow({ href, icon: Icon, title, subtitle }: { href: st
   return (
     <Link href={href} className="flex items-center justify-between gap-3 rounded-xl2 border border-black/5 bg-white px-4 py-3.5 shadow-sm">
       <span className="inline-flex min-w-0 items-center gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accentSoft text-accentDark">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brandSoft text-brand">
           <Icon size={16} strokeWidth={1.8} />
         </span>
         <span className="min-w-0">

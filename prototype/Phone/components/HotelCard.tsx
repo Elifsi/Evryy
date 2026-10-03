@@ -21,7 +21,7 @@ export default function HotelCard({
   return (
     <Link
       href={href}
-      className="block overflow-hidden rounded-xl2 border border-black/5 bg-white shadow-sm transition hover:border-accentDark/40"
+      className="block overflow-hidden rounded-xl2 border border-black/5 bg-white shadow-sm transition hover:border-brand/40"
     >
       <div className="h-28 w-full" style={{ background: `linear-gradient(135deg, ${hotel.gradientFrom}, ${hotel.gradientTo})` }} />
       <div className="p-3">
@@ -30,7 +30,7 @@ export default function HotelCard({
             <p className="truncate text-sm font-semibold text-ink">{hotel.name}</p>
             <div className="mt-0.5 flex items-center gap-0.5">
               {Array.from({ length: hotel.starRating }).map((_, i) => (
-                <Star key={i} size={11} className="fill-accent text-accent" />
+                <Star key={i} size={11} className="fill-amber-400 text-amber-400" />
               ))}
             </div>
             <p className="mt-0.5 text-xs text-ink/50">{hotel.area}</p>
@@ -45,7 +45,7 @@ export default function HotelCard({
 
         <div className="mt-2 flex flex-wrap gap-1">
           {hotel.amenities.slice(0, 3).map((a) => (
-            <span key={a} className="rounded-full bg-accentSoft px-2 py-0.5 text-[10px] text-accentDark">
+            <span key={a} className="rounded-full bg-brandSoft px-2 py-0.5 text-[10px] text-brand">
               {a}
             </span>
           ))}

@@ -27,7 +27,7 @@ export default function QtyStepper({
     return (
       <button
         onClick={add}
-        className="rounded-lg border border-accentDark/40 bg-white px-4 py-1.5 text-xs font-bold tracking-wide text-accentDark shadow-sm transition hover:bg-accentSoft"
+        className="rounded-lg border border-brand/40 bg-white px-4 py-1.5 text-xs font-bold tracking-wide text-brand shadow-sm transition hover:bg-brandSoft"
       >
         ADD
       </button>
@@ -35,7 +35,7 @@ export default function QtyStepper({
   }
 
   return (
-    <div className={clsx("inline-flex items-center gap-2.5 rounded-lg bg-accent px-1.5 py-1 text-ink shadow-sm")}>
+    <div className={clsx("inline-flex items-center gap-2.5 rounded-lg bg-brand px-1.5 py-1 text-white shadow-sm")}>
       <button
         onClick={() => setCartQty(itemId, qty - 1)}
         className="flex h-5 w-5 items-center justify-center rounded-md hover:bg-black/10"

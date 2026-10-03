@@ -22,7 +22,7 @@ export default async function GroceryCategoryPage({ params }: { params: Promise<
         <ChevronLeft size={16} /> Groceries
       </Link>
       <h1 className="mt-2 inline-flex items-center gap-2 text-2xl font-semibold text-ink">
-        <Icon size={22} className="text-accentDark" strokeWidth={1.8} /> {meta.label}
+        <Icon size={22} className="text-brand" strokeWidth={1.8} /> {meta.label}
       </h1>
 
       <div className="mt-4 grid grid-cols-2 gap-3">

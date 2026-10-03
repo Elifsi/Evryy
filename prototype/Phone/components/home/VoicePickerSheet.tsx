@@ -18,7 +18,7 @@ export default function VoicePickerSheet({
 }) {
   return (
     <div className="fixed inset-0 z-40 flex items-end bg-black/60" onClick={onClose}>
-      <div className="mx-auto max-h-[70vh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-[#171106] p-5 pb-8 text-white" onClick={(e) => e.stopPropagation()}>
+      <div className="mx-auto max-h-[70vh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-[#0B172A] p-5 pb-8 text-white" onClick={(e) => e.stopPropagation()}>
         <p className="text-sm font-semibold">Choose a voice</p>
         <p className="mt-0.5 text-xs text-white/40">Uses your browser&apos;s built-in voices — tap one to preview it.</p>
         {voices.length === 0 ? (
@@ -33,7 +33,7 @@ export default function VoicePickerSheet({
               )}
             >
               Default
-              {!selectedVoiceURI && <Check size={15} className="text-accent" />}
+              {!selectedVoiceURI && <Check size={15} className="text-brand" />}
             </button>
             {voices
               .filter((v) => v.lang.startsWith("en"))
@@ -53,7 +53,7 @@ export default function VoicePickerSheet({
                     {v.name} <span className="text-white/35">· {v.lang}</span>
                   </span>
                   {selectedVoiceURI === v.voiceURI ? (
-                    <Check size={15} className="shrink-0 text-accent" />
+                    <Check size={15} className="shrink-0 text-brand" />
                   ) : (
                     <Volume2 size={14} className="shrink-0 text-white/25" />
                   )}

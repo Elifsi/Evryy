@@ -35,14 +35,14 @@ export default function ContactList() {
             <div key={c.id} className="flex items-center gap-2">
               <Link
                 href={`/chat/${c.id}`}
-                className="flex flex-1 items-center gap-3 rounded-xl2 border border-black/5 bg-white p-3 shadow-sm hover:border-accentDark/40"
+                className="flex flex-1 items-center gap-3 rounded-xl2 border border-black/5 bg-white p-3 shadow-sm hover:border-brand/40"
               >
                 <span className="relative shrink-0">
                   {c.avatarDataUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={c.avatarDataUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
                   ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accentSoft text-sm font-semibold text-accentDark">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brandSoft text-sm font-semibold text-brand">
                       {c.username.slice(0, 1).toUpperCase()}
                     </div>
                   )}
@@ -52,10 +52,10 @@ export default function ContactList() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-ink">@{c.username}</p>
-                  <p className={clsx("truncate text-xs", lastIsMineRead ? "text-accentDark" : "text-ink/45")}>{lastPreview}</p>
+                  <p className={clsx("truncate text-xs", lastIsMineRead ? "text-brand" : "text-ink/45")}>{lastPreview}</p>
                 </div>
                 {unread > 0 && (
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-ink">
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-white">
                     {unread}
                   </span>
                 )}

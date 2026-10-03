@@ -51,7 +51,7 @@ export function VehicleMarker({
       )}
       style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${delayMs}ms` }}
     >
-      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-accentDark shadow-md ring-1 ring-black/5">
+      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-brand shadow-md ring-1 ring-black/5">
         <Icon size={13} strokeWidth={2} />
       </div>
     </div>

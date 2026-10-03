@@ -6,7 +6,7 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
   return (
     <Link
       href={`/explore/food/${restaurant.id}`}
-      className="block overflow-hidden rounded-xl2 border border-black/5 bg-white shadow-sm transition hover:border-accentDark/40"
+      className="block overflow-hidden rounded-xl2 border border-black/5 bg-white shadow-sm transition hover:border-brand/40"
     >
       <div
         className="relative flex h-28 w-full items-end p-3"

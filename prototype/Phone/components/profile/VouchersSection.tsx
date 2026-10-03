@@ -126,10 +126,10 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
       <div className="mt-3.5 rounded-xl2 border border-black/5 bg-paper p-3.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <Sparkles size={14} className="text-accentDark" />
+            <Sparkles size={14} className="text-brand" />
             <p className="text-xs font-bold text-ink">Digital Stamp Card</p>
           </div>
-          <span className="text-[11px] font-semibold text-accentDark">7 / 10 Stamps</span>
+          <span className="text-[11px] font-semibold text-brand">7 / 10 Stamps</span>
         </div>
         <p className="mt-1 text-[11px] text-ink/55">
           1 stamp per NPR 500 spent. Collect 10 stamps to unlock flat <strong className="text-ink">NPR 500 Rebate Voucher</strong>!
@@ -143,7 +143,7 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
               className={clsx(
                 "flex h-8 items-center justify-center rounded-lg border text-xs font-bold transition",
                 i < 7
-                  ? "border-accent bg-accent/20 text-accentDark shadow-xs"
+                  ? "border-brand bg-brand/20 text-brand shadow-xs"
                   : "border-black/10 bg-white/60 text-ink/20"
               )}
             >
@@ -162,7 +162,7 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
             value={promoInput}
             onChange={(e) => setPromoInput(e.target.value)}
             placeholder="e.g. EVRRY50"
-            className="flex-1 rounded-xl border border-black/15 bg-white px-3 py-2 text-xs font-mono uppercase text-ink placeholder:normal-case placeholder:font-sans placeholder:text-ink/30 focus:border-accent focus:outline-none"
+            className="flex-1 rounded-xl border border-black/15 bg-white px-3 py-2 text-xs font-mono uppercase text-ink placeholder:normal-case placeholder:font-sans placeholder:text-ink/30 focus:border-brand focus:outline-none"
           />
           <button
             type="submit"
@@ -193,7 +193,7 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
           >
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="rounded bg-accentSoft px-1.5 py-0.5 text-[10px] font-bold text-accentDark">
+                <span className="rounded bg-brandSoft px-1.5 py-0.5 text-[10px] font-bold text-brand">
                   {v.discount}
                 </span>
                 <span className="text-[10px] font-medium text-ink/40">Min. NPR {v.minOrder}</span>

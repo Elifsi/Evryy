@@ -22,13 +22,13 @@ function NavItem({ tab, active }: { tab: (typeof TABS)[number]; active: boolean 
       href={tab.href}
       className={clsx(
         "flex flex-col items-center justify-center gap-0.5 py-2.5 text-[9.5px] font-medium transition-colors",
-        active ? "text-accentDark" : "text-ink/40 hover:text-ink/70"
+        active ? "text-brand" : "text-ink/40 hover:text-ink/70"
       )}
     >
       <span className="relative">
         <Icon size={18} strokeWidth={active ? 2.4 : 1.8} />
         {tab.href === "/chat" && totalUnread > 0 && (
-          <span className="absolute -right-1.5 -top-1.5 flex h-3 min-w-3 items-center justify-center rounded-full bg-accent px-0.5 text-[7px] font-bold text-ink">
+          <span className="absolute -right-1.5 -top-1.5 flex h-3 min-w-3 items-center justify-center rounded-full bg-brand px-0.5 text-[7px] font-bold text-white">
             {totalUnread > 9 ? "9+" : totalUnread}
           </span>
         )}
@@ -58,7 +58,7 @@ export default function BottomNav() {
             href="/snap"
             className={clsx(
               "-mt-6 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition active:scale-95",
-              snapActive ? "bg-ink text-accent" : "bg-accent text-ink"
+              snapActive ? "bg-ink text-white" : "bg-brand text-white"
             )}
             title="Snap"
           >

@@ -46,7 +46,7 @@ export default function MemorySection({ open, onToggle }: { open: boolean; onTog
           value={memoryFact}
           onChange={(e) => setMemoryFact(e.target.value)}
           placeholder="e.g. Prefers window seats"
-          className="flex-1 rounded-lg border border-black/10 bg-white px-2 py-1.5 text-xs outline-none focus:border-accentDark"
+          className="flex-1 rounded-lg border border-black/10 bg-white px-2 py-1.5 text-xs outline-none focus:border-brand"
         />
         <button
           onClick={() => {
@@ -54,7 +54,7 @@ export default function MemorySection({ open, onToggle }: { open: boolean; onTog
             addMemory(memoryFact.trim(), "explicit");
             setMemoryFact("");
           }}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-ink"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand text-white"
         >
           <Plus size={14} />
         </button>

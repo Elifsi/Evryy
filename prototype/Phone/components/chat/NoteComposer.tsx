@@ -53,7 +53,7 @@ export default function NoteComposer({
           value={noteText}
           onChange={(e) => setNoteText(e.target.value.slice(0, 60))}
           placeholder="What's on your mind?"
-          className="mt-3 w-full rounded-xl border border-black/10 px-3 py-2.5 text-sm outline-none focus:border-accentDark"
+          className="mt-3 w-full rounded-xl border border-black/10 px-3 py-2.5 text-sm outline-none focus:border-brand"
         />
         <p className="mt-1 text-right text-[10px] text-ink/30">{noteText.length}/60 · visible for 24h</p>
 
@@ -89,7 +89,7 @@ export default function NoteComposer({
               key={e}
               type="button"
               onClick={() => setNoteEmoji(e)}
-              className={clsx("flex h-8 w-8 items-center justify-center rounded-full border text-base", noteEmoji === e ? "border-ink bg-accentSoft" : "border-transparent")}
+              className={clsx("flex h-8 w-8 items-center justify-center rounded-full border text-base", noteEmoji === e ? "border-ink bg-brandSoft" : "border-transparent")}
             >
               {e}
             </button>
@@ -100,7 +100,7 @@ export default function NoteComposer({
           <button
             type="submit"
             disabled={!noteText.trim()}
-            className="rounded-full bg-accent px-4 py-2 text-xs font-semibold text-ink disabled:opacity-40"
+            className="rounded-full bg-brand px-4 py-2 text-xs font-semibold text-white disabled:opacity-40"
           >
             Share
           </button>

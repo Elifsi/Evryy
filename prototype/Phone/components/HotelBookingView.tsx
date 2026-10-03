@@ -160,7 +160,7 @@ export default function HotelBookingView({ hotel }: { hotel: Hotel }) {
       <button
         onClick={handleBook}
         disabled={!source || placing}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-semibold text-ink transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-brand py-3 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
       >
         {placing ? "Confirming…" : `Complete booking · ₹${total.toLocaleString("en-IN")}`}
       </button>

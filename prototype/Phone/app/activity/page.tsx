@@ -10,7 +10,7 @@ export default function ActivityPage() {
       <Link href="/profile" className="inline-flex items-center gap-1 text-sm text-ink/50 hover:text-ink">
         <ChevronLeft size={16} /> Profile
       </Link>
-      <p className="mt-3 text-xs font-medium uppercase tracking-wide text-accentDark">Orders · Bookings · Rides</p>
+      <p className="mt-3 text-xs font-medium uppercase tracking-wide text-brand">Orders · Bookings · Rides</p>
       <h1 className="mt-1 text-2xl font-semibold text-ink">Activity</h1>
       <div className="mt-4">
         <ActivityList />

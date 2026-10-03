@@ -11,9 +11,9 @@ const LABELS: Record<TransactionStatus, string> = {
   cancelled: "Cancelled",
 };
 
-// Deliberately not tied to the yellow brand accent — status badges need to
+// Deliberately not tied to the blue brand color — status badges need to
 // stay visually distinct from each other regardless of theme, so these use
-// conventional semantic colors instead of `accent`/`accentSoft`.
+// conventional semantic colors instead of `brand`/`brandSoft`.
 const STYLES: Record<TransactionStatus, string> = {
   draft: "bg-ink/8 text-ink/60",
   pending_authorization: "bg-orange-100 text-orange-700",

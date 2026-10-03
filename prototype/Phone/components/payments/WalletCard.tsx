@@ -28,7 +28,7 @@ export default function WalletCard() {
 
   return (
     <section>
-      <div className="rounded-xl2 bg-gradient-to-br from-accent to-[#e0a800] p-5 text-ink shadow-sm">
+      <div className="rounded-xl2 bg-gradient-to-br from-brand to-[#2F82F6] p-5 text-ink shadow-sm">
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 text-xs font-medium text-ink/60">
             <Wallet size={14} /> Wallet balance
@@ -69,7 +69,7 @@ export default function WalletCard() {
             onChange={(e) => setTopUpAmount(e.target.value.replace(/[^\d]/g, ""))}
             placeholder="Custom amount"
             inputMode="numeric"
-            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accentDark"
+            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand"
           />
 
           <div>
@@ -109,7 +109,7 @@ export default function WalletCard() {
             <button
               type="submit"
               disabled={!Number(topUpAmount)}
-              className="rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Add ₹{Number(topUpAmount || 0).toLocaleString("en-IN")}
             </button>

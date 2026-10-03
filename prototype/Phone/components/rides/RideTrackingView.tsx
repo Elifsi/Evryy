@@ -99,7 +99,7 @@ export default function RideTrackingView() {
           ride.driver && (
             <div className="mt-3 rounded-xl2 border border-black/5 bg-white p-4 shadow-sm">
               <div className="flex items-center gap-3">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accentSoft text-accentDark">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brandSoft text-brand">
                   <Icon size={22} strokeWidth={1.7} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -180,7 +180,7 @@ export default function RideTrackingView() {
         {ride.phase === "completed" && (
           <div className="mt-4 space-y-4">
             <div className="flex flex-col items-center text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accentSoft text-accentDark">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brandSoft text-brand">
                 <Icon size={24} strokeWidth={1.7} />
               </div>
               <p className="mt-2 text-sm font-semibold text-ink">Rate your ride with {ride.driver?.name}</p>

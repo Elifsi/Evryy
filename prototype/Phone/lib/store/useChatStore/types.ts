@@ -60,13 +60,13 @@ export const NOTE_TTL_MS = 24 * 60 * 60 * 1000;
 
 /** Curated bubble-background presets, matching the style of Instagram's colored Notes. */
 export const NOTE_COLORS: { id: string; label: string; from: string; to: string; text: string }[] = [
-  { id: "default", label: "Default", from: "#ffffff", to: "#ffffff", text: "#1a1508" },
+  { id: "default", label: "Default", from: "#ffffff", to: "#ffffff", text: "#0B172A" },
   { id: "purple", label: "Purple", from: "#c9a7f0", to: "#8b5cf6", text: "#ffffff" },
   { id: "pink", label: "Pink", from: "#f9a8d4", to: "#ec4899", text: "#ffffff" },
   { id: "blue", label: "Blue", from: "#93c5fd", to: "#3b82f6", text: "#ffffff" },
   { id: "green", label: "Green", from: "#86efac", to: "#22c55e", text: "#ffffff" },
   { id: "orange", label: "Orange", from: "#fdba74", to: "#f97316", text: "#ffffff" },
-  { id: "yellow", label: "Yellow", from: "#fde68a", to: "#eab308", text: "#1a1508" },
+  { id: "yellow", label: "Yellow", from: "#fde68a", to: "#eab308", text: "#0B172A" },
 ];
 export function noteColor(id: string | undefined) {
   return NOTE_COLORS.find((c) => c.id === id) ?? NOTE_COLORS[0];

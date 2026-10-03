@@ -59,7 +59,7 @@ export default function StoriesRow({
           <div
             className={clsx(
               "flex h-14 w-14 items-center justify-center rounded-full p-0.5",
-              storyActive ? "bg-gradient-to-br from-accent to-[#c98f00]" : "bg-black/10"
+              storyActive ? "bg-gradient-to-br from-brand to-[#2F82F6]" : "bg-black/10"
             )}
           >
             <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-paper">
@@ -67,12 +67,12 @@ export default function StoriesRow({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={identity.avatarDataUrl} alt="" className="h-full w-full object-cover" />
               ) : (
-                <span className="text-sm font-semibold text-accentDark">{(identity?.username ?? "?").slice(0, 1).toUpperCase()}</span>
+                <span className="text-sm font-semibold text-brand">{(identity?.username ?? "?").slice(0, 1).toUpperCase()}</span>
               )}
             </div>
           </div>
           {!storyActive && (
-            <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-ink ring-2 ring-paper">
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-white ring-2 ring-paper">
               <Plus size={12} />
             </span>
           )}
@@ -106,7 +106,7 @@ export default function StoriesRow({
               <div
                 className={clsx(
                   "flex h-14 w-14 items-center justify-center rounded-full p-0.5",
-                  contactStoryActive ? "bg-gradient-to-br from-accent to-[#c98f00]" : ""
+                  contactStoryActive ? "bg-gradient-to-br from-brand to-[#2F82F6]" : ""
                 )}
               >
                 <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-black/5">

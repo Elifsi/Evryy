@@ -29,7 +29,7 @@ export default function EmojiPicker({ onPick, onClose }: { onPick: (emoji: strin
               onClick={() => setTab(i)}
               className={clsx(
                 "shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium transition",
-                tab === i ? "bg-accentSoft text-accentDark" : "text-ink/40 hover:text-ink/70"
+                tab === i ? "bg-brandSoft text-brand" : "text-ink/40 hover:text-ink/70"
               )}
             >
               {c.label}

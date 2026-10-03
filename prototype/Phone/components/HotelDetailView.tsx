@@ -36,7 +36,7 @@ export default function HotelDetailView({ hotel, rooms }: { hotel: Hotel; rooms:
         <h1 className="text-xl font-semibold text-ink">{hotel.name}</h1>
         <div className="mt-1 flex items-center gap-0.5">
           {Array.from({ length: hotel.starRating }).map((_, i) => (
-            <Star key={i} size={12} className="fill-accent text-accent" />
+            <Star key={i} size={12} className="fill-amber-400 text-amber-400" />
           ))}
         </div>
         <p className="mt-1.5 inline-flex items-center gap-1 text-xs text-ink/50">
@@ -55,7 +55,7 @@ export default function HotelDetailView({ hotel, rooms }: { hotel: Hotel; rooms:
 
         <div className="mt-3 flex flex-wrap gap-1.5">
           {hotel.amenities.map((a) => (
-            <span key={a} className="rounded-full bg-accentSoft px-2.5 py-1 text-[11px] text-accentDark">
+            <span key={a} className="rounded-full bg-brandSoft px-2.5 py-1 text-[11px] text-brand">
               {a}
             </span>
           ))}
@@ -70,7 +70,7 @@ export default function HotelDetailView({ hotel, rooms }: { hotel: Hotel; rooms:
               <Users size={12} /> {guests} guest{guests > 1 ? "s" : ""}
             </p>
           </div>
-          <Link href="/explore/hotels" className="inline-flex items-center gap-1 text-xs font-medium text-accentDark">
+          <Link href="/explore/hotels" className="inline-flex items-center gap-1 text-xs font-medium text-brand">
             <Pencil size={11} /> Edit
           </Link>
         </div>

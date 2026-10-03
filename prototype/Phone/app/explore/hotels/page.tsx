@@ -37,7 +37,7 @@ export default function HotelsPage() {
 
       <Link
         href="/"
-        className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accentSoft px-3 py-1.5 text-xs font-medium text-accentDark transition hover:brightness-95"
+        className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-brandSoft px-3 py-1.5 text-xs font-medium text-brand transition hover:brightness-95"
       >
         <Sparkles size={12} /> Prefer to just ask? Try the AI tab
       </Link>

@@ -9,7 +9,7 @@ export default function ProductCard({ item }: { item: CatalogItem }) {
 
   return (
     <div className="flex flex-col rounded-xl2 border border-black/5 bg-white p-2.5 shadow-sm">
-      <div className="relative flex h-20 w-full items-center justify-center rounded-lg bg-accentSoft text-accentDark">
+      <div className="relative flex h-20 w-full items-center justify-center rounded-lg bg-brandSoft text-brand">
         <Icon size={26} strokeWidth={1.6} />
         {discountPct > 0 && (
           <span className="absolute left-1 top-1 rounded bg-emerald-600 px-1 py-0.5 text-[9px] font-bold text-white">{discountPct}% OFF</span>

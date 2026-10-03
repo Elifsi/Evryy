@@ -10,7 +10,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
   return (
     <button
       onClick={() => onChange(!on)}
-      className={clsx("h-6 w-11 shrink-0 rounded-full p-0.5 transition", on ? "bg-accent" : "bg-ink/15")}
+      className={clsx("h-6 w-11 shrink-0 rounded-full p-0.5 transition", on ? "bg-brand" : "bg-ink/15")}
     >
       <span className={clsx("block h-5 w-5 rounded-full bg-white transition", on && "translate-x-5")} />
     </button>

@@ -83,7 +83,7 @@ export default function ChatIndexPage() {
       {!identity?.username && (
         <Link
           href="/profile"
-          className="mt-4 flex items-center gap-2 rounded-xl2 border border-black/5 bg-accentSoft px-4 py-3 text-xs font-medium text-accentDark shadow-sm transition hover:brightness-95"
+          className="mt-4 flex items-center gap-2 rounded-xl2 border border-black/5 bg-brandSoft px-4 py-3 text-xs font-medium text-brand shadow-sm transition hover:brightness-95"
         >
           <UserCircle2 size={16} className="shrink-0" />
           Set a username in your Profile so others can find you →
@@ -110,7 +110,7 @@ export default function ChatIndexPage() {
       {/* Bottom-right add-contact FAB, floating just above the bottom nav. */}
       <Link
         href="/chat/new"
-        className="fixed bottom-[76px] right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-ink shadow-lg transition active:scale-95"
+        className="fixed bottom-[76px] right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-lg transition active:scale-95"
         title="New chat"
       >
         <UserPlus size={22} />
@@ -129,13 +129,13 @@ export default function ChatIndexPage() {
               }}
               className="flex w-full items-center gap-3 rounded-xl2 px-3 py-3 text-left text-sm text-ink hover:bg-black/[0.03]"
             >
-              <Camera size={18} className="text-accentDark" /> Take a photo
+              <Camera size={18} className="text-brand" /> Take a photo
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
               className="flex w-full items-center gap-3 rounded-xl2 px-3 py-3 text-left text-sm text-ink hover:bg-black/[0.03]"
             >
-              <ImageIcon size={18} className="text-accentDark" /> Choose from gallery
+              <ImageIcon size={18} className="text-brand" /> Choose from gallery
             </button>
             <button
               onClick={() => setShowStorySheet(false)}

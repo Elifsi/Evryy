@@ -34,14 +34,14 @@ export default function QrCodeModal({ displayName, username, isOpen, onClose }: 
         </button>
 
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accentSoft text-xl font-bold text-accentDark shadow-inner">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brandSoft text-xl font-bold text-brand shadow-inner">
             {(displayName || "?").slice(0, 1).toUpperCase()}
           </div>
           <h2 className="mt-2.5 text-lg font-bold text-ink">{displayName || "Your Name"}</h2>
-          <p className="text-xs font-semibold text-accentDark">{username || "@evrry_user"}</p>
+          <p className="text-xs font-semibold text-brand">{username || "@evrry_user"}</p>
 
           {/* WeChat Style Personal QR Code */}
-          <div className="mt-5 rounded-2xl border-2 border-dashed border-accent/40 bg-paper p-4 shadow-sm">
+          <div className="mt-5 rounded-2xl border-2 border-dashed border-brand/40 bg-paper p-4 shadow-sm">
             <svg
               className="h-44 w-44 text-ink"
               viewBox="0 0 100 100"
@@ -49,15 +49,15 @@ export default function QrCodeModal({ displayName, username, isOpen, onClose }: 
             >
               {/* Pattern resembling a clean QR code with corner anchors */}
               <rect x="5" y="5" width="26" height="26" rx="4" fill="currentColor" />
-              <rect x="9" y="9" width="18" height="18" rx="2" fill="#fffdf6" />
+              <rect x="9" y="9" width="18" height="18" rx="2" fill="#FFFFFF" />
               <rect x="13" y="13" width="10" height="10" rx="1" fill="currentColor" />
 
               <rect x="69" y="5" width="26" height="26" rx="4" fill="currentColor" />
-              <rect x="73" y="9" width="18" height="18" rx="2" fill="#fffdf6" />
+              <rect x="73" y="9" width="18" height="18" rx="2" fill="#FFFFFF" />
               <rect x="77" y="13" width="10" height="10" rx="1" fill="currentColor" />
 
               <rect x="5" y="69" width="26" height="26" rx="4" fill="currentColor" />
-              <rect x="9" y="73" width="18" height="18" rx="2" fill="#fffdf6" />
+              <rect x="9" y="73" width="18" height="18" rx="2" fill="#FFFFFF" />
               <rect x="13" y="77" width="10" height="10" rx="1" fill="currentColor" />
 
               {/* Data blocks */}
@@ -92,7 +92,7 @@ export default function QrCodeModal({ displayName, username, isOpen, onClose }: 
               <rect x="82" y="84" width="10" height="8" rx="1" />
 
               {/* Central brand pip */}
-              <circle cx="50" cy="50" r="4.5" fill="#f5c518" />
+              <circle cx="50" cy="50" r="4.5" fill="#005EFF" />
             </svg>
           </div>
 

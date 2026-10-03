@@ -709,9 +709,9 @@ export default function HomeAgent() {
 
   return (
     <>
-    <div className="fixed inset-x-0 top-0 bottom-20 z-10 mx-auto flex max-w-md flex-col overflow-hidden bg-gradient-to-b from-[#171106] via-[#0e0a03] to-black">
-      <div className="orb orb-a h-40 w-40 bg-accent" style={{ top: "-3rem", left: "-2rem" }} />
-      <div className="orb orb-b h-32 w-32 bg-[#ffe27a]" style={{ top: "1rem", right: "-2.5rem" }} />
+    <div className="fixed inset-x-0 top-0 bottom-20 z-10 mx-auto flex max-w-md flex-col overflow-hidden bg-gradient-to-b from-[#0B172A] via-[#08111F] to-black">
+      <div className="orb orb-a h-40 w-40 bg-brand" style={{ top: "-3rem", left: "-2rem" }} />
+      <div className="orb orb-b h-32 w-32 bg-[#93C5FD]" style={{ top: "1rem", right: "-2.5rem" }} />
       <div className="orb orb-c h-28 w-28 bg-white" style={{ bottom: "-2.5rem", left: "40%" }} />
 
       {started && (
@@ -756,7 +756,7 @@ export default function HomeAgent() {
             transition={{ duration: 0.4 }}
             className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium tracking-wide text-white/80 backdrop-blur"
           >
-            <Sparkles size={12} className="text-accent" />
+            <Sparkles size={12} className="text-brand" />
             EVRRY
           </motion.div>
         )}
@@ -849,7 +849,7 @@ export default function HomeAgent() {
           <button
             type="submit"
             disabled={loading || (!typedValue.trim() && !pendingImage)}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-ink disabled:opacity-40"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-white disabled:opacity-40"
           >
             <Send size={13} />
           </button>
@@ -886,7 +886,7 @@ export default function HomeAgent() {
 
     {showInfo && (
         <div className="fixed inset-0 z-40 flex items-end bg-black/60" onClick={() => setShowInfo(false)}>
-          <div className="mx-auto w-full max-w-md rounded-t-2xl bg-[#171106] p-5 pb-8 text-white" onClick={(e) => e.stopPropagation()}>
+          <div className="mx-auto w-full max-w-md rounded-t-2xl bg-[#0B172A] p-5 pb-8 text-white" onClick={(e) => e.stopPropagation()}>
             <p className="text-sm font-semibold">About this conversation</p>
             <div className="mt-3 space-y-2 text-xs text-white/60">
               <p>Personalization: {personalizationEnabled ? "On" : "Off"}</p>

@@ -40,7 +40,7 @@ export default function ActiveRideBar() {
         <span className="block truncate text-xs font-semibold">{PHASE_LABEL[activeRide.phase] ?? "Ride in progress"}</span>
         <span className="block truncate text-[11px] text-white/60">To {activeRide.drop}</span>
       </span>
-      <span className="shrink-0 text-[11px] font-medium text-accent">Track →</span>
+      <span className="shrink-0 text-[11px] font-medium text-brand">Track →</span>
     </Link>
   );
 }

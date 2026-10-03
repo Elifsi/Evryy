@@ -74,7 +74,7 @@ export default function SnapReviewScreen({
         {forStory ? (
           <button
             onClick={handlePostStory}
-            className="flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-ink"
+            className="flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white"
           >
             <BookOpen size={16} /> Post to Story
           </button>
@@ -87,7 +87,7 @@ export default function SnapReviewScreen({
               <span className="text-[11px]">Save</span>
             </button>
             <button onClick={() => setShowSendSheet(true)} className="flex flex-col items-center gap-1.5 text-white">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-ink">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white">
                 <Send size={22} />
               </span>
               <span className="text-[11px]">Send</span>
@@ -114,7 +114,7 @@ export default function SnapReviewScreen({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={c.avatarDataUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
                     ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accentSoft text-sm font-semibold text-accentDark">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brandSoft text-sm font-semibold text-brand">
                         {c.username.slice(0, 1).toUpperCase()}
                       </div>
                     )}

@@ -5,7 +5,7 @@ import { CATEGORY_ICON } from "@/lib/data/categoryIcons";
 export default function ExplorePage() {
   return (
     <div className="px-5 pt-6">
-      <p className="text-xs font-medium uppercase tracking-wide text-accentDark">Manual marketplace</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Manual marketplace</p>
       <h1 className="mt-1 text-2xl font-semibold text-ink">Explore</h1>
       <p className="mt-1 text-sm text-ink/50">
         Same catalog, providers and checkout the AI concierge uses — browse it yourself any time.
@@ -18,9 +18,9 @@ export default function ExplorePage() {
             <Link
               key={c.id}
               href={`/explore/${c.id}`}
-              className="flex flex-col gap-2 rounded-xl2 border border-black/5 bg-white p-4 shadow-sm transition hover:border-accentDark"
+              className="flex flex-col gap-2 rounded-xl2 border border-black/5 bg-white p-4 shadow-sm transition hover:border-brand"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accentSoft text-accentDark">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brandSoft text-brand">
                 <Icon size={20} strokeWidth={1.8} />
               </span>
               <span className="text-sm font-medium text-ink">{c.label}</span>

@@ -88,7 +88,7 @@ export default function CallOverlay() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="pointer-events-auto absolute inset-0 flex flex-col bg-gradient-to-b from-[#171106] via-[#0e0a03] to-black"
+              className="pointer-events-auto absolute inset-0 flex flex-col bg-gradient-to-b from-[#0B172A] via-[#08111F] to-black"
             >
               {call.kind === "video" && call.phase === "active" && (
                 <video
@@ -106,7 +106,7 @@ export default function CallOverlay() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={contact.avatarDataUrl} alt="" className="h-24 w-24 rounded-full object-cover" />
                   ) : (
-                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-accentSoft text-3xl font-semibold text-accentDark">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-brandSoft text-3xl font-semibold text-brand">
                       {(contact?.username ?? "?").slice(0, 1).toUpperCase()}
                     </div>
                   ))}

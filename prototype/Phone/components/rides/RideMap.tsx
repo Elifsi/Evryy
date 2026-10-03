@@ -38,7 +38,7 @@ export default function RideMap({ ride, now, icon: Icon }: { ride: ActiveRide; n
           y1={`${ride.pickupPoint.y}%`}
           x2={`${ride.dropPoint.x}%`}
           y2={`${ride.dropPoint.y}%`}
-          stroke="#1a1508"
+          stroke="#0B172A"
           strokeOpacity={0.25}
           strokeWidth={2}
           strokeDasharray="6 6"

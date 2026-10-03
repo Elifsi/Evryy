@@ -35,7 +35,7 @@ export default function Transcript({
                 data-role={m.role}
                 className={clsx(
                   "whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
-                  m.role === "user" ? "bg-accent text-ink" : "bg-white/10 text-white/90"
+                  m.role === "user" ? "bg-brand text-white" : "bg-white/10 text-white/90"
                 )}
               >
                 {m.imageDataUrl && (
@@ -76,7 +76,7 @@ export default function Transcript({
           <motion.span
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
-            className="text-accent"
+            className="text-brand"
           >
             <Sparkles size={13} />
           </motion.span>

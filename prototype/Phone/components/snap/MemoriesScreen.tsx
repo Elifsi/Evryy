@@ -72,7 +72,7 @@ export default function MemoriesScreen({ onBack, onPick }: { onBack: () => void;
         <div className="mt-10 flex flex-col items-center gap-3 text-center">
           <ImageIcon size={32} className="text-ink/30" />
           <p className="text-sm text-ink/50">Pick a photo from your device to send or save.</p>
-          <button onClick={() => fileInputRef.current?.click()} className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-ink">
+          <button onClick={() => fileInputRef.current?.click()} className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white">
             Choose from gallery
           </button>
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />

@@ -109,7 +109,7 @@ export default function RideRequestPanel() {
         </Link>
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 rounded-full bg-accentSoft px-3 py-1.5 text-xs font-medium text-accentDark transition hover:brightness-95"
+          className="inline-flex items-center gap-1.5 rounded-full bg-brandSoft px-3 py-1.5 text-xs font-medium text-brand transition hover:brightness-95"
         >
           <Sparkles size={12} /> Ask the AI instead
         </Link>
@@ -127,7 +127,7 @@ export default function RideRequestPanel() {
               y1={`${PICKUP.y}%`}
               x2={`${dropPoint.x}%`}
               y2={`${dropPoint.y}%`}
-              stroke="#1a1508"
+              stroke="#0B172A"
               strokeOpacity={0.35}
               strokeWidth={2}
               strokeDasharray="6 6"
@@ -163,7 +163,7 @@ export default function RideRequestPanel() {
             </div>
             <button
               onClick={() => setStep("drop")}
-              className="mt-3 flex w-full items-center justify-center rounded-full bg-accent py-3 text-sm font-semibold text-ink transition hover:brightness-95"
+              className="mt-3 flex w-full items-center justify-center rounded-full bg-brand py-3 text-sm font-semibold text-white transition hover:brightness-95"
             >
               Confirm pickup
             </button>
@@ -185,7 +185,7 @@ export default function RideRequestPanel() {
               <button
                 type="submit"
                 disabled={!dropInput.trim()}
-                className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink disabled:opacity-40"
+                className="shrink-0 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
               >
                 Set
               </button>
@@ -210,10 +210,10 @@ export default function RideRequestPanel() {
                     onClick={() => setSelectedTypeId(rt.id)}
                     className={clsx(
                       "flex w-full items-center gap-3 rounded-xl2 border bg-white p-3 text-left shadow-sm transition",
-                      selected ? "border-accentDark ring-1 ring-accentDark/40" : "border-black/5 hover:border-accentDark/40"
+                      selected ? "border-brand ring-1 ring-brand/40" : "border-black/5 hover:border-brand/40"
                     )}
                   >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accentSoft text-accentDark">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brandSoft text-brand">
                       <Icon size={20} strokeWidth={1.7} />
                     </span>
                     <div className="min-w-0 flex-1">
@@ -259,7 +259,7 @@ export default function RideRequestPanel() {
             <button
               onClick={handleRequest}
               disabled={!source}
-              className="mt-4 flex w-full items-center justify-center rounded-full bg-accent py-3 text-sm font-semibold text-ink transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+              className="mt-4 flex w-full items-center justify-center rounded-full bg-brand py-3 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Request {selectedType.label} · ₹{total.toLocaleString("en-IN")}
             </button>

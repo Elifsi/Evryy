@@ -108,27 +108,27 @@ export default function SavedCards() {
             value={holderName}
             onChange={(e) => setHolderName(e.target.value)}
             placeholder="Name on card"
-            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accentDark"
+            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand"
           />
           <input
             value={cardNumber}
             onChange={(e) => setCardNumber(e.target.value)}
             placeholder="Card number"
             inputMode="numeric"
-            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accentDark"
+            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand"
           />
           <input
             value={expiry}
             onChange={(e) => setExpiry(e.target.value)}
             placeholder="MM/YY"
-            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accentDark"
+            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand"
           />
           {error && <p className="text-xs text-red-500">{error}</p>}
           <p className="text-[10px] text-ink/40">
             Demo only — the full number is never stored, only the brand and last 4 digits (TRD §6.2).
           </p>
           <div className="flex gap-2 pt-1">
-            <button type="submit" className="rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink hover:brightness-95">
+            <button type="submit" className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:brightness-95">
               Save card
             </button>
             <button

@@ -157,7 +157,7 @@ export default function CartPage() {
       <button
         onClick={handlePlaceOrder}
         disabled={!source || placing}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-semibold text-ink transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-brand py-3 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
       >
         {placing ? "Placing order…" : `Place order · ₹${total.toLocaleString("en-IN")}`}
       </button>

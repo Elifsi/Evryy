@@ -181,7 +181,7 @@ function SnapPageInner() {
           <button
             onClick={capture}
             disabled={permission !== "granted"}
-            className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-accent bg-white shadow-md transition active:scale-95 disabled:opacity-30"
+            className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-brand bg-white shadow-md transition active:scale-95 disabled:opacity-30"
             title="Capture"
           >
             <Camera size={26} className="text-ink" />

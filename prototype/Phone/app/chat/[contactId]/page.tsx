@@ -105,14 +105,14 @@ export default function ConversationPage() {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={contact.avatarDataUrl} alt="" className="h-9 w-9 shrink-0 rounded-full object-cover" />
         ) : (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accentSoft text-sm font-semibold text-accentDark">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brandSoft text-sm font-semibold text-brand">
             {contact.username.slice(0, 1).toUpperCase()}
           </div>
         )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-ink">@{contact.username}</p>
           {isOnline ? (
-            <p className="text-[11px] font-medium text-accentDark">online</p>
+            <p className="text-[11px] font-medium text-brand">online</p>
           ) : (
             <p className="inline-flex items-center gap-1 text-[11px] text-ink/40">
               <Lock size={9} /> End-to-end encrypted · {connectionStatus}
@@ -122,7 +122,7 @@ export default function ConversationPage() {
         <button
           onClick={() => startCall(contactId, "audio")}
           disabled={!!call || connectionStatus !== "online"}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-ink/50 hover:bg-accentSoft hover:text-accentDark disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-ink/50 hover:bg-brandSoft hover:text-brand disabled:opacity-30"
           title="Voice call"
         >
           <Phone size={17} />
@@ -130,7 +130,7 @@ export default function ConversationPage() {
         <button
           onClick={() => startCall(contactId, "video")}
           disabled={!!call || connectionStatus !== "online"}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-ink/50 hover:bg-accentSoft hover:text-accentDark disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-ink/50 hover:bg-brandSoft hover:text-brand disabled:opacity-30"
           title="Video call"
         >
           <Video size={17} />
@@ -148,7 +148,7 @@ export default function ConversationPage() {
               <div
                 className={clsx(
                   "max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm leading-relaxed",
-                  m.direction === "out" ? "bg-accent text-ink" : "bg-white text-ink shadow-sm"
+                  m.direction === "out" ? "bg-brand text-white" : "bg-white text-white shadow-sm"
                 )}
               >
                 {m.imageDataUrl && (
@@ -163,7 +163,7 @@ export default function ConversationPage() {
                   <span className="mt-0.5 flex items-center justify-end gap-1 text-[10px] text-ink/45">
                     {m.status === "read" && (
                       <>
-                        <CheckCheck size={11} className="text-accentDark" /> <span className="text-accentDark">read</span>
+                        <CheckCheck size={11} className="text-brand" /> <span className="text-brand">read</span>
                       </>
                     )}
                     {m.status === "delivered" && (
@@ -246,7 +246,7 @@ export default function ConversationPage() {
           {(input.trim() || pendingImage) && (
             <button
               type="submit"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-ink transition"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-white transition"
             >
               <Send size={15} />
             </button>
