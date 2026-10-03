@@ -34,8 +34,10 @@ export default function Transcript({
               <div
                 data-role={m.role}
                 className={clsx(
-                  "whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
-                  m.role === "user" ? "bg-brand text-white" : "bg-white/10 text-white/90"
+                  "whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm",
+                  m.role === "user"
+                    ? "bg-[#005EFF] text-white rounded-tr-sm"
+                    : "bg-white text-[#0B172A] border border-slate-100 rounded-tl-sm"
                 )}
               >
                 {m.imageDataUrl && (
@@ -45,7 +47,7 @@ export default function Transcript({
                 {renderInline(m.content)}
               </div>
               {m.role === "assistant" && m.mode === "fallback" && (
-                <p className="px-1 text-[10px] text-white/30">
+                <p className="px-1 text-[10px] text-slate-400">
                   Demo mode — no AI provider reachable right now (check your API keys / provider quota).
                 </p>
               )}
@@ -72,11 +74,11 @@ export default function Transcript({
       </AnimatePresence>
 
       {loading && (
-        <div className="flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 text-xs text-white/50 w-fit">
+        <div className="flex items-center gap-2 rounded-2xl bg-white px-4 py-2.5 text-xs text-slate-500 shadow-sm border border-slate-100 w-fit">
           <motion.span
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
-            className="text-brand"
+            className="text-[#005EFF]"
           >
             <Sparkles size={13} />
           </motion.span>

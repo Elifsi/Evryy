@@ -1,8 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { Mic, MicOff, Keyboard, Send, RotateCcw, ShoppingBag, Sparkles, Paperclip, X, Info, Share2, SlidersHorizontal } from "lucide-react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Mic,
+  MicOff,
+  Send,
+  RotateCcw,
+  ShoppingBag,
+  Sparkles,
+  Plus,
+  Upload,
+  X,
+  Share2,
+  SlidersHorizontal,
+} from "lucide-react";
 import clsx from "clsx";
 import { useAppStore } from "@/lib/store/useAppStore";
 import { AiChatSSEEvent, ChatMessage } from "@/lib/types";
@@ -13,7 +26,8 @@ import { shareOrCopyText } from "@/lib/shareOrCopy";
 import { readImageFile } from "@/lib/imagePicker";
 import Transcript from "@/components/home/Transcript";
 import VoicePickerSheet from "@/components/home/VoicePickerSheet";
-import VoiceOrb, { OrbPhase } from "@/components/VoiceOrb";
+import VoiceWaveformPill from "@/components/home/VoiceWaveformPill";
+import { OrbPhase } from "@/components/VoiceOrb";
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
@@ -59,6 +73,8 @@ export default function HomeAgent() {
   const memory = useAppStore((s) => s.memory);
 
   const [started, setStarted] = useState(chatMessages.length > 0);
+  const [aiMode, setAiMode] = useState<"chat" | "assistant">("chat");
+  const [showDrawer, setShowDrawer] = useState(false);
   const [phase, setPhase] = useState<OrbPhase>("idle");
   const [errorFlavor, setErrorFlavor] = useState(false);
   const [caption, setCaption] = useState("");
@@ -76,6 +92,7 @@ export default function HomeAgent() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState<string | null>(null);
 
+  const aiModeRef = useRef<"chat" | "assistant">("chat");
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const mutedRef = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -101,6 +118,10 @@ export default function HomeAgent() {
   const queueActiveRef = useRef(false); // this turn's queue is the thing currently allowed to speak
   const queuePlayingRef = useRef(false); // an utterance from the queue is in flight right now
   const streamDoneRef = useRef(false); // the server's terminal `done` event has arrived
+
+  useEffect(() => {
+    aiModeRef.current = aiMode;
+  }, [aiMode]);
 
   useEffect(() => {
     mutedRef.current = muted;
@@ -477,13 +498,15 @@ export default function HomeAgent() {
       const { sentences, rest } = cutSentences(sentenceBuffer);
       sentenceBuffer = rest;
       if (sentences.length === 0) return;
-      if (!streamingStarted) {
-        streamingStarted = true;
-        beginStreamingSpeech();
+      if (aiModeRef.current === "assistant") {
+        if (!streamingStarted) {
+          streamingStarted = true;
+          beginStreamingSpeech();
+        }
+        speechQueueRef.current.push(...sentences);
+        setCaption((c) => (c ? `${c} ${sentences.join(" ")}` : sentences.join(" ")));
+        runQueue();
       }
-      speechQueueRef.current.push(...sentences);
-      setCaption((c) => (c ? `${c} ${sentences.join(" ")}` : sentences.join(" ")));
-      runQueue();
     }
 
     function handleRetract() {
@@ -502,7 +525,7 @@ export default function HomeAgent() {
       streamDoneRef.current = true;
       const leftover = sentenceBuffer.trim();
       sentenceBuffer = "";
-      if (leftover) {
+      if (leftover && aiModeRef.current === "assistant") {
         if (!streamingStarted) {
           streamingStarted = true;
           beginStreamingSpeech();
@@ -557,25 +580,18 @@ export default function HomeAgent() {
         }
       }
 
-      if (evt.spoken) {
-        // Already fully spoken (or about to finish being spoken) live via
-        // the sentence queue. If anything is still queued/playing, the
-        // queue's own advance() will see streamDoneRef=true and finish
-        // naturally when it ends — but if the queue had already drained
-        // completely BEFORE this `done` arrived (a short reply that
-        // finished speaking faster than the network stream closed),
-        // advance() already ran without knowing more wasn't coming, so
-        // nothing would ever resume listening unless we finish it here.
-        if (leftover) runQueue();
-        if (speechQueueRef.current.length === 0 && !queuePlayingRef.current) {
-          queueActiveRef.current = false;
-          resumeAfterSpeaking();
+      if (aiModeRef.current === "assistant") {
+        if (evt.spoken) {
+          if (leftover) runQueue();
+          if (speechQueueRef.current.length === 0 && !queuePlayingRef.current) {
+            queueActiveRef.current = false;
+            resumeAfterSpeaking();
+          }
+        } else {
+          speak(evt.reply.replace(/\*\*/g, ""));
         }
       } else {
-        // Authoritative, fully-verified text — always spoken fresh, exactly
-        // like the pre-streaming behavior (OpenRouter/fallback/any turn
-        // that touched an order/booking/cart tool land here).
-        speak(evt.reply.replace(/\*\*/g, ""));
+        transitionPhase("idle");
       }
     }
 
@@ -635,22 +651,36 @@ export default function HomeAgent() {
 
   function startSession() {
     setStarted(true);
-    const greeting = `Hi ${displayName || "there"}, how can I help you today?`;
+    const greeting = `Hi ${displayName || "Rahul"}, what's on your mind?`;
     addChatMessage({ id: uid(), role: "assistant", content: greeting, createdAt: Date.now() });
-    speak(greeting);
+    if (aiModeRef.current === "assistant") {
+      speak(greeting);
+    }
+  }
+
+  function startVoiceAssistant() {
+    setAiMode("assistant");
+    setStarted(true);
+    if (phase === "idle" || phase === "denied" || phase === "error") {
+      startRecognition();
+    }
+  }
+
+  function closeAssistant() {
+    stopEverything();
+    setPhase("idle");
+    setCaption("");
+    setAiMode("chat");
   }
 
   function handleOrbTap() {
     if (!started) {
-      startSession();
+      startVoiceAssistant();
     } else if (phase === "listening") {
       finalizeNowRef.current?.();
     } else if (phase === "idle" || phase === "denied" || phase === "error") {
       startRecognition();
     } else if (phase === "speaking" || phase === "interrupted") {
-      // Only interruption path now (no voice barge-in) — cancelling here
-      // fires the utterance's onerror -> resumeAfterSpeaking(), which starts
-      // a fresh listening session once speech has actually stopped.
       queueActiveRef.current = false;
       queuePlayingRef.current = false;
       streamAbortRef.current?.abort();
@@ -709,203 +739,298 @@ export default function HomeAgent() {
 
   return (
     <>
-    <div className="fixed inset-x-0 top-0 bottom-20 z-10 mx-auto flex max-w-md flex-col overflow-hidden bg-gradient-to-b from-[#0B172A] via-[#08111F] to-black">
-      <div className="orb orb-a h-40 w-40 bg-brand" style={{ top: "-3rem", left: "-2rem" }} />
-      <div className="orb orb-b h-32 w-32 bg-[#93C5FD]" style={{ top: "1rem", right: "-2.5rem" }} />
-      <div className="orb orb-c h-28 w-28 bg-white" style={{ bottom: "-2.5rem", left: "40%" }} />
+      <div className="fixed inset-x-0 top-0 bottom-20 z-10 mx-auto flex max-w-md flex-col overflow-hidden bg-gradient-to-b from-[#F9FBFF] via-white to-[#E8F1FF]">
+        {/* Soft background ambient gradient glows */}
+        <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-blue-100/40 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-blue-200/40 blur-3xl" />
 
-      {started && (
-        <div className="relative z-10 flex items-center justify-between px-4 pt-4">
-          <p className="flex-1 truncate pr-2 text-xs text-white/45">{hint}</p>
-          <div className="flex shrink-0 items-center gap-1">
-            <button
-              onClick={() => setShowInfo(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 hover:bg-white/10"
-              title="Info"
-            >
-              <Info size={17} />
-            </button>
-            <button
-              onClick={handleShareTranscript}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 hover:bg-white/10"
-              title="Share"
-            >
-              <Share2 size={17} />
-            </button>
-            <button
-              onClick={() => setShowVoicePicker(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 hover:bg-white/10"
-              title="Change voice"
-            >
-              <SlidersHorizontal size={17} />
-            </button>
-          </div>
-        </div>
-      )}
+        {/* Hidden file input for media/image attachment */}
+        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSelected} />
 
-      {/* The orb is always the dominant visual element — before starting it
-          fills the whole available space (centered, like ChatGPT's own
-          voice-mode screen); once a conversation is running it shrinks to a
-          persistent "hero" strip above the scrolling transcript, so it never
-          disappears from view the way a header-only mini orb would. */}
-      <div className={clsx("relative z-10 flex flex-col items-center justify-center gap-4 px-8", !started ? "flex-1" : "shrink-0 pb-2 pt-1")}>
-        {!started && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium tracking-wide text-white/80 backdrop-blur"
-          >
-            <Sparkles size={12} className="text-brand" />
-            EVRRY
-          </motion.div>
-        )}
-
-        <VoiceOrb
-          big={!started}
-          phase={phase}
-          muted={muted}
-          onTap={handleOrbTap}
-          micStream={micStream}
-          speakEnergyToken={speakEnergyToken}
-          errorFlavor={errorFlavor}
-        />
-
-        {!started && (
-          <div className="text-center">
-            <p className="text-lg font-medium text-white">
-              {displayName ? `Hi ${displayName}, ` : "Hi, "}
-              <span className="shimmer-text">tap to talk to your concierge</span>
-            </p>
-            <p className="mt-1.5 text-xs text-white/40">
-              I can find things, compare options, and place the order once you say go.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {started && <Transcript scrollRef={scrollRef} chatMessages={chatMessages} loading={loading} />}
-
-      {started && cartCount > 0 && (
-        <div className="relative z-10 mx-4 mb-2 flex items-center justify-between rounded-full bg-white/10 px-4 py-2 text-xs text-white/70">
-          <span className="inline-flex items-center gap-1.5">
-            <ShoppingBag size={13} /> {cartCount} item{cartCount > 1 ? "s" : ""} in cart
-          </span>
-          <span className="font-semibold text-white">₹{cartTotal.toLocaleString("en-IN")}</span>
-        </div>
-      )}
-
-      {/* Only shown while listening — it's useful live feedback for what
-          you're saying, but the AI's own reply already appears in the
-          transcript above, so repeating it as a caption while it speaks
-          is just noise. */}
-      {phase === "listening" && caption && (
-        <div className="relative z-10 px-8 pb-1 text-center text-sm text-white/70">{caption}</div>
-      )}
-
-      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSelected} />
-
-      {pendingImage && (
-        <div className="relative z-10 mx-4 mb-2 flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={pendingImage.dataUrl} alt="Selected" className="h-10 w-10 rounded-lg object-cover" />
-          <span className="flex-1 text-xs text-white/60">Image attached — will send with your next message</span>
-          <button
-            onClick={() => setPendingImage(null)}
-            className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/20"
-          >
-            <X size={12} />
-          </button>
-        </div>
-      )}
-
-      {showTyped && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const v = typedValue.trim();
-            if (!v && !pendingImage) return;
-            setTypedValue("");
-            void sendTurn(v);
-          }}
-          className="relative z-10 mx-4 mb-3 flex items-center gap-2 rounded-full bg-white/10 px-3 py-2"
-        >
+        {/* Top Bar matching chat.png and Assistant.png */}
+        <div className="relative z-10 flex items-center justify-between px-5 pt-4 pb-2">
           <button
             type="button"
-            onClick={handleImageButton}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/60 hover:text-white"
-            title="Attach an image"
+            onClick={() => setShowDrawer(true)}
+            className="flex h-10 w-10 items-center justify-center rounded-full text-[#0B172A] hover:bg-black/5 active:scale-95 transition"
+            title="Menu"
           >
-            <Paperclip size={15} />
+            <div className="flex flex-col justify-center gap-1.5 w-5">
+              <span className="h-[2px] w-5 bg-[#0B172A] rounded-full" />
+              <span className="h-[2px] w-5 bg-[#0B172A] rounded-full" />
+            </div>
           </button>
-          <input
-            autoFocus
-            value={typedValue}
-            onChange={(e) => setTypedValue(e.target.value)}
-            placeholder="Type instead…"
-            disabled={loading}
-            className="flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/40 disabled:opacity-40"
-          />
-          <button
-            type="submit"
-            disabled={loading || (!typedValue.trim() && !pendingImage)}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-white disabled:opacity-40"
-          >
-            <Send size={13} />
-          </button>
-        </form>
-      )}
 
-      <div className="relative z-10 flex items-center justify-center gap-4 pb-5 pt-1">
-        <button
-          onClick={toggleMute}
-          className={clsx(
-            "flex h-11 w-11 items-center justify-center rounded-full transition",
-            muted ? "bg-white text-ink" : "bg-white/10 text-white/80 hover:bg-white/20"
-          )}
-          title={muted ? "Unmute" : "Mute"}
-        >
-          {muted ? <MicOff size={18} /> : <Mic size={18} />}
-        </button>
-        <button
-          onClick={handleImageButton}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white/80 transition hover:bg-white/20"
-          title="Attach an image"
-        >
-          <Paperclip size={18} />
-        </button>
-        <button
-          onClick={() => setShowTyped((v) => !v)}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white/80 transition hover:bg-white/20"
-          title="Type instead"
-        >
-          <Keyboard size={18} />
-        </button>
+          <Link
+            href="/profile"
+            className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 shadow-sm active:scale-95 transition"
+            title="Profile"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/avatar.png"
+              alt={displayName || "Rahul"}
+              className="h-full w-full object-cover"
+            />
+          </Link>
+        </div>
+
+        {/* MODE 1: CHAT SCREEN (chat.png) */}
+        {aiMode === "chat" && (
+          <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
+            {chatMessages.length === 0 ? (
+              <div className="flex flex-1 flex-col items-center justify-center px-6 -mt-10">
+                <h1 className="text-center text-[27px] font-normal tracking-tight text-[#0B172A] leading-[1.3] whitespace-pre-line">
+                  Hi {displayName || "Rahul"}, what&apos;s on{"\n"}your mind?
+                </h1>
+              </div>
+            ) : (
+              <div className="flex flex-1 flex-col overflow-hidden">
+                <Transcript scrollRef={scrollRef} chatMessages={chatMessages} loading={loading} />
+
+                {cartCount > 0 && (
+                  <div className="relative z-10 mx-4 mb-2 flex items-center justify-between rounded-full bg-white px-4 py-2 text-xs text-[#0B172A] shadow-sm border border-slate-100">
+                    <span className="inline-flex items-center gap-1.5 text-slate-600">
+                      <ShoppingBag size={13} className="text-[#005EFF]" /> {cartCount} item{cartCount > 1 ? "s" : ""} in cart
+                    </span>
+                    <span className="font-semibold text-[#005EFF]">₹{cartTotal.toLocaleString("en-IN")}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Floating Capsule Composer at bottom (chat.png) */}
+            <div className="relative z-10 px-4 pb-4 pt-1">
+              {pendingImage && (
+                <div className="mb-2 flex items-center gap-2 rounded-2xl bg-white px-3 py-2 shadow-sm border border-slate-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={pendingImage.dataUrl} alt="Attached" className="h-10 w-10 rounded-lg object-cover" />
+                  <span className="flex-1 text-xs text-slate-600 truncate">Image attached</span>
+                  <button
+                    onClick={() => setPendingImage(null)}
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              )}
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const v = typedValue.trim();
+                  if (!v && !pendingImage) return;
+                  setTypedValue("");
+                  void sendTurn(v);
+                }}
+                className="flex items-center gap-2 rounded-full bg-white px-2 py-2 shadow-[0_6px_24px_rgba(0,0,0,0.06)] border border-slate-100"
+              >
+                <button
+                  type="button"
+                  onClick={handleImageButton}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 transition active:scale-95"
+                  title="Attach image"
+                >
+                  <Plus size={20} strokeWidth={2.2} />
+                </button>
+
+                <input
+                  value={typedValue}
+                  onChange={(e) => setTypedValue(e.target.value)}
+                  placeholder="Ask Evrry..."
+                  disabled={loading}
+                  className="flex-1 bg-transparent px-1 text-base text-[#0B172A] placeholder:text-slate-400 outline-none font-normal"
+                />
+
+                {typedValue.trim() ? (
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#005EFF] text-white shadow-sm hover:bg-blue-600 transition active:scale-95 disabled:opacity-50"
+                    title="Send"
+                  >
+                    <Send size={16} strokeWidth={2.2} />
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={startVoiceAssistant}
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 transition active:scale-95"
+                      title="Voice input"
+                    >
+                      <Mic size={20} strokeWidth={2} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={startVoiceAssistant}
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#E8F1FF] text-[#005EFF] hover:bg-blue-100 transition active:scale-95"
+                      title="Open Voice Assistant"
+                    >
+                      <div className="flex items-center justify-center gap-[2.5px] h-4">
+                        <span className="w-[3px] h-2.5 bg-[#005EFF] rounded-full" />
+                        <span className="w-[3px] h-4 bg-[#005EFF] rounded-full" />
+                        <span className="w-[3px] h-2 bg-[#005EFF] rounded-full" />
+                        <span className="w-[3px] h-3.5 bg-[#005EFF] rounded-full" />
+                      </div>
+                    </button>
+                  </>
+                )}
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODE 2: VOICE ASSISTANT SCREEN (Assistant.png) */}
+        {aiMode === "assistant" && (
+          <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
+            {/* Center Hero with Live Caption */}
+            <div className="flex flex-1 flex-col items-center justify-center px-8 text-center -mt-8">
+              <h1 className="text-[26px] font-normal tracking-tight text-[#0B172A] leading-[1.35] max-w-sm whitespace-pre-line">
+                {caption || `Hi ${displayName || "Rahul"}, what's on\nyour mind?`}
+              </h1>
+              <p className="mt-3 text-xs font-medium text-slate-400">
+                {phase === "listening" && "Listening…"}
+                {phase === "processing" && "Thinking…"}
+                {phase === "speaking" && "Speaking…"}
+                {phase === "idle" && "Tap wave to talk"}
+                {phase === "error" && "Something went wrong — tap to retry"}
+                {phase === "denied" && "Microphone access denied"}
+              </p>
+            </div>
+
+            {/* Floating Action Controls Row (Assistant.png) - Camera icon explicitly excluded */}
+            <div className="relative z-10 px-6 pb-6 pt-2">
+              {pendingImage && (
+                <div className="mb-3 mx-auto flex max-w-xs items-center gap-2 rounded-2xl bg-white px-3 py-2 shadow-sm border border-slate-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={pendingImage.dataUrl} alt="Attached" className="h-10 w-10 rounded-lg object-cover" />
+                  <span className="flex-1 text-xs text-slate-600 truncate">Image attached</span>
+                  <button
+                    onClick={() => setPendingImage(null)}
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              )}
+
+              <div className="flex items-center justify-center gap-3">
+                {/* 1. Upload Button (NO camera button!) */}
+                <button
+                  type="button"
+                  onClick={handleImageButton}
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white shadow-md border border-slate-100 text-slate-700 hover:bg-slate-50 active:scale-95 transition"
+                  title="Upload image / document"
+                >
+                  <Upload size={20} strokeWidth={2} />
+                </button>
+
+                {/* 2. Center Voice Visualizer Waveform Pill */}
+                <VoiceWaveformPill
+                  phase={phase}
+                  muted={muted}
+                  onTap={handleOrbTap}
+                  micStream={micStream}
+                  speakEnergyToken={speakEnergyToken}
+                  errorFlavor={errorFlavor}
+                />
+
+                {/* 3. Mic Mute/Unmute Button */}
+                <button
+                  type="button"
+                  onClick={toggleMute}
+                  className={clsx(
+                    "flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-md border transition active:scale-95",
+                    muted
+                      ? "bg-slate-200 border-slate-300 text-slate-500"
+                      : "bg-white border-slate-100 text-slate-700 hover:bg-slate-50"
+                  )}
+                  title={muted ? "Unmute" : "Mute"}
+                >
+                  {muted ? <MicOff size={20} strokeWidth={2} /> : <Mic size={20} strokeWidth={2} />}
+                </button>
+
+                {/* 4. Close / Dismiss Button (Returns to Chat mode) */}
+                <button
+                  type="button"
+                  onClick={closeAssistant}
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white shadow-md border border-slate-100 text-slate-700 hover:bg-slate-50 active:scale-95 transition"
+                  title="Exit voice assistant"
+                >
+                  <X size={20} strokeWidth={2} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
 
-    {showInfo && (
-        <div className="fixed inset-0 z-40 flex items-end bg-black/60" onClick={() => setShowInfo(false)}>
-          <div className="mx-auto w-full max-w-md rounded-t-2xl bg-[#0B172A] p-5 pb-8 text-white" onClick={(e) => e.stopPropagation()}>
-            <p className="text-sm font-semibold">About this conversation</p>
-            <div className="mt-3 space-y-2 text-xs text-white/60">
+      {/* Hamburger Drawer / Info Sheet */}
+      {showDrawer && (
+        <div className="fixed inset-0 z-40 flex items-end bg-black/40 backdrop-blur-sm" onClick={() => setShowDrawer(false)}>
+          <div
+            className="mx-auto w-full max-w-md rounded-t-3xl bg-white p-6 pb-8 text-[#0B172A] shadow-2xl border-t border-slate-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <p className="text-base font-semibold text-[#0B172A]">evrry Assistant</p>
+                <p className="text-xs text-slate-400">Everything. One Place.</p>
+              </div>
+              <button
+                onClick={() => setShowDrawer(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-2">
+              <button
+                onClick={() => {
+                  resetConversation();
+                  setShowDrawer(false);
+                }}
+                className="flex w-full items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
+              >
+                <RotateCcw size={16} className="text-[#005EFF]" />
+                <span>New conversation</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowVoicePicker(true);
+                  setShowDrawer(false);
+                }}
+                className="flex w-full items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
+              >
+                <SlidersHorizontal size={16} className="text-[#005EFF]" />
+                <span>Change voice</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  handleShareTranscript();
+                  setShowDrawer(false);
+                }}
+                className="flex w-full items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
+              >
+                <Share2 size={16} className="text-[#005EFF]" />
+                <span>Share conversation</span>
+              </button>
+            </div>
+
+            <div className="mt-5 rounded-2xl bg-blue-50/60 p-4 text-xs text-slate-600 border border-blue-100/50">
+              <p className="font-semibold text-slate-800 mb-1">Session status</p>
               <p>Personalization: {personalizationEnabled ? "On" : "Off"}</p>
               <p>Remembered facts: {memory.length}</p>
               <p>Messages this session: {chatMessages.length}</p>
-              {!supported && <p className="text-amber-300/80">Voice input isn&apos;t supported in this browser — use the keyboard.</p>}
+              {!supported && (
+                <p className="mt-1 text-amber-600">Voice input isn&apos;t supported in this browser.</p>
+              )}
             </div>
-            <button
-              onClick={() => {
-                resetConversation();
-                setShowInfo(false);
-              }}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-white/10 py-2.5 text-sm font-medium text-white/85 hover:bg-white/15"
-            >
-              <RotateCcw size={14} /> Start over
-            </button>
-            <button onClick={() => setShowInfo(false)} className="mt-2 flex w-full items-center justify-center py-2 text-xs text-white/40">
-              Close
-            </button>
           </div>
         </div>
       )}
@@ -920,11 +1045,13 @@ export default function HomeAgent() {
         />
       )}
 
-    {shareCopied && (
-      <div className="pointer-events-none fixed inset-x-0 top-16 z-50 flex justify-center">
-        <div className="rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-ink shadow-lg">Copied to clipboard</div>
-      </div>
-    )}
+      {shareCopied && (
+        <div className="pointer-events-none fixed inset-x-0 top-16 z-50 flex justify-center">
+          <div className="rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-[#0B172A] shadow-lg border border-slate-100">
+            Copied to clipboard
+          </div>
+        </div>
+      )}
     </>
   );
 }
