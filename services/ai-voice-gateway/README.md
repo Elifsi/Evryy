@@ -61,7 +61,7 @@ The **AI Voice Gateway** is a high-performance Python asynchronous microservice 
 
 ## 3. End-to-End Voice Ordering Lifecycle
 
-1. **Audio Capture**: Mobile app records audio via native hardware mic (AudioRecord in Android / AVAudioEngine in iOS) and streams 16kHz 16-bit mono PCM chunks over `wss://gateway.evrry.app/ws/voice-agent`.
+1. **Audio Capture**: Mobile app records audio via native hardware mic (AudioRecord in Android / AVAudioEngine in iOS) and streams 16kHz 16-bit mono PCM chunks over `wss://gateway.evrry.com.np/ws/voice-agent`.
 2. **Streaming ASR**: Transcribed incrementally with low-latency streaming endpoints.
 3. **Phonetic Normalization**: Transliterated into Devanagari if Romanized words are detected.
 4. **Tool Execution**: The LLM calls schema tools such as:

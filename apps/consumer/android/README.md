@@ -52,7 +52,7 @@ implementation("androidx.camera:camera-view:1.3.2")
 - **UI Framework**: 100% Jetpack Compose with Material 3 theming.
 - **Async Concurrency**: Kotlin Coroutines and reactive `StateFlow` / `SharedFlow`.
 - **Realtime Integration**: Supabase `postgresChangeFlow` for live order status and encrypted chat sync.
-- **Zero Google Directions Fees**: Free Google Maps SDK for base tiles; road polylines and ETAs rendered from self-hosted OSRM endpoints (`http://osrm.evrry.local:5000/route/v1/driving/...`).
+- **Zero Google Directions Fees**: Free Google Maps SDK for base tiles; road polylines and ETAs rendered from self-hosted OSRM endpoints (`http://osrm.evrry.com.np:5000/route/v1/driving/...`).
 
 ---
 

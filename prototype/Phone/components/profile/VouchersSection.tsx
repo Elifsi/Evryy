@@ -72,7 +72,7 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
   };
 
   const handleShareReferral = () => {
-    const text = "Join me on evrry! Use my code EVRRY-RAHUL to get a NPR 100 welcome voucher on your first food order or ride: https://evrry.app/r/rahul";
+    const text = "Join me on evrry! Use my code EVRRY-RAHUL to get a NPR 100 welcome voucher on your first food order or ride: https://evrry.com.np/r/rahul";
     if (typeof window !== "undefined") {
       if (navigator.share) {
         navigator.share({ title: "evrry Referral", text });

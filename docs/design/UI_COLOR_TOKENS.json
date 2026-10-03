@@ -1,0 +1,109 @@
+{
+  "$schema": "framework-neutral",
+  "meta": {
+    "brand": "EVRRY",
+    "source": "assets/App identity.jpg",
+    "status": "Values marked provisional=true were read from small printed labels / sampled from a JPEG and MUST be re-verified against original vector assets before release.",
+    "verifiedAgainstReference": ["color.brand.primary", "color.brand.secondary", "color.brand.accentLight", "color.text.primary", "color.text.secondary"]
+  },
+  "color": {
+    "brand": {
+      "primary":      { "value": "#005EFF", "rgb": "0,94,255",   "provisional": false, "description": "Primary actions, selected nav, key interactive elements. Reference swatch is a deep-blue gradient; #005EFF is the flat reference value." },
+      "primaryDeep":  { "value": "#0646A7", "rgb": "6,70,167",   "provisional": true,  "description": "Dark end of the primary swatch gradient (sampled from JPEG)." },
+      "secondary":    { "value": "#2F82F6", "rgb": "47,130,246", "provisional": false, "description": "Secondary actions, icons, gradient stop." },
+      "accentLight":  { "value": "#93C5FD", "rgb": "147,197,253","provisional": false, "description": "Decorative: illustrations, highlights, wave artwork. Never for text or required UI boundaries." }
+    },
+    "text": {
+      "primary":   { "value": "#0B172A", "rgb": "11,23,42",   "provisional": false, "description": "Headings, labels, key values." },
+      "secondary": { "value": "#64758B", "rgb": "100,117,139","provisional": false, "description": "Supporting text, metadata. Passes AA only on white (4.71:1); fails AA on surface tokens." },
+      "onPrimary": { "value": "#FFFFFF", "provisional": false, "description": "Text/icons on brand.primary." },
+      "link":      { "value": "{color.brand.primary}", "description": "Inline links such as Sign In." },
+      "disabled":  { "value": "#94A3B8", "provisional": true, "description": "Implementation decision (not in reference). Disabled text is exempt from WCAG contrast." }
+    },
+    "background": {
+      "main":    { "value": "#FFFFFF", "provisional": false, "description": "Primary app background." },
+      "subtle":  { "value": "#F8FAFC", "provisional": true,  "description": "Page background behind cards (printed label in palette)." }
+    },
+    "surface": {
+      "default": { "value": "#F8FAFC", "provisional": true, "description": "Cards, tiles, grouped content (resolve against reference: palette lists #E2E8F0 as 'Surface')." },
+      "raised":  { "value": "#FFFFFF", "provisional": false, "description": "Cards on subtle background." },
+      "muted":   { "value": "#E2E8F0", "provisional": true, "description": "Pressed/placeholder surfaces. Printed palette 'Surface' label." },
+      "primarySoft": { "value": "#EFF6FF", "provisional": true, "description": "Selected chip / icon container tint. Implementation decision." }
+    },
+    "border": {
+      "default": { "value": "#CBD5E1", "provisional": true, "description": "Dividers, card outlines. 1.48:1 on white: decorative only; inputs need border.strong." },
+      "strong":  { "value": "#64758B", "provisional": true, "description": "Input boundary that must meet 3:1 non-text contrast (implementation decision)." },
+      "focus":   { "value": "{color.brand.primary}", "description": "Focus ring." }
+    },
+    "action": {
+      "primary":        { "bg": "{color.brand.primary}",   "fg": "{color.text.onPrimary}" },
+      "primaryPressed": { "bg": "#0046C2", "provisional": true, "description": "Implementation decision: ~15% darker." },
+      "primaryDisabled":{ "bg": "#CBD5E1", "fg": "#94A3B8", "provisional": true },
+      "secondary":      { "bg": "{color.surface.primarySoft}", "fg": "{color.brand.primary}" },
+      "secondaryPressed": { "bg": "#DBEAFE", "provisional": true }
+    },
+    "status": {
+      "success":     { "value": "#10B981", "provisional": true, "description": "Icons/badges/fills only. 2.54:1 on white — never use as text color on white." },
+      "successText": { "value": "#047857", "provisional": true, "description": "Accessible success text on white (5.48:1). Implementation decision." },
+      "error":       { "value": "#EF4444", "provisional": true, "description": "Icons/fills/borders. 3.76:1 on white — fails AA for body text." },
+      "errorText":   { "value": "#B91C1C", "provisional": true, "description": "Accessible error text on white (6.47:1). Implementation decision." },
+      "warning":     { "value": "#F59E0B", "provisional": true, "description": "Not in reference; implementation decision, use only if needed." }
+    },
+    "overlay": {
+      "scrim":  { "value": "rgba(11,23,42,0.48)", "provisional": true, "description": "Modal/bottom sheet backdrop. Implementation decision." }
+    },
+    "dark": {
+      "_note": "The reference shows a dark Home preview but no dark palette is specified. All values below are PROVISIONAL proposals; do not ship without design sign-off.",
+      "background": { "value": "#0B172A", "provisional": true },
+      "surface":    { "value": "#12223B", "provisional": true },
+      "textPrimary":{ "value": "#FFFFFF", "provisional": true },
+      "textSecondary": { "value": "#94A3B8", "provisional": true }
+    }
+  },
+  "gradient": {
+    "_note": "Reference shows gradients but exact stops are not recoverable from the JPEG. All stops provisional.",
+    "brandIcon":  { "angle": "135deg", "stops": ["#0646A7 0%", "#005EFF 100%"], "provisional": true, "use": "App icon / symbol tile background" },
+    "promoCard":  { "angle": "135deg", "stops": ["#005EFF 0%", "#2F82F6 100%"], "provisional": true, "use": "Home promo banner, Shop offer banner" },
+    "waves":      { "angle": "180deg", "stops": ["#93C5FD 0%", "#FFFFFF 100%"], "provisional": true, "use": "Splash/onboarding abstract artwork" }
+  },
+  "typography": {
+    "fontFamily": { "base": "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" },
+    "fontWeight": { "light": 300, "regular": 400, "medium": 500, "semibold": 600, "bold": 700 },
+    "scale": {
+      "display":      { "size": 34, "lineHeight": 40, "weight": 700, "letterSpacing": -0.5 },
+      "screenTitle":  { "size": 24, "lineHeight": 32, "weight": 600, "letterSpacing": -0.2 },
+      "sectionHeading": { "size": 18, "lineHeight": 24, "weight": 600, "letterSpacing": 0 },
+      "cardTitle":    { "size": 16, "lineHeight": 22, "weight": 600, "letterSpacing": 0 },
+      "body":         { "size": 16, "lineHeight": 24, "weight": 400, "letterSpacing": 0 },
+      "bodySmall":    { "size": 14, "lineHeight": 20, "weight": 400, "letterSpacing": 0 },
+      "inputLabel":   { "size": 14, "lineHeight": 20, "weight": 500, "letterSpacing": 0 },
+      "button":       { "size": 16, "lineHeight": 24, "weight": 600, "letterSpacing": 0 },
+      "navLabel":     { "size": 12, "lineHeight": 16, "weight": 500, "letterSpacing": 0.1 },
+      "caption":      { "size": 12, "lineHeight": 16, "weight": 400, "letterSpacing": 0.1 },
+      "amount":       { "size": 20, "lineHeight": 28, "weight": 600, "letterSpacing": 0, "fontVariantNumeric": "tabular-nums" },
+      "amountLarge":  { "size": 28, "lineHeight": 36, "weight": 700, "letterSpacing": -0.3, "fontVariantNumeric": "tabular-nums" }
+    },
+    "_note": "Scale values are implementation decisions (the reference shows hierarchy, not numeric sizes)."
+  },
+  "spacing": { "0": 0, "1": 4, "2": 8, "3": 12, "4": 16, "5": 20, "6": 24, "8": 32, "10": 40, "12": 48, "16": 64 },
+  "layout": {
+    "screenPaddingX": 20, "sectionGap": 24, "cardPadding": 16, "gridGap": 12,
+    "iconLabelGap": 8, "inputHeight": 52, "buttonHeight": 52, "minTouchTarget": 48,
+    "bottomNavHeight": 64, "topBarHeight": 56, "maxContentWidth": 480
+  },
+  "radius": { "sm": 8, "md": 12, "lg": 16, "xl": 20, "xxl": 24, "full": 9999 },
+  "border": { "hairline": 1, "emphasis": 2 },
+  "shadow": {
+    "none": "none",
+    "card": "0 1px 2px rgba(11,23,42,0.06)",
+    "raised": "0 4px 16px rgba(11,23,42,0.08)",
+    "sheet": "0 -8px 24px rgba(11,23,42,0.10)"
+  },
+  "iconSize": { "xs": 16, "sm": 20, "md": 24, "lg": 28, "tileContainer": 56 },
+  "iconStroke": { "default": 1.75 },
+  "motion": {
+    "duration": { "instant": 100, "fast": 150, "base": 220, "slow": 320, "splash": 1200 },
+    "easing": { "standard": "cubic-bezier(0.2, 0, 0, 1)", "decelerate": "cubic-bezier(0, 0, 0, 1)" }
+  },
+  "zIndex": { "base": 0, "sticky": 10, "bottomNav": 20, "dropdown": 30, "overlay": 40, "sheet": 50, "toast": 60 }
+}

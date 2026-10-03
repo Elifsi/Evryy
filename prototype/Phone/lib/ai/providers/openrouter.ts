@@ -125,7 +125,7 @@ async function callOpenRouter(apiKey: string, model: string, messages: OpenRoute
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://evrry.local",
+        "HTTP-Referer": "https://evrry.com.np",
         "X-Title": "evrry",
       },
       body: JSON.stringify({ model, messages, tools: OPENAI_TOOLS, tool_choice: "auto" }),

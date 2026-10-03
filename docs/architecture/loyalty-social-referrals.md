@@ -68,7 +68,7 @@ evrry unifies 4 distinct transaction models into a single consumer client experi
 ## 4. Referral Engine & Vouchers Hub
 
 ### A. Two-Sided Referral Mechanics ("Refer & Earn")
-- **Unique Referral Links**: Every user gets a personalized referral code and link (e.g., `evrry.app/r/@handle` or `EVRRY-RAHUL`).
+- **Unique Referral Links**: Every user gets a personalized referral code and link (e.g., `evrry.com.np/r/@handle` or `EVRRY-RAHUL`).
 - **Two-Sided Incentive Loop**:
   1. **New User (Friend)**: Signs up via referral link and instantly receives a **NPR 100 Welcome Voucher** valid on their first Food or Ride order.
   2. **Referrer**: Once the invited friend completes their first paid delivery or ride, the referrer automatically receives a **NPR 150 Reward Voucher** in their Voucher Wallet.

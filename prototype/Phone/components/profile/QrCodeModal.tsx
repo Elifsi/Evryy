@@ -17,7 +17,7 @@ export default function QrCodeModal({ displayName, username, isOpen, onClose }: 
 
   const handleShare = () => {
     if (typeof window !== "undefined") {
-      navigator.clipboard?.writeText(`https://evrry.app/${username}`);
+      navigator.clipboard?.writeText(`https://evrry.com.np/${username}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }

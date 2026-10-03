@@ -164,5 +164,5 @@ Safety requires two separate tracking channels: **In-App Encrypted Chat** for re
 ### External Link Safety Share
 - If a family member does not have the app installed, the customer taps **"Share Trip Link"**.
 - The backend generates a cryptographically signed, short-lived web link:
-  `https://evrry.app/track/tr_8f93a1b?sig=e3b0c44...`
+  `https://evrry.com.np/track/tr_8f93a1b?sig=e3b0c44...`
 - The link opens a lightweight Next.js/HTML page on any mobile browser (Safari, Chrome) showing the vehicle moving along the road towards the destination in real time.

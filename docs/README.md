@@ -12,6 +12,7 @@ Welcome to the **evrry** Super App platform documentation, developed by **Elifsi
 - [Consumer Architecture](./architecture/consumer.md) — Consumer clients, subsystems, and security boundaries.
 - [Partner Architecture](./architecture/partner.md) — Partner clients, merchant workflows, and tenant isolation.
 - [Payment Architecture](./architecture/payments.md) — Payment service abstraction, supported gateways (eSewa, Khalti, Fonepay, Card), and security.
+- [UI/UX Design System](./design/UI_DESIGN_SYSTEM.md) — Brand, colors, typography, components, screens, tokens, and app-icon/asset size checklist (see also `docs/design/`).
 - [Partner Payout & Financial Architecture](./architecture/payouts.md) — Payout subsystem, financial data model, settlement cycles, and ledger principles.
 
 ### 2. Product Specifications
