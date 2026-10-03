@@ -60,3 +60,6 @@ npm-debug.log*
 
 # ── Tooling ───────────────────────────────────────────────────────────────────
 .claude/
+
+# ── Third-party reference clones (see reference/README.md) ───────────────────
+reference/*/
