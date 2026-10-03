@@ -166,3 +166,65 @@ Safety requires two separate tracking channels: **In-App Encrypted Chat** for re
 - The backend generates a cryptographically signed, short-lived web link:
   `https://evrry.com.np/track/tr_8f93a1b?sig=e3b0c44...`
 - The link opens a lightweight Next.js/HTML page on any mobile browser (Safari, Chrome) showing the vehicle moving along the road towards the destination in real time.
+
+---
+
+## 6. Staged Deployment & Testing Strategy (Zero-Cost Dev to Production)
+
+To eliminate infrastructure costs and reduce operational complexity during active development, the ecosystem utilizes a two-phase rollout model:
+
+```mermaid
+flowchart TD
+    subgraph Phase 1: Rapid Development & Zero-Cost Testing
+        A["Google Colab GPU + vLLM + Cloudflare Tunnel"]
+        B["Supabase Managed Cloud (Free Tier)"]
+        C["Phone Prototype & Native Test Builds"]
+        C <--> A
+        C <--> B
+    end
+
+    subgraph Phase 2: Production Launch
+        D["Dedicated Bare-Metal / Cloud GPU (vLLM)"]
+        E["Self-Hosted Supabase (Docker Compose)"]
+        F["Live EVRRY Mobile Apps (Play Store / App Store)"]
+        F <--> D
+        F <--> E
+    end
+
+    Phase 1 -. "Update .env endpoints (Zero Code Changes)" .-> Phase 2
+```
+
+### A. Phase 1: Rapid Development & Model Testing
+1. **vLLM on Google Colab**:
+   - Utilize free/low-cost Colab T4 GPUs (16GB VRAM) for 7B/8B parameter models (`Qwen/Qwen2.5-7B-Instruct`, `meta-llama/Llama-3.1-8B-Instruct`) or 4-bit AWQ quantized 14B models.
+   - Run the standard OpenAI-compatible API server:
+     ```bash
+     python3 -m vllm.entrypoints.openai.api_server \
+       --model Qwen/Qwen2.5-7B-Instruct \
+       --port 8000
+     ```
+   - Expose the port to development clients using a secure tunnel:
+     ```bash
+     cloudflared tunnel --url http://localhost:8000
+     ```
+   - **Model Agnosticism**: Switching between models (Qwen, Llama, Gemma, Mistral) requires no client code modifications because all calls use standard OpenAI `/v1/chat/completions` tool schemas.
+2. **Supabase Cloud Free Tier**:
+   - Development databases, authentication, realtime subscriptions, and storage buckets run on managed Supabase free tier.
+   - All migrations, RLS policies, seeds, and PostGIS spatial functions are tested in this managed environment.
+
+### B. Phase 2: Production Deployment
+1. **Dedicated GPU Server**:
+   - Transition vLLM to a dedicated GPU instance (bare-metal RTX 4090, A4000, or cloud A10G/A100) running the official vLLM Docker container.
+2. **Self-Hosted Supabase**:
+   - Run the official Supabase Docker Compose stack on your dedicated server.
+   - Export and migrate the database using `supabase db dump` and `psql` restore.
+3. **Zero Code Changes**:
+   - Transitioning between Phase 1 and Phase 2 only requires updating environment variables in the client and gateway `.env` files:
+     ```env
+     # Phase 1 -> Phase 2
+     NEXT_PUBLIC_SUPABASE_URL="https://api.evrry.com.np"
+     NEXT_PUBLIC_SUPABASE_ANON_KEY="<production-anon-key>"
+     LLM_BASE_URL="https://llm.evrry.com.np/v1"
+     LLM_MODEL="Qwen/Qwen2.5-14B-Instruct"
+     ```
+
