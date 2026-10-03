@@ -1,13 +1,13 @@
-# Contributing to evryy
+# Contributing to evrry
 
-Thank you for contributing to **evryy**, an open-source Super App platform developed by **Elifsi Technologies Private Limited**! This document outlines our development workflows, coding standards, and security policies.
+Thank you for contributing to **evrry**, an open-source Super App platform developed by **Elifsi Technologies Private Limited**! This document outlines our development workflows, coding standards, and security policies.
 
 ---
 
 ## 1. Repository Layout
 
 ```
-Evryy/
+Evrry/
 ├── prototype/
 │   └── Phone/               ← Working Next.js reference implementation (active)
 ├── apps/
@@ -28,8 +28,8 @@ The interactive reference prototype is located at `prototype/Phone/`.
 ### Local Setup
 ```bash
 # Clone the repository
-git clone https://github.com/Elifsi/Evryy.git
-cd Evryy/prototype/Phone
+git clone https://github.com/Elifsi/Evrry.git
+cd Evrry/prototype/Phone
 
 # Install dependencies
 npm install

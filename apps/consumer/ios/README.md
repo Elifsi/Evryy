@@ -1,8 +1,8 @@
-# apps/consumer/ios — evryy Native Consumer iOS App
+# apps/consumer/ios — evrry Native Consumer iOS App
 
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Company**: Elifsi Technologies Private Limited  
-> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Repository**: [https://github.com/Elifsi/Evrry.git](https://github.com/Elifsi/Evrry.git)  
 
 ## Status
 

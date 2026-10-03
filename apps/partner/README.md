@@ -1,6 +1,6 @@
 # apps/partner/ — Partner Applications
 
-The **Partner Application** is designed for businesses, service providers, and gig operators participating in the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**.
+The **Partner Application** is designed for businesses, service providers, and gig operators participating in the **evrry** Super App platform, developed by **Elifsi Technologies Private Limited**.
 
 > **Important**: Partner applications are distinct products from consumer applications. They are designed around specific business roles, workflows, and operational needs rather than customer shopping flows.
 

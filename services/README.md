@@ -1,6 +1,6 @@
-# evryy Backend Microservices
+# evrry Backend Microservices
 
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Company**: Elifsi Technologies Private Limited  
 
 This directory contains standalone, specialized background services and gateway microservices complementing the centralized Supabase PostgreSQL database:

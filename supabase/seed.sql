@@ -1,5 +1,5 @@
 -- ==============================================================================
--- evryy Super App — Local Development Seed Data
+-- evrry Super App — Local Development Seed Data
 -- Developed by Elifsi Technologies Private Limited
 -- ==============================================================================
 

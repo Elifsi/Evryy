@@ -31,7 +31,7 @@ export const useChatStore = create<ChatState>()(
       ...createSocialSlice(...a),
     }),
     {
-      name: "evryy-chat",
+      name: "evrry-chat",
       version: 3,
       // Unchanged from before the slice split: usernameStatus,
       // connectionStatus, call, onlineIds (a Set — not JSON-serializable

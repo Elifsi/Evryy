@@ -1,7 +1,7 @@
 version: '3.8'
 
 # ==============================================================================
-# evryy Super App — Local Infrastructure & Microservices Stack
+# evrry Super App — Local Infrastructure & Microservices Stack
 # Developed by Elifsi Technologies Private Limited
 # ==============================================================================
 
@@ -9,7 +9,7 @@ services:
   # ── In-Memory Geospatial Cache & Task Queue ────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: evryy-redis
+    container_name: evrry-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -17,7 +17,7 @@ services:
     volumes:
       - redis-data:/data
     networks:
-      - evryy-network
+      - evrry-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -27,7 +27,7 @@ services:
   # ── OSRM Self-Hosted Routing Engine (Zero Google Polyline Fees) ───────────
   osrm:
     image: ghcr.io/project-osrm/osrm-backend:latest
-    container_name: evryy-osrm
+    container_name: evrry-osrm
     restart: unless-stopped
     ports:
       - "5000:5000"
@@ -35,19 +35,19 @@ services:
       - ./infra/osrm/data:/data:ro
     command: ["osrm-routed", "--algorithm", "mld", "/data/nepal-latest.osrm"]
     networks:
-      - evryy-network
+      - evrry-network
 
   # ── Local LLM Inference Engine (vLLM / Ollama) ─────────────────────────────
   ollama:
     image: ollama/ollama:latest
-    container_name: evryy-llm
+    container_name: evrry-llm
     restart: unless-stopped
     ports:
       - "11434:11434"
     volumes:
       - ollama-models:/root/.ollama
     networks:
-      - evryy-network
+      - evrry-network
     deploy:
       resources:
         reservations:
@@ -61,7 +61,7 @@ services:
     build:
       context: ./services/ai-voice-gateway
       dockerfile: Dockerfile
-    container_name: evryy-voice-gateway
+    container_name: evrry-voice-gateway
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -74,14 +74,14 @@ services:
       - redis
       - ollama
     networks:
-      - evryy-network
+      - evrry-network
 
   # ── Push Notification & Background Worker ──────────────────────────────────
   notification-worker:
     build:
       context: ./services/notification-worker
       dockerfile: Dockerfile
-    container_name: evryy-notification-worker
+    container_name: evrry-notification-worker
     restart: unless-stopped
     environment:
       - REDIS_URL=redis://redis:6379/0
@@ -93,12 +93,12 @@ services:
     depends_on:
       - redis
     networks:
-      - evryy-network
+      - evrry-network
 
   # ── Caddy Reverse Proxy & SSL Termination ──────────────────────────────────
   caddy:
     image: caddy:2-alpine
-    container_name: evryy-proxy
+    container_name: evrry-proxy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -111,10 +111,10 @@ services:
       - ai-voice-gateway
       - osrm
     networks:
-      - evryy-network
+      - evrry-network
 
 networks:
-  evryy-network:
+  evrry-network:
     driver: bridge
 
 volumes:

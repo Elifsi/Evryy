@@ -1,6 +1,6 @@
 # Consumer Architecture
 
-The Consumer application provides the customer-facing experience for **evryy**, developed by **Elifsi Technologies Private Limited**, across Android, iOS, and Web.
+The Consumer application provides the customer-facing experience for **evrry**, developed by **Elifsi Technologies Private Limited**, across Android, iOS, and Web.
 
 ---
 

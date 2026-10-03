@@ -1,7 +1,7 @@
 # Push Notification & Background Worker Service
 
 > **Microservice**: `services/notification-worker`  
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Maintainer**: Elifsi Technologies Private Limited  
 > **Integrations**: Firebase Cloud Messaging (FCM), Apple Push Notification service (APNs), Redis Task Queue, Supabase Database Webhooks  
 

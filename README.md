@@ -1,4 +1,4 @@
-# evryy — Super App Platform Monorepo
+# evrry — Super App Platform Monorepo
 
 > **An open-source, AI-first super-app platform developed by [Elifsi Technologies Private Limited](https://github.com/Elifsi).**  
 > Unifying Food Delivery, Quick-Commerce Grocery, Rides, Hotels & Stays, Room Rentals, Vehicle Rentals, WhatsApp-style Encrypted Chat, and Camera/Snap experiences into a single ecosystem.
@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Status: Active Development](https://img.shields.io/badge/Status-Active%20Development-green.svg)](./docs/roadmap/README.md)
 [![Organization](https://img.shields.io/badge/Organization-Elifsi%20Technologies-purple.svg)](https://github.com/Elifsi)
-[![Repository](https://img.shields.io/badge/GitHub-Elifsi%2FEvryy-blue.svg)](https://github.com/Elifsi/Evryy)
+[![Repository](https://img.shields.io/badge/GitHub-Elifsi%2FEvrry-blue.svg)](https://github.com/Elifsi/Evrry)
 
 ---
 
@@ -59,7 +59,7 @@ The platform unifies multiple native and web clients around a single, centralize
 ## Complete Repository Directory Tree
 
 ```
-Evryy/
+Evrry/
 │
 ├── prototype/
 │   └── Phone/                 ← 🟢 START HERE: Working Next.js reference prototype
@@ -176,7 +176,7 @@ npm run build        # Production Next.js Turbopack build (41 routes compiled)
 1. **Streamlined Payment Ingestion** ([`docs/architecture/payments.md`](./docs/architecture/payments.md)):
    - **Zero Stored-Value Wallet**: In-app customer wallets are removed to eliminate NRB PSP licensing and escrow liabilities.
    - **Fonepay Dynamic QR**: Real-time EMVCo QR with locked payable amount and system remarks; blurs on scan, auto-processes on server webhook (IMS Supermarket billing model); supports screenshot sharing to bank apps via gallery scan.
-   - **Hosted Redirection & Deep Linking**: Direct wallet checkout via **eSewa**, **Khalti**, and **Fonepay Direct** (login/OTP handled exclusively on gateway servers before returning via `evryy://checkout/callback`).
+   - **Hosted Redirection & Deep Linking**: Direct wallet checkout via **eSewa**, **Khalti**, and **Fonepay Direct** (login/OTP handled exclusively on gateway servers before returning via `evrry://checkout/callback`).
    - **Cards via Khalti & eSewa**: 3D-Secure Visa, Mastercard, and SCT card checkouts hosted directly by certified gateway sheets (zero raw card storage).
    - **Cash on Delivery (COD)**: Physical cash collection on delivery verified with a 4-digit recipient OTP handshake.
 

@@ -1,5 +1,5 @@
 # Notification & Fintech Worker Dependencies
-# Platform: evryy Super App (Elifsi Technologies Private Limited)
+# Platform: evrry Super App (Elifsi Technologies Private Limited)
 
 # Push Notification Dispatch (FCM & APNs Bridge)
 firebase-admin>=6.4.0

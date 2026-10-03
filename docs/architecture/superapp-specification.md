@@ -1,8 +1,8 @@
-# evryy — Super App Architecture & Implementation Specification
+# evrry — Super App Architecture & Implementation Specification
 
 > **Organization**: Elifsi Technologies Private Limited  
-> **Platform**: evryy Super App Ecosystem  
-> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Platform**: evrry Super App Ecosystem  
+> **Repository**: [https://github.com/Elifsi/Evrry.git](https://github.com/Elifsi/Evrry.git)  
 > **Clients**: Android (Kotlin + Jetpack Compose), iOS (Swift + SwiftUI), Web (Next.js App Router)  
 > **Backend**: Supabase (PostgreSQL 15+, PostGIS, Realtime, Auth, Storage, Edge Functions)
 
@@ -84,7 +84,7 @@ When generating SQL schemas, Supabase Edge Functions, or client queries, adhere 
 - **Identity & Roles:** A single `public.profiles` table linked to `auth.users(id)` with a typed role enum (`consumer`, `rider`, `driver`, `merchant`, `landlord`, `host`, `admin`).
 - **Direct Payment Rails & COD (Zero Stored-Value Wallet):** In-app customer wallets are removed to eliminate NRB stored-value PSP licensing liabilities. Payment checkouts are executed directly via:
   1. **Fonepay Dynamic QR**: Dynamic EMVCo QR generated with locked total amount and system remarks; blurs on scan, auto-processes on server webhook IPN; supports screenshot gallery uploads.
-  2. **Hosted Redirection & Deep Linking**: Direct wallet checkouts via eSewa, Khalti, and Fonepay Direct where login and SMS OTP authentication happen exclusively on provider-hosted pages before deep-linking back to `evryy://checkout/callback`.
+  2. **Hosted Redirection & Deep Linking**: Direct wallet checkouts via eSewa, Khalti, and Fonepay Direct where login and SMS OTP authentication happen exclusively on provider-hosted pages before deep-linking back to `evrry://checkout/callback`.
   3. **3D-Secure Cards**: Visa, Mastercard, and SCT card checkouts facilitated through Khalti/eSewa hosted sheets (zero raw card storage).
   4. **Cash on Delivery (COD)**: Available for physical goods delivery with 4-digit recipient OTP handshake upon rider arrival.
   5. **Platform Accounting Ledger**: An immutable `public.platform_ledger` double-entry table recording merchant commissions, rider COD collections, and midnight connectIPS disbursements.
@@ -121,9 +121,9 @@ When writing client-side code:
 ## 5. Architectural Subsystem Blueprints
 
 For in-depth domain specifications, reference these dedicated subsystem documents:
-- [Social, Messaging, Gamified Loyalty, Referrals & Vouchers](file:///home/rahul/codes/Evryy/docs/architecture/loyalty-social-referrals.md)
-- [Fintech, Payment Rails & COD Specification](file:///home/rahul/codes/Evryy/docs/architecture/payments.md)
-- [Automated Settlement & Payouts Architecture](file:///home/rahul/codes/Evryy/docs/architecture/payouts.md)
-- [AI Voice Gateway, Dependencies & Docker Engines](file:///home/rahul/codes/Evryy/docs/architecture/dependencies-master.md)
-- [Consumer Client Architecture](file:///home/rahul/codes/Evryy/docs/architecture/consumer.md)
-- [Partner Client Architecture](file:///home/rahul/codes/Evryy/docs/architecture/partner.md)
+- [Social, Messaging, Gamified Loyalty, Referrals & Vouchers](file:///home/rahul/codes/Evrry/docs/architecture/loyalty-social-referrals.md)
+- [Fintech, Payment Rails & COD Specification](file:///home/rahul/codes/Evrry/docs/architecture/payments.md)
+- [Automated Settlement & Payouts Architecture](file:///home/rahul/codes/Evrry/docs/architecture/payouts.md)
+- [AI Voice Gateway, Dependencies & Docker Engines](file:///home/rahul/codes/Evrry/docs/architecture/dependencies-master.md)
+- [Consumer Client Architecture](file:///home/rahul/codes/Evrry/docs/architecture/consumer.md)
+- [Partner Client Architecture](file:///home/rahul/codes/Evrry/docs/architecture/partner.md)

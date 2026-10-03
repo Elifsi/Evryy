@@ -1,6 +1,6 @@
 # Product Requirements — Partner Application
 
-The Partner Application provides business management and fulfillment tools for merchant partners on the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**.
+The Partner Application provides business management and fulfillment tools for merchant partners on the **evrry** Super App platform, developed by **Elifsi Technologies Private Limited**.
 
 ---
 

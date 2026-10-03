@@ -1,8 +1,8 @@
-# evryy — Dependencies Master Specification
+# evrry — Dependencies Master Specification
 
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Company**: Elifsi Technologies Private Limited  
-> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Repository**: [https://github.com/Elifsi/Evrry.git](https://github.com/Elifsi/Evrry.git)  
 
 ---
 
@@ -107,13 +107,13 @@ Push notifications cannot rely on open WebSockets because mobile operating syste
 
 ### A. Consumer Payment Rails
 1. **Fonepay Dynamic QR (Supermarket IMS Model)**:
-   - Server calls Fonepay API with locked `total_amount` and unique system `remarks` (e.g. `EVRYY-ORD-10492`).
+   - Server calls Fonepay API with locked `total_amount` and unique system `remarks` (e.g. `EVRRY-ORD-10492`).
    - Customer can scan from any bank app, or screenshot and send via WhatsApp/Viber to friends (who upload via **"Scan from Gallery"**).
    - Screen blurs on scan, auto-advances upon instant server webhook IPN receipt.
 2. **Direct Wallet / App Hosted Redirection (eSewa, Khalti, Fonepay Direct)**:
    - The mobile app redirects to the gateway's official secure hosted page/app via deep link.
-   - User login and SMS OTP verification occur strictly on the provider's server (zero credentials in evryy).
-   - Deep links back to `evryy://checkout/callback?status=success&pidx=...`.
+   - User login and SMS OTP verification occur strictly on the provider's server (zero credentials in evrry).
+   - Deep links back to `evrry://checkout/callback?status=success&pidx=...`.
 3. **Card Payments (Visa, Mastercard, SCT)**:
    - Hosted 3D-Secure card sheets powered directly via Khalti & eSewa (zero raw card storage).
 4. **Cash on Delivery (COD)**:
@@ -164,5 +164,5 @@ Safety requires two separate tracking channels: **In-App Encrypted Chat** for re
 ### External Link Safety Share
 - If a family member does not have the app installed, the customer taps **"Share Trip Link"**.
 - The backend generates a cryptographically signed, short-lived web link:
-  `https://evryy.app/track/tr_8f93a1b?sig=e3b0c44...`
+  `https://evrry.app/track/tr_8f93a1b?sig=e3b0c44...`
 - The link opens a lightweight Next.js/HTML page on any mobile browser (Safari, Chrome) showing the vehicle moving along the road towards the destination in real time.

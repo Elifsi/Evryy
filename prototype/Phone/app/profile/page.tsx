@@ -99,7 +99,7 @@ export default function ProfilePage() {
 
       <QrCodeModal
         displayName={displayName || "Your Name"}
-        username={identity?.username ? `@${identity.username}` : "@evryy_user"}
+        username={identity?.username ? `@${identity.username}` : "@evrry_user"}
         isOpen={showQr}
         onClose={() => setShowQr(false)}
       />

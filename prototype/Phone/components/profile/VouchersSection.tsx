@@ -54,7 +54,7 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
     e.preventDefault();
     if (!promoInput.trim()) return;
 
-    if (promoInput.toUpperCase() === "EVRYY50" || promoInput.toUpperCase() === "DASHAIN") {
+    if (promoInput.toUpperCase() === "EVRRY50" || promoInput.toUpperCase() === "DASHAIN") {
       setPromoMessage({ text: "Promo applied! NPR 50 added to your voucher wallet.", success: true });
       setPromoInput("");
     } else {
@@ -72,10 +72,10 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
   };
 
   const handleShareReferral = () => {
-    const text = "Join me on evryy! Use my code EVRYY-RAHUL to get a NPR 100 welcome voucher on your first food order or ride: https://evryy.app/r/rahul";
+    const text = "Join me on evrry! Use my code EVRRY-RAHUL to get a NPR 100 welcome voucher on your first food order or ride: https://evrry.app/r/rahul";
     if (typeof window !== "undefined") {
       if (navigator.share) {
-        navigator.share({ title: "evryy Referral", text });
+        navigator.share({ title: "evrry Referral", text });
       } else {
         navigator.clipboard?.writeText(text);
         alert("Referral link copied to clipboard! Share on WhatsApp.");
@@ -106,7 +106,7 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
         <div className="mt-3.5 flex items-center justify-between gap-2 rounded-xl bg-black/15 p-2.5 backdrop-blur-sm">
           <div>
             <p className="text-[10px] uppercase font-semibold text-white/70">Your referral code</p>
-            <p className="text-xs font-mono font-bold tracking-wider text-white">EVRYY-RAHUL</p>
+            <p className="text-xs font-mono font-bold tracking-wider text-white">EVRRY-RAHUL</p>
           </div>
           <button
             onClick={handleShareReferral}
@@ -161,7 +161,7 @@ export default function VouchersSection({ open, onToggle }: { open: boolean; onT
             type="text"
             value={promoInput}
             onChange={(e) => setPromoInput(e.target.value)}
-            placeholder="e.g. EVRYY50"
+            placeholder="e.g. EVRRY50"
             className="flex-1 rounded-xl border border-black/15 bg-white px-3 py-2 text-xs font-mono uppercase text-ink placeholder:normal-case placeholder:font-sans placeholder:text-ink/30 focus:border-accent focus:outline-none"
           />
           <button

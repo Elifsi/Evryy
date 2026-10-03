@@ -1,8 +1,8 @@
-# apps/partner/android — evryy Native Partner Android App
+# apps/partner/android — evrry Native Partner Android App
 
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Company**: Elifsi Technologies Private Limited  
-> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Repository**: [https://github.com/Elifsi/Evrry.git](https://github.com/Elifsi/Evrry.git)  
 
 ## Status
 

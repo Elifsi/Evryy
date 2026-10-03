@@ -1,6 +1,6 @@
-# evryy — Web Prototype & Reference Implementation
+# evrry — Web Prototype & Reference Implementation
 
-> **Important**: This directory contains the original **evryy mobile prototype**, developed by **Elifsi Technologies Private Limited**.
+> **Important**: This directory contains the original **evrry mobile prototype**, developed by **Elifsi Technologies Private Limited**.
 > It is an end-to-end interactive demo that serves as the **visual, UX, interaction, and functional reference** for the future production consumer applications (Android, iOS, Web) and partner applications.
 >
 > **Do NOT delete, rewrite, or replace this prototype with a stub.**

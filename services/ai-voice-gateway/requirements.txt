@@ -1,5 +1,5 @@
 # AI Voice Gateway Backend Dependencies
-# Platform: evryy Super App (Elifsi Technologies Private Limited)
+# Platform: evrry Super App (Elifsi Technologies Private Limited)
 
 # Async Web Framework & WebSocket Engine
 fastapi>=0.110.0

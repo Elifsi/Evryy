@@ -58,7 +58,7 @@ export default function RideTrackingView() {
   }
 
   async function handleShare() {
-    const text = `I'm on a ride from ${ride.pickup} to ${ride.drop} with ${ride.driver?.name ?? "my driver"}. (evryy demo trip link)`;
+    const text = `I'm on a ride from ${ride.pickup} to ${ride.drop} with ${ride.driver?.name ?? "my driver"}. (evrry demo trip link)`;
     await shareOrCopyText(text, {
       onCopied: () => {
         setShared(true);

@@ -6,7 +6,7 @@ import ActiveRideBar from "@/components/ActiveRideBar";
 import CartFloatingBar from "@/components/CartFloatingBar";
 
 export const metadata: Metadata = {
-  title: "evryy",
+  title: "evrry",
   description: "AI-native super app by Elifsi Technologies Private Limited",
 };
 

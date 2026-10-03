@@ -1,8 +1,8 @@
-# apps/web/partner — evryy Production Partner Web Portal & Management Dashboard
+# apps/web/partner — evrry Production Partner Web Portal & Management Dashboard
 
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Company**: Elifsi Technologies Private Limited  
-> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Repository**: [https://github.com/Elifsi/Evrry.git](https://github.com/Elifsi/Evrry.git)  
 
 ## Status
 

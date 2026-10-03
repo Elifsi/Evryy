@@ -1,6 +1,6 @@
 # Platform Roadmap
 
-This document outlines the phased development roadmap for **evryy**, developed by **Elifsi Technologies Private Limited**.
+This document outlines the phased development roadmap for **evrry**, developed by **Elifsi Technologies Private Limited**.
 
 ---
 

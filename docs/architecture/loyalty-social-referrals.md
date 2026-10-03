@@ -1,14 +1,14 @@
-# evryy — Social, Loyalty, Referrals & Multi-Vertical Architecture Specification
+# evrry — Social, Loyalty, Referrals & Multi-Vertical Architecture Specification
 
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Company**: Elifsi Technologies Private Limited  
-> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Repository**: [https://github.com/Elifsi/Evrry.git](https://github.com/Elifsi/Evrry.git)  
 
 ---
 
 ## 1. Booking, Listings & Delivery Interaction Architecture
 
-evryy unifies 4 distinct transaction models into a single consumer client experience without friction:
+evrry unifies 4 distinct transaction models into a single consumer client experience without friction:
 
 | Service Vertical | Interaction Model | Checkout & Payment Flow | Dispatch & Settlement |
 |---|---|---|---|
@@ -68,7 +68,7 @@ evryy unifies 4 distinct transaction models into a single consumer client experi
 ## 4. Referral Engine & Vouchers Hub
 
 ### A. Two-Sided Referral Mechanics ("Refer & Earn")
-- **Unique Referral Links**: Every user gets a personalized referral code and link (e.g., `evryy.app/r/@handle` or `EVRYY-RAHUL`).
+- **Unique Referral Links**: Every user gets a personalized referral code and link (e.g., `evrry.app/r/@handle` or `EVRRY-RAHUL`).
 - **Two-Sided Incentive Loop**:
   1. **New User (Friend)**: Signs up via referral link and instantly receives a **NPR 100 Welcome Voucher** valid on their first Food or Ride order.
   2. **Referrer**: Once the invited friend completes their first paid delivery or ride, the referrer automatically receives a **NPR 150 Reward Voucher** in their Voucher Wallet.

@@ -1,6 +1,6 @@
 # apps/web/ — Production Web Applications
 
-This directory contains the production web applications of the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**:
+This directory contains the production web applications of the **evrry** Super App platform, developed by **Elifsi Technologies Private Limited**:
 
 ```
 apps/web/

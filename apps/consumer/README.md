@@ -1,6 +1,6 @@
 # apps/consumer/ — Consumer Applications
 
-The **Consumer Application** provides the customer-facing **evryy** Super App experience, developed by **Elifsi Technologies Private Limited**.
+The **Consumer Application** provides the customer-facing **evrry** Super App experience, developed by **Elifsi Technologies Private Limited**.
 
 ## Target Platforms
 

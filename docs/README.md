@@ -1,6 +1,6 @@
-# evryy Documentation
+# evrry Documentation
 
-Welcome to the **evryy** Super App platform documentation, developed by **Elifsi Technologies Private Limited**.
+Welcome to the **evrry** Super App platform documentation, developed by **Elifsi Technologies Private Limited**.
 
 ---
 

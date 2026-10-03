@@ -17,7 +17,7 @@ export default function QrCodeModal({ displayName, username, isOpen, onClose }: 
 
   const handleShare = () => {
     if (typeof window !== "undefined") {
-      navigator.clipboard?.writeText(`https://evryy.app/${username}`);
+      navigator.clipboard?.writeText(`https://evrry.app/${username}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -38,7 +38,7 @@ export default function QrCodeModal({ displayName, username, isOpen, onClose }: 
             {(displayName || "?").slice(0, 1).toUpperCase()}
           </div>
           <h2 className="mt-2.5 text-lg font-bold text-ink">{displayName || "Your Name"}</h2>
-          <p className="text-xs font-semibold text-accentDark">{username || "@evryy_user"}</p>
+          <p className="text-xs font-semibold text-accentDark">{username || "@evrry_user"}</p>
 
           {/* WeChat Style Personal QR Code */}
           <div className="mt-5 rounded-2xl border-2 border-dashed border-accent/40 bg-paper p-4 shadow-sm">
@@ -102,7 +102,7 @@ export default function QrCodeModal({ displayName, username, isOpen, onClose }: 
           </div>
 
           <p className="mt-1 text-[11px] text-ink/45">
-            Friends scan this QR code with their camera or evryy app to add you directly.
+            Friends scan this QR code with their camera or evrry app to add you directly.
           </p>
 
           <div className="mt-4 flex w-full gap-2">

@@ -1,6 +1,6 @@
 # Partner Payout & Financial Architecture
 
-**evryy** (developed by **Elifsi Technologies Private Limited**) strictly separates inward customer collections from outward partner payouts.
+**evrry** (developed by **Elifsi Technologies Private Limited**) strictly separates inward customer collections from outward partner payouts.
 
 When a consumer pays for an order, the funds are collected into the platform's escrow/clearing accounts. The platform accounts for partner earnings, deducts platform commission, handles adjustments, and subsequently settles net funds to partners according to defined settlement cycles.
 

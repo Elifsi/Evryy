@@ -1,6 +1,6 @@
 # Partner Architecture
 
-The Partner application enables merchants, restaurants, service providers, and gig operators to manage their business, catalog, orders, and finances on the **evryy** Super App platform, developed by **Elifsi Technologies Private Limited**.
+The Partner application enables merchants, restaurants, service providers, and gig operators to manage their business, catalog, orders, and finances on the **evrry** Super App platform, developed by **Elifsi Technologies Private Limited**.
 
 ---
 
@@ -16,7 +16,7 @@ The Partner application enables merchants, restaurants, service providers, and g
 
 ## 2. Role-Based Partner Architecture
 
-Because the Consumer experience in evryy is multi-vertical (Food, Rides, Grocery, Hotels, Services), the **Partner Application is fundamentally Role-Based and Domain-Adaptive**. 
+Because the Consumer experience in evrry is multi-vertical (Food, Rides, Grocery, Hotels, Services), the **Partner Application is fundamentally Role-Based and Domain-Adaptive**. 
 
 The system operates across **two distinct role dimensions**:
 

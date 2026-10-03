@@ -1,8 +1,8 @@
 # supabase/migrations/ — Database Schema & Migration Specification
 
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Company**: Elifsi Technologies Private Limited  
-> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Repository**: [https://github.com/Elifsi/Evrry.git](https://github.com/Elifsi/Evrry.git)  
 > **Database Engine**: PostgreSQL 15+ with PostGIS, `pgcrypto`, `btree_gist`, and `pgvector`  
 
 ---
@@ -96,7 +96,7 @@ CREATE TABLE public.payments (
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN (
     'pending', 'completed', 'failed', 'refunded', 'pending_cod_collection'
   )),
-  remarks TEXT NOT NULL,      -- System-generated immutable remark (e.g. 'EVRYY-ORD-10492')
+  remarks TEXT NOT NULL,      -- System-generated immutable remark (e.g. 'EVRRY-ORD-10492')
   created_at TIMESTAMPTZ DEFAULT NOW(),
   completed_at TIMESTAMPTZ
 );

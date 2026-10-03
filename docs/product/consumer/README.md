@@ -1,6 +1,6 @@
 # Product Requirements — Consumer Application
 
-The Consumer Application is the user-facing flagship product for the **evryy** Super App ecosystem, developed by **Elifsi Technologies Private Limited**.
+The Consumer Application is the user-facing flagship product for the **evrry** Super App ecosystem, developed by **Elifsi Technologies Private Limited**.
 
 ---
 

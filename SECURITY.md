@@ -1,6 +1,6 @@
 # Security Policy
 
-Security and financial integrity are foundational to the **evryy** platform, developed by **Elifsi Technologies Private Limited**. This policy outlines security boundaries, secrets handling, and the process for reporting vulnerabilities.
+Security and financial integrity are foundational to the **evrry** platform, developed by **Elifsi Technologies Private Limited**. This policy outlines security boundaries, secrets handling, and the process for reporting vulnerabilities.
 
 ---
 
@@ -9,7 +9,7 @@ Security and financial integrity are foundational to the **evryy** platform, dev
 Please **do not** open public GitHub issues for security vulnerabilities.
 
 Instead, use GitHub's private vulnerability reporting:
-[Report a vulnerability](https://github.com/Elifsi/Evryy/security/advisories/new) via this repository's Security tab.
+[Report a vulnerability](https://github.com/Elifsi/Evrry/security/advisories/new) via this repository's Security tab.
 
 Please include:
 - A description of the vulnerability and its potential impact.
@@ -43,7 +43,7 @@ All reports will be acknowledged promptly and reviewed with high priority.
   - The server is the sole source of truth for all monetary computations (order totals, delivery fees, taxes, partner commissions, net payouts).
   - Client applications must never send or dictate final payable amounts to backend payment endpoints.
 - **Cardholder Data Protection**:
-  - evryy does not handle, store, or transmit raw credit/debit card numbers (PAN, CVV).
+  - evrry does not handle, store, or transmit raw credit/debit card numbers (PAN, CVV).
   - Card processing relies on PCI-DSS certified hosted gateway fields, tokenization, or mobile wallet SDKs.
 - **Ledger Immutability**:
   - Financial records (`transactions`, `partner_earnings`, `settlements`, `payouts`) are append-only.

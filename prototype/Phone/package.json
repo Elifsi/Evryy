@@ -1,5 +1,5 @@
 {
-  "name": "Evryy",
+  "name": "Evrry",
   "version": "0.1.0",
   "private": true,
   "description": "An AI-native super-app demo: a voice-first concierge that can search, compare, book, and pay across a mock ride/food/grocery/hotel catalog, plus end-to-end encrypted chat and WebRTC calling.",
@@ -7,11 +7,11 @@
   "author": "Elifsi Technologies Private Limited",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Elifsi/Evryy.git"
+    "url": "https://github.com/Elifsi/Evrry.git"
   },
-  "homepage": "https://github.com/Elifsi/Evryy#readme",
+  "homepage": "https://github.com/Elifsi/Evrry#readme",
   "bugs": {
-    "url": "https://github.com/Elifsi/Evryy/issues"
+    "url": "https://github.com/Elifsi/Evrry/issues"
   },
   "keywords": [
     "nextjs",

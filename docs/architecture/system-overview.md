@@ -1,10 +1,10 @@
 # System Architecture Overview
 
-> **Platform**: evryy Super App Ecosystem  
+> **Platform**: evrry Super App Ecosystem  
 > **Company**: Elifsi Technologies Private Limited  
-> **Repository**: [https://github.com/Elifsi/Evryy.git](https://github.com/Elifsi/Evryy.git)  
+> **Repository**: [https://github.com/Elifsi/Evrry.git](https://github.com/Elifsi/Evrry.git)  
 
-**evryy** is an AI-first super-app platform connecting consumers and service partners across dining, grocery quick-commerce, ride-sharing, hotels and stays, room rentals, vehicle rentals, encrypted P2P chat, and social camera experiences.
+**evrry** is an AI-first super-app platform connecting consumers and service partners across dining, grocery quick-commerce, ride-sharing, hotels and stays, room rentals, vehicle rentals, encrypted P2P chat, and social camera experiences.
 
 ---
 
@@ -42,7 +42,7 @@
 │    ├── Faster-Whisper & IndicConformer  │  │  • eSewa HMAC-SHA256 Token     │
 │    ├── AI4Bharat IndicXlit & Parler-TTS │  │  • connectIPS / Khalti Payouts │
 │    └── Local vLLM Qwen 2.5 Inference    │  │  • Push Worker (FCM & APNs)    │
-│  • Redis (GEOADD Driver GPS, Sockets)   │  │  • Evryy In-App Wallet Engine  │
+│  • Redis (GEOADD Driver GPS, Sockets)   │  │  • Evrry In-App Wallet Engine  │
 │  • OSRM Backend (Zero Google Fees)      │  │                                │
 └─────────────────────────────────────────┘  └────────────────────────────────┘
 ```
@@ -53,7 +53,7 @@
 
 ```
 ========================================================================================================
-                                     THE EVRYY PLATFORM WORKFLOW
+                                     THE EVRRY PLATFORM WORKFLOW
 ========================================================================================================
 
  [MOBILE CLIENTS: KOTLIN / SWIFT]
