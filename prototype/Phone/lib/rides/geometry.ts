@@ -45,3 +45,27 @@ export function driverPositionFor(ride: ActiveRide, now: number): MapPoint {
       return spawn;
   }
 }
+
+/** Computes compass angle (0-359 deg) from origin to destination */
+export function bearingBetween(from: MapPoint, to: MapPoint): number {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  if (dx === 0 && dy === 0) return 0;
+  const deg = (Math.atan2(dy, dx) * 180) / Math.PI;
+  return Math.round((deg + 360) % 360);
+}
+
+/** Computes heading angle for rotating motorcycle/scooter/car icon on the map */
+export function driverBearingFor(ride: ActiveRide, _now: number): number {
+  const spawn = spawnPointFor(ride);
+  switch (ride.phase) {
+    case "driver_assigned":
+    case "en_route_to_pickup":
+      return bearingBetween(spawn, ride.pickupPoint);
+    case "driver_arrived":
+    case "in_progress":
+      return bearingBetween(ride.pickupPoint, ride.dropPoint);
+    default:
+      return 0;
+  }
+}

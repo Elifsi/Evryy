@@ -28,16 +28,18 @@ export function LocationPin({
   );
 }
 
-/** A small roaming/nearby vehicle marker — no stem, since it represents a moving point, not a fixed address. */
+/** A small roaming/nearby vehicle marker — rotates according to vehicle heading angle (bearing). */
 export function VehicleMarker({
   x,
   y,
+  bearing = 0,
   icon: Icon,
   delayMs = 0,
   animate = false,
 }: {
   x: number;
   y: number;
+  bearing?: number;
   icon: LucideIcon;
   delayMs?: number;
   /** When the caller updates x/y over time (live GPS simulation), glide instead of jumping. */
@@ -51,9 +53,13 @@ export function VehicleMarker({
       )}
       style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${delayMs}ms` }}
     >
-      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-brand shadow-md ring-1 ring-black/5">
-        <Icon size={13} strokeWidth={2} />
+      <div
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand shadow-lg ring-2 ring-emerald-500/20 transition-transform duration-500 ease-out"
+        style={{ transform: `rotate(${bearing}deg)` }}
+      >
+        <Icon size={16} strokeWidth={2.2} />
       </div>
     </div>
   );
 }
+

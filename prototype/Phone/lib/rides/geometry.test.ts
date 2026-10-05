@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { driverPositionFor, hashToUnit, lerp, spawnPointFor } from "@/lib/rides/geometry";
+import { bearingBetween, driverBearingFor, driverPositionFor, hashToUnit, lerp, spawnPointFor } from "@/lib/rides/geometry";
 import { ActiveRide } from "@/lib/types";
 
 function makeRide(overrides: Partial<ActiveRide>): ActiveRide {
@@ -115,3 +115,34 @@ describe("driverPositionFor", () => {
     expect(driverPositionFor(ride, 5000)).toEqual(ride.pickupPoint);
   });
 });
+
+describe("bearingBetween and driverBearingFor", () => {
+  it("calculates cardinal compass angles correctly", () => {
+    // East: dx > 0, dy = 0 -> 0 deg
+    expect(bearingBetween({ x: 10, y: 10 }, { x: 20, y: 10 })).toBe(0);
+    // South: dx = 0, dy > 0 -> 90 deg
+    expect(bearingBetween({ x: 10, y: 10 }, { x: 10, y: 20 })).toBe(90);
+    // West: dx < 0, dy = 0 -> 180 deg
+    expect(bearingBetween({ x: 20, y: 10 }, { x: 10, y: 10 })).toBe(180);
+    // North: dx = 0, dy < 0 -> 270 deg
+    expect(bearingBetween({ x: 10, y: 20 }, { x: 10, y: 10 })).toBe(270);
+  });
+
+  it("computes driver heading towards pickup when assigned", () => {
+    const ride = makeRide({ phase: "en_route_to_pickup" });
+    const bearing = driverBearingFor(ride, 1500);
+    expect(bearing).toBeGreaterThanOrEqual(0);
+    expect(bearing).toBeLessThan(360);
+  });
+
+  it("computes driver heading towards dropoff when trip is in progress", () => {
+    const ride = makeRide({
+      phase: "in_progress",
+      pickupPoint: { x: 10, y: 10 },
+      dropPoint: { x: 50, y: 50 }, // Southeast heading (~45 deg)
+    });
+    const bearing = driverBearingFor(ride, 1500);
+    expect(bearing).toBe(45);
+  });
+});
+
