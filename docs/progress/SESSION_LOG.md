@@ -101,8 +101,12 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
   - Implemented Migration `0015` (`user_device_tokens`) and `supabase/functions/push-notify/` supporting FCM v1, APNs, and dead token auto-cleaning. Committed `e575442`.
 - **24/7 On-Demand Instant Payouts**:
   - Implemented Migration `0016` and instant payout execution with Zero-Hub COD lock and NPR 15 flat fee. Committed `5052fe8`.
+- **Automated Direct Payouts (eSewa & Khalti)**:
+  - Added direct wallet payout adapters `disburseViaEsewa()` and `disburseViaKhalti()` to `supabase/functions/payout-execute/index.ts`.
+  - Supports automated disbursements for both on-demand instant payouts and midnight batch settlement with idempotency keys and error-resilient fallbacks. Committed `f77c9e3`.
 - **4 Persona AI Voice Agents & Low-Latency WebRTC Pipeline**:
   - Implemented Migration `0017` (`20261005000017_ai_voice_personas.sql`) defining the 4 Voice Personas (**Eli** [Female], **Rony** [Male], **Jenny** [Female], **Suka** [Male]), public personas catalog, and user preference RPCs.
+  - Refactored persona naming to avoid OpenAI trademark conflicts (renamed Sol to Suka [Male], finalized Eli as Female flagship guide). Committed `5c1ef17`.
   - Built the Python AI Voice Gateway microservice in `services/ai-voice-gateway/` with:
     - Faster-Whisper in-memory PCM ASR + AI4Bharat IndicConformer.
     - AI4Bharat IndicXlit Romanized-to-Devanagari real-time phonetic transliteration.
@@ -114,6 +118,12 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
   - Upgraded `supabase/functions/ai-gateway/index.ts` to broker WebRTC room tokens (`create_voice_room`) and inject persona prompts.
   - Updated multiplatform client services (`EvrryAiService.kt`, `EvrryAiService.swift`, `apps/web/common/ai.ts`).
   - Created unit tests in `prototype/Phone/lib/ai/personas.test.ts`.
+- **Dynamic Platform Fee Architecture (Rs 5 Default)**:
+  - System default set to **Rs 5.00** (`500` paisa) in `public.platform_settings.platform_fee_paisa`.
+  - Client checkout calculation in `prototype/Phone/lib/pricing.ts` enforces `platformFee = 5`.
+  - Database trigger `post_order_settlement` posts customer platform fees directly to `platform_revenue` in the double-entry general ledger.
+  - Invoice generation in `email_dispatch_queue` itemizes `platformFeePaisa` transparently on receipts.
+  - Fully dynamic: Superadmin can alter the fee (e.g. increase or set to 0 for promotions) by updating `public.platform_settings` without requiring any code deployment or mobile app update.
 - **Full Verification**:
   - Ran complete test suite: 14/14 test files passed, 86/86 unit and integration tests passed (100% success).
 
