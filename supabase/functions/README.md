@@ -7,9 +7,10 @@ This directory is designated for server-side TypeScript Edge Functions running o
 ✅ **Active Production Functions**:
 - `send-email/`: Universal Resend email dispatch engine serving Android (Kotlin), iOS (Swift), Web (Next.js), and PostgreSQL outbox triggers.
 - `send-sms/`: Universal Nepal SMS OTP engine supporting Sparrow SMS, Aakash SMS, Dev Mock Mode, and database-level anti-bombing rate limits.
+- `payment-initiate/`: Direct Nepal payment session creator for eSewa ePay v2 (HMAC-SHA256), Khalti ePayment v2 (pidx), and Fonepay dynamic QR.
+- `payment-verify/`: Direct payment gateway verification receiver executing atomic ledger postings via `public.confirm_payment()`.
 
 🔮 **Planned Financial Functions**:
-- Payment initiation & verification (`payment-initiate/`, `payment-verify/`)
 - Partner payout execution (`payout-execute/`)
 
 ---
