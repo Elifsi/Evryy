@@ -50,6 +50,7 @@
 | `20261005000014_sms_verification_and_rate_limiting.sql` | `sms_dispatch_logs`, `sms_rate_limits`, anti-bombing rate limiter RPC `check_sms_rate_limit` |
 | `20261005000015_device_push_tokens.sql` | `user_device_tokens` (FCM/APNs), RPC `register_device_token`, dead-token pruning |
 | `20261005000016_on_demand_instant_payouts.sql` | On-demand instant cash-out, RPC `request_on_demand_payout`, COD lock, instant fee |
+| `20261005000017_ai_voice_personas.sql` | 4 Voice Personas (Eli, Rony, Jenny, Sol), `ai_voice_personas` table, voice preferences, RPCs |
 
 ---
 
@@ -66,7 +67,7 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
 | **`payout-execute/`** | Midnight partner settlement & banking disbursement | Audits balances, offsets rider cash, ConnectIPS NCHL CSV export, email statements |
 | **`push-notify/`** | High-priority push alerts to devices | Firebase Cloud Messaging (FCM HTTP v1) via OAuth2, APNs, dead token pruning |
 | **`process-outbox/`** | Resilient transactional outbox worker | Polls `email_dispatch_queue`, retries failures with exponential backoff |
-| **`ai-gateway/`** | Server-side AI Concierge, Vision OCR & Voice | OpenRouter (Gemini 2.0 Flash / Claude), user memory injection (`get_ai_context`), Photo-to-Menu OCR, Kitchen Voice ("Momo sakiyo") |
+| **`ai-gateway/`** | Server-side AI Concierge, 4 Voice Personas & WebRTC Room Broker | OpenRouter/Gemini, user memory (`get_ai_context`), 4 Personas (Eli, Rony, Jenny, Sol), `create_voice_room` (LiveKit WebRTC), Photo-to-Menu OCR, Kitchen Voice |
 
 ---
 
@@ -83,7 +84,7 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
 - Pinned `resend@^6.1.1` and wrote 4 Vitest unit tests verifying currency formatting, HTML output, and mock modes.
 - Committed under git commit `6a7588b`.
 
-### Session 3: Universal Backend Completion (Today)
+### Session 3: Universal Backend & Real-Time AI Voice Streaming Stack
 - **Universal Email Edge Function & Invoicing Trigger**:
   - Implemented `supabase/functions/send-email/` and Migration `0013` (`email_dispatch_queue`).
   - Created client bridges in Kotlin, Swift, and Next.js Web. Committed `906fd59`.
@@ -98,10 +99,23 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
   - Implemented `supabase/functions/payout-execute/` supporting automated audit, COD offset, ConnectIPS CSV export, and email receipts. Committed `c93142e`.
 - **Push Notification Service**:
   - Implemented Migration `0015` (`user_device_tokens`) and `supabase/functions/push-notify/` supporting FCM v1, APNs, and dead token auto-cleaning. Committed `e575442`.
-- **AI Gateway & Resilient Outbox Retry Worker**:
-  - Implemented `supabase/functions/process-outbox/` and `supabase/functions/ai-gateway/`. Committed `ca442df`.
+- **24/7 On-Demand Instant Payouts**:
+  - Implemented Migration `0016` and instant payout execution with Zero-Hub COD lock and NPR 15 flat fee. Committed `5052fe8`.
+- **4 Persona AI Voice Agents & Low-Latency WebRTC Pipeline**:
+  - Implemented Migration `0017` (`20261005000017_ai_voice_personas.sql`) defining the 4 Voice Personas (**Eli**, **Rony**, **Jenny**, **Sol**), public personas catalog, and user preference RPCs.
+  - Built the Python AI Voice Gateway microservice in `services/ai-voice-gateway/` with:
+    - Faster-Whisper in-memory PCM ASR + AI4Bharat IndicConformer.
+    - AI4Bharat IndicXlit Romanized-to-Devanagari real-time phonetic transliteration.
+    - Piper-TTS & AI4Bharat Indic-Parler-TTS with dynamic persona pitch and speed modulation.
+    - Dialog orchestrator with tool schemas (`search_catalog`, `add_to_cart`, `calculate_ride_fare`).
+    - Real-time `VoicePipeline` featuring VAD, turn completion detection, and barge-in / interruption handling.
+    - LiveKit WebRTC Worker Agent (`LiveKitVoiceAgent`) & direct binary WebSocket (`/ws/voice-agent`).
+  - Added LiveKit WebRTC server to `docker-compose.yml`.
+  - Upgraded `supabase/functions/ai-gateway/index.ts` to broker WebRTC room tokens (`create_voice_room`) and inject persona prompts.
+  - Updated multiplatform client services (`EvrryAiService.kt`, `EvrryAiService.swift`, `apps/web/common/ai.ts`).
+  - Created unit tests in `prototype/Phone/lib/ai/personas.test.ts`.
 - **Full Verification**:
-  - Ran complete test suite: 13/13 test files passed, 79/79 unit and integration tests passed (100% success).
+  - Ran complete test suite: 14/14 test files passed, 86/86 unit and integration tests passed (100% success).
 
 ---
 

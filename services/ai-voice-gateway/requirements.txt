@@ -4,15 +4,23 @@
 # Async Web Framework & WebSocket Engine
 fastapi>=0.110.0
 uvicorn[standard]>=0.28.0
+pydantic>=2.6.0
+python-dotenv>=1.0.0
+
+# WebRTC & LiveKit Real-Time Audio Infrastructure
+livekit>=0.18.0
+livekit-api>=0.8.0
+livekit-agents>=0.8.0
 
 # Speech-to-Text (STT) Engines
 faster-whisper>=1.0.0
+webrtcvad>=2.0.10
 
 # Neural Text-to-Speech (TTS) Engines
 piper-tts>=1.2.0
 parler-tts>=0.2.0
 
-# LLM Inference Client (Connects to local vLLM / Ollama instance)
+# LLM Inference Client (Connects to local vLLM / Ollama instance or OpenRouter)
 openai>=1.14.0
 
 # Database Access (High-speed asynchronous connection to Supabase PostgreSQL)

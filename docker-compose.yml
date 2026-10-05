@@ -56,7 +56,22 @@ services:
               count: all
               capabilities: [gpu]
 
-  # ── AI Voice Gateway (FastAPI, Whisper, AI4Bharat, Piper) ──────────────────
+  # ── LiveKit WebRTC Server (Sub-300ms Low-Latency Audio Streaming) ───────────
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: evrry-livekit
+    restart: unless-stopped
+    command: --dev
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+    environment:
+      - LIVEKIT_KEYS=devkey:secret
+    networks:
+      - evrry-network
+
+  # ── AI Voice Gateway (FastAPI, Whisper, AI4Bharat, Piper, LiveKit) ─────────
   ai-voice-gateway:
     build:
       context: ./services/ai-voice-gateway
@@ -68,11 +83,15 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379/0
       - OLLAMA_HOST=http://ollama:11434
+      - LIVEKIT_URL=ws://livekit:7880
+      - LIVEKIT_API_KEY=devkey
+      - LIVEKIT_API_SECRET=secret
       - SUPABASE_URL=${SUPABASE_URL:-http://host.docker.internal:54321}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
     depends_on:
       - redis
       - ollama
+      - livekit
     networks:
       - evrry-network
 
