@@ -50,7 +50,7 @@
 | `20261005000014_sms_verification_and_rate_limiting.sql` | `sms_dispatch_logs`, `sms_rate_limits`, anti-bombing rate limiter RPC `check_sms_rate_limit` |
 | `20261005000015_device_push_tokens.sql` | `user_device_tokens` (FCM/APNs), RPC `register_device_token`, dead-token pruning |
 | `20261005000016_on_demand_instant_payouts.sql` | On-demand instant cash-out, RPC `request_on_demand_payout`, COD lock, instant fee |
-| `20261005000017_ai_voice_personas.sql` | 4 Voice Personas (Eli, Rony, Jenny, Sol), `ai_voice_personas` table, voice preferences, RPCs |
+| `20261005000017_ai_voice_personas.sql` | 4 Voice Personas (Eli female, Rony male, Jenny female, Suka male), `ai_voice_personas` table, voice preferences, RPCs |
 
 ---
 
@@ -64,10 +64,10 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
 | **`send-sms/`** | Phone OTP verification for Nepal mobile carriers | Sparrow SMS, Aakash SMS, Dev Mock Mode, rate limiter (max 3 / 10m) |
 | **`payment-initiate/`** | Creates gateway payment sessions with server-side pricing | eSewa ePay v2 (HMAC-SHA256), Khalti v2 (`pidx`), Fonepay dynamic QR |
 | **`payment-verify/`** | Verifies payment completion & updates ledger | eSewa server status API, Khalti `/epayment/lookup/`, calls `confirm_payment` |
-| **`payout-execute/`** | Midnight partner settlement & banking disbursement | Audits balances, offsets rider cash, ConnectIPS NCHL CSV export, email statements |
+| **`payout-execute/`** | Midnight partner settlement & banking disbursement | Audits balances, offsets rider cash, ConnectIPS NCHL CSV export, eSewa & Khalti direct payout adapters |
 | **`push-notify/`** | High-priority push alerts to devices | Firebase Cloud Messaging (FCM HTTP v1) via OAuth2, APNs, dead token pruning |
 | **`process-outbox/`** | Resilient transactional outbox worker | Polls `email_dispatch_queue`, retries failures with exponential backoff |
-| **`ai-gateway/`** | Server-side AI Concierge, 4 Voice Personas & WebRTC Room Broker | OpenRouter/Gemini, user memory (`get_ai_context`), 4 Personas (Eli, Rony, Jenny, Sol), `create_voice_room` (LiveKit WebRTC), Photo-to-Menu OCR, Kitchen Voice |
+| **`ai-gateway/`** | Server-side AI Concierge, 4 Voice Personas & WebRTC Room Broker | OpenRouter/Gemini, user memory (`get_ai_context`), 4 Personas (Eli, Rony, Jenny, Suka), `create_voice_room` (LiveKit WebRTC), Photo-to-Menu OCR, Kitchen Voice |
 
 ---
 
@@ -102,7 +102,7 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
 - **24/7 On-Demand Instant Payouts**:
   - Implemented Migration `0016` and instant payout execution with Zero-Hub COD lock and NPR 15 flat fee. Committed `5052fe8`.
 - **4 Persona AI Voice Agents & Low-Latency WebRTC Pipeline**:
-  - Implemented Migration `0017` (`20261005000017_ai_voice_personas.sql`) defining the 4 Voice Personas (**Eli**, **Rony**, **Jenny**, **Sol**), public personas catalog, and user preference RPCs.
+  - Implemented Migration `0017` (`20261005000017_ai_voice_personas.sql`) defining the 4 Voice Personas (**Eli** [Female], **Rony** [Male], **Jenny** [Female], **Suka** [Male]), public personas catalog, and user preference RPCs.
   - Built the Python AI Voice Gateway microservice in `services/ai-voice-gateway/` with:
     - Faster-Whisper in-memory PCM ASR + AI4Bharat IndicConformer.
     - AI4Bharat IndicXlit Romanized-to-Devanagari real-time phonetic transliteration.

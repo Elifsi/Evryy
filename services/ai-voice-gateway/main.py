@@ -5,7 +5,7 @@ Elifsi Technologies Private Limited
 
 Endpoints:
 - GET /health: Status & Persona availability
-- GET /personas: Catalog of 4 Voice Personas (Eli, Rony, Jenny, Sol)
+- GET /personas: Catalog of 4 Voice Personas (Eli, Rony, Jenny, Suka)
 - POST /token: LiveKit WebRTC room token generation
 - WebSocket /ws/voice-agent: Direct full-duplex low-latency audio streaming
 """

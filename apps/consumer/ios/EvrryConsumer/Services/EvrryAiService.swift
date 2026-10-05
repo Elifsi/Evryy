@@ -13,7 +13,7 @@ public enum VoicePersona: String, Codable {
     case eli = "eli"
     case rony = "rony"
     case jenny = "jenny"
-    case sol = "sol"
+    case suka = "suka"
 }
 
 public struct VoicePersonaMeta: Codable {

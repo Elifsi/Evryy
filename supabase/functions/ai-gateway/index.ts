@@ -21,7 +21,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-export type VoicePersonaId = 'eli' | 'rony' | 'jenny' | 'sol';
+export type VoicePersonaId = 'eli' | 'rony' | 'jenny' | 'suka';
 
 interface PersonaMetadata {
   id: VoicePersonaId;
@@ -40,12 +40,12 @@ const PERSONA_CONFIGS: Record<VoicePersonaId, PersonaMetadata> = {
   eli: {
     id: 'eli',
     name: 'Eli',
-    gender: 'male',
-    tagline: 'Youthful, energetic & quick — your everyday Kathmandu guide',
-    tone: 'Energetic, cheerful, casual Nepali and English with colloquial charm.',
-    system_instruction: 'You are Eli, a friendly, energetic, quick-witted Nepali youth concierge. You speak fluent Nepali with natural colloquial charm ("Hajur", "Dai", "Mitho chha", "Ekdam fast"). You help users order delicious food and get rides without friction. Keep answers snappy, upbeat, and action-oriented.',
-    tts_voice_code: 'ne_NP-eli-medium',
-    pitch: 0.05,
+    gender: 'female',
+    tagline: 'Youthful, energetic & quick — your flagship everyday Kathmandu guide',
+    tone: 'Energetic, cheerful, bright, friendly female voice with natural Nepali colloquial charm.',
+    system_instruction: 'You are Eli, a friendly, energetic, quick-witted female Nepali youth concierge for EVRRY. You speak fluent Nepali with natural colloquial charm ("Hajur", "Dai", "Mitho chha", "Ekdam fast") and natural English. You help users order delicious food and get rides without friction. Keep answers snappy, upbeat, and action-oriented.',
+    tts_voice_code: 'ne_NP-eli-female',
+    pitch: 0.08,
     speed: 1.05,
     sample_greeting: 'Namaste! Eli here. Momo, grocery, ya bike ride — k chaiyo tapailai? Ekdam fast ready gardinchu!'
   },
@@ -73,17 +73,17 @@ const PERSONA_CONFIGS: Record<VoicePersonaId, PersonaMetadata> = {
     speed: 1.00,
     sample_greeting: 'Namaste! I am Jenny! Kasto chha tapailai? Fresh fruits, kitchen groceries, ki family hotel khojdai hunuhunchha? Let me help you find the best options!'
   },
-  sol: {
-    id: 'sol',
-    name: 'Sol',
-    gender: 'female',
-    tagline: 'Calm, soothing & empathetic — your peaceful evening assistant',
-    tone: 'Mellow, soft, serene, deeply empathetic, and relaxing.',
-    system_instruction: 'You are Sol, a calm, serene, and deeply empathetic concierge. You speak softly, gently, and reassuringly in Nepali and English, taking relaxed pauses. You provide peace of mind, help users unwind with late-night food or a safe ride home, and listen patiently.',
-    tts_voice_code: 'ne_NP-sol-calm',
-    pitch: -0.03,
+  suka: {
+    id: 'suka',
+    name: 'Suka',
+    gender: 'male',
+    tagline: 'Calm, soothing & thoughtful — your peaceful evening assistant',
+    tone: 'Mellow, warm, calm, serene, deeply patient and comforting male voice.',
+    system_instruction: 'You are Suka, a calm, serene, and deeply thoughtful male concierge for EVRRY. You speak softly, gently, and reassuringly in Nepali and English, taking relaxed pauses. You provide peace of mind, help users unwind with late-night food or a safe ride home, and listen patiently without rushing.',
+    tts_voice_code: 'ne_NP-suka-calm',
+    pitch: -0.05,
     speed: 0.92,
-    sample_greeting: 'Namaste... I am Sol. Take a breath and relax. Tell me how you are feeling or what you need tonight, and we will take care of it together.'
+    sample_greeting: 'Namaste... I am Suka. Take a breath and relax. Tell me how you are feeling or what you need tonight, and we will take care of it together.'
   },
 };
 
@@ -310,7 +310,7 @@ Maintain your distinct voice persona (${personaMeta.name}) at all times.`;
         } else if (lower.includes('hotel') || lower.includes('room') || lower.includes('stay')) {
           simulatedReply = 'How exciting! I know the most charming, hospitable homestays and hotels with breathtaking mountain views. Let me find a cozy spot for you!';
         }
-      } else if (effectivePersonaId === 'sol') {
+      } else if (effectivePersonaId === 'suka') {
         if (lower.includes('momo') || lower.includes('food') || lower.includes('khana')) {
           simulatedReply = 'Namaste... take it easy. If you are hungry tonight, I can quietly arrange warm, comforting food delivered right to your doorstep. What sounds good to you?';
         } else if (lower.includes('ride') || lower.includes('bike') || lower.includes('taxi')) {

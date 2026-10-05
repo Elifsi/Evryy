@@ -9,10 +9,10 @@
 The **evrry AI Voice Concierge** delivers an ultra-low latency (< 300ms round trip), voice-first ordering and conversational experience across all 5 core platform verticals (Food, Grocery, InDrive Cab/Bike Bidding, Stays/Hotels, and Rentals).
 
 Rather than relying on a single generic synthetic voice, the platform provides **4 Persona Voice Agents** inspired by top voice models like ChatGPT Voice (e.g., Sol, Breeze, Cove):
-1. **Eli** — Youthful, energetic, and quick-witted (flagship everyday guide).
+1. **Eli** — Youthful, energetic, and quick-witted female concierge (flagship everyday guide).
 2. **Rony** — Deep baritone, authoritative, and formal (executive concierge).
 3. **Jenny** — Sweet, warm, cheerful, and hospitable (grocery & travel companion).
-4. **Sol** — Mellow, soothing, calm, and empathetic (evening & wellness assistant).
+4. **Suka** — Mellow, soothing, calm, and thoughtful male concierge (evening & wellness assistant).
 
 ```mermaid
 flowchart TD
@@ -62,10 +62,10 @@ Each persona has distinct acoustic characteristics, pitch offsets, cadence speed
 
 | Persona | Gender | Timbre & Cadence | Pitch | Speed | Domain Specialties | Personality & Sample Greeting |
 |---|---|---|---|---|---|---|
-| **Eli** | Male | Tenor, crisp, punchy, casual | `+0.05` | `1.05x` | Food delivery, fast momo orders, quick motorbike rides, daily chores | *Youthful Kathmandu guide.* Speaks colloquial Nepali and English ("Hajur", "Dai", "Mitho chha", "Ekdam fast").<br>`"Namaste! Eli here. Momo, grocery, ya bike ride — k chaiyo tapailai? Ekdam fast ready gardinchu!"` |
+| **Eli** | Female | Bright Alto / Soprano, crisp, punchy | `+0.08` | `1.05x` | Food delivery, fast momo orders, quick motorbike rides, daily chores | *Youthful female Kathmandu guide.* Speaks colloquial Nepali and English ("Hajur", "Dai", "Mitho chha", "Ekdam fast").<br>`"Namaste! Eli here. Momo, grocery, ya bike ride — k chaiyo tapailai? Ekdam fast ready gardinchu!"` |
 | **Rony** | Male | Deep Baritone, composed, formal | `-0.08` | `0.95x` | InDrive cab fare bidding, hotel room reservations, long-term rentals, corporate orders | *Executive concierge.* Authoritative, respectful, and decisive. Refined formal Nepali ("Namaskar", "Tapailai swaagat chha").<br>`"Namaskar. I am Rony, your executive concierge. Whether you need corporate transport, hotel suites, or ride fare coordination, I am at your service."` |
 | **Jenny** | Female | Soprano / Bright Alto, melodic, warm | `+0.06` | `1.00x` | Supermarket groceries, fresh produce, family homestays, customer care | *Hospitable & cheerful companion.* Attentive and polite ("Namaste! Kasto chha tapailai?"). Highlights freshness and discount vouchers.<br>`"Namaste! I am Jenny! Kasto chha tapailai? Fresh fruits, kitchen groceries, ki family hotel khojdai hunuhunchha? Let me help you find the best options!"` |
-| **Sol** | Female | Warm Contralto, soft, soothing, gentle | `-0.03` | `0.92x` | Late-night comfort food, relaxing night rides home, step-by-step guidance, support | *Calm & empathetic assistant.* Inspired by the relaxing tone of ChatGPT Sol. Soft-spoken, patient, unhurried.<br>`"Namaste... I am Sol. Take a breath and relax. Tell me how you are feeling or what you need tonight, and we will take care of it together."` |
+| **Suka** | Male | Warm Baritone, soft, soothing, serene | `-0.05` | `0.92x` | Late-night comfort food, relaxing night rides home, step-by-step guidance, support | *Calm & thoughtful male assistant.* Soft-spoken, patient, unhurried, reassuring.<br>`"Namaste... I am Suka. Take a breath and relax. Tell me how you are feeling or what you need tonight, and we will take care of it together."` |
 
 ---
 
@@ -117,7 +117,7 @@ To make voice conversations feel completely natural:
 ## 6. Database Schema & User Preference Persistence
 
 Implemented in Migration `20261005000017_ai_voice_personas.sql`:
-- **ENUM `public.ai_voice_persona_enum`**: `'eli'`, `'rony'`, `'jenny'`, `'sol'`.
+- **ENUM `public.ai_voice_persona_enum`**: `'eli'`, `'rony'`, `'jenny'`, `'suka'`.
 - **Table `public.ai_voice_personas`**: Catalog of active personas, system prompts, pitch/speed parameters, and TTS voice codes.
 - **User Preference in `public.user_ai_profile`**:
   - `preferred_voice_persona`: Defaults to `'eli'`.

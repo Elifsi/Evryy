@@ -184,7 +184,7 @@ class DialogOrchestrator:
             elif any(k in lower for k in ["hotel", "stay", "room"]):
                 reply = "How wonderful! I found three lovely family homestays in Pokhara with mountain view balconies!"
                 ui_actions.append({"action": "SHOW_STAYS"})
-        elif persona.id == "sol":
+        elif persona.id == "suka":
             if any(k in lower for k in ["momo", "food", "khana"]):
                 reply = "Namaste... rest easy. Warm, comforting momo has been gently placed in your cart. We will deliver it quietly."
                 ui_actions.append({"action": "ADD_TO_CART", "item_name": "Chicken Steamed Momo", "quantity": 1})

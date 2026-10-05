@@ -13,7 +13,7 @@ import javax.inject.Singleton
  * Elifsi Technologies Private Limited
  *
  * Supports:
- * - 4 Voice Personas: Eli (Youthful/Energetic), Rony (Deep/Executive), Jenny (Sweet/Hospitable), Sol (Calm/Soothing)
+ * - 4 Voice Personas: Eli (Energetic Female), Rony (Deep Male), Jenny (Sweet Female), Suka (Calm Male)
  * - LiveKit WebRTC room token acquisition for real-time voice streaming
  * - Natural language AI concierge text chat with memory context injection
  * - Zero secrets embedded in mobile binary
@@ -24,7 +24,7 @@ enum class VoicePersona {
     @SerialName("eli") ELI,
     @SerialName("rony") RONY,
     @SerialName("jenny") JENNY,
-    @SerialName("sol") SOL
+    @SerialName("suka") SUKA
 }
 
 @Serializable

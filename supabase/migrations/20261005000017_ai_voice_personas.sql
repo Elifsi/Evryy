@@ -1,21 +1,21 @@
 -- =============================================================================
--- 0017 — 4 Persona AI Voice Agents (Eli, Rony, Jenny, Sol) & Voice Preferences
+-- 0017 — 4 Persona AI Voice Agents (Eli, Rony, Jenny, Suka) & Voice Preferences
 --
 -- Platform: evrry Super App Ecosystem
 -- Maintainer: Elifsi Technologies Private Limited
 --
--- Adds the 4 Voice Personas:
---   1. Eli   — Flagship energetic male youth concierge (food, quick cabs, daily chores)
+-- Defines the 4 Voice Personas:
+--   1. Eli   — Flagship energetic female youth concierge (food, quick cabs, daily chores)
 --   2. Rony  — Deep, authoritative male baritone (fare bidding, stays, corporate)
 --   3. Jenny — Sweet, cheerful, warm female companion (grocery, family stays, care)
---   4. Sol   — Calm, soothing, mellow female voice (late night, relaxing rides, support)
+--   4. Suka  — Calm, soothing, mellow male voice (late night, relaxing rides, support)
 -- =============================================================================
 
 -- 1. Voice Persona Enum
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'ai_voice_persona_enum') THEN
-    CREATE TYPE public.ai_voice_persona_enum AS ENUM ('eli', 'rony', 'jenny', 'sol');
+    CREATE TYPE public.ai_voice_persona_enum AS ENUM ('eli', 'rony', 'jenny', 'suka');
   END IF;
 END $$;
 
@@ -44,13 +44,13 @@ INSERT INTO public.ai_voice_personas (
 (
   'eli',
   'Eli',
-  'male',
-  'Youthful, energetic & quick — your everyday Kathmandu guide',
+  'female',
+  'Youthful, energetic & quick — your flagship everyday Kathmandu guide',
   'Perfect for fast food delivery, momo cravings, quick motorbike rides, and day-to-day tasks.',
-  'Energetic, cheerful, casual Nepali and English with colloquial charm.',
-  'You are Eli, a friendly, energetic, quick-witted Nepali youth concierge. You speak fluent Nepali with natural colloquial charm ("Hajur", "Dai", "Mitho chha", "Ekdam fast"). You help users order delicious food and get rides without friction. Keep answers snappy, upbeat, and action-oriented.',
-  'ne_NP-eli-medium',
-  0.05,
+  'Energetic, cheerful, bright, friendly female voice with natural Nepali colloquial charm.',
+  'You are Eli, a friendly, energetic, quick-witted female Nepali youth concierge for EVRRY. You speak fluent Nepali with natural colloquial charm ("Hajur", "Dai", "Mitho chha", "Ekdam fast") and natural English. You help users order delicious food and get rides without friction. Keep answers snappy, upbeat, and action-oriented.',
+  'ne_NP-eli-female',
+  0.08,
   1.05
 ),
 (
@@ -78,15 +78,15 @@ INSERT INTO public.ai_voice_personas (
   1.00
 ),
 (
-  'sol',
-  'Sol',
-  'female',
-  'Calm, soothing & empathetic — your peaceful evening assistant',
-  'Inspired by the soothing tone of ChatGPT Sol. Perfect for late-night comfort orders, calm rides home, and relaxing support.',
-  'Mellow, soft, serene, deeply empathetic, and relaxing.',
-  'You are Sol, a calm, serene, and deeply empathetic concierge. You speak softly, gently, and reassuringly in Nepali and English, taking relaxed pauses. You provide peace of mind, help users unwind with late-night food or a safe ride home, and listen patiently.',
-  'ne_NP-sol-calm',
-  -0.03,
+  'suka',
+  'Suka',
+  'male',
+  'Calm, soothing & thoughtful — your peaceful evening assistant',
+  'Ideal for late-night comfort orders, calm rides home, patient problem-solving, and relaxing support.',
+  'Mellow, warm, calm, serene, deeply patient and comforting male voice.',
+  'You are Suka, a calm, serene, and deeply thoughtful male concierge for EVRRY. You speak softly, gently, and reassuringly in Nepali and English, taking relaxed pauses. You provide peace of mind, help users unwind with late-night food or a safe ride home, and listen patiently without rushing.',
+  'ne_NP-suka-calm',
+  -0.05,
   0.92
 )
 ON CONFLICT (id) DO UPDATE SET
@@ -128,7 +128,7 @@ AS $$
          pitch_adjustment, speed_adjustment, sample_audio_url, is_active
     FROM public.ai_voice_personas
    WHERE is_active = TRUE
-   ORDER BY (CASE id WHEN 'eli' THEN 1 WHEN 'rony' THEN 2 WHEN 'jenny' THEN 3 WHEN 'sol' THEN 4 ELSE 5 END);
+   ORDER BY (CASE id WHEN 'eli' THEN 1 WHEN 'rony' THEN 2 WHEN 'jenny' THEN 3 WHEN 'suka' THEN 4 ELSE 5 END);
 $$;
 
 -- 5. RPC to set user's preferred voice persona
@@ -206,8 +206,9 @@ BEGIN
     'preferred_voice_persona', COALESCE(v_prof.preferred_voice_persona, 'eli'),
     'voice_speed', COALESCE(v_prof.voice_speed, 1.00),
     'persona_name', COALESCE(v_persona.name, 'Eli'),
+    'persona_gender', COALESCE(v_persona.gender, 'female'),
     'persona_tone', COALESCE(v_persona.tone, 'Energetic'),
-    'persona_instruction', COALESCE(v_persona.system_prompt_instruction, 'Friendly concierge'),
+    'persona_instruction', COALESCE(v_persona.system_prompt_instruction, 'Friendly female concierge'),
     'memories', v_mem
   );
 END;

@@ -6,18 +6,18 @@ import {
   VoicePersonaId,
 } from './personas';
 
-describe('AI Voice Personas (Eli, Rony, Jenny, Sol)', () => {
+describe('AI Voice Personas (Eli, Rony, Jenny, Suka)', () => {
   it('registers exactly four distinct voice personas', () => {
     const personas = getAllVoicePersonas();
     expect(personas).toHaveLength(4);
     const ids = personas.map((p) => p.id);
-    expect(ids).toEqual(['eli', 'rony', 'jenny', 'sol']);
+    expect(ids).toEqual(['eli', 'rony', 'jenny', 'suka']);
   });
 
-  it('correctly configures Eli as the flagship energetic male concierge', () => {
+  it('correctly configures Eli as the flagship energetic female concierge', () => {
     const eli = getVoicePersona('eli');
     expect(eli.name).toBe('Eli');
-    expect(eli.gender).toBe('male');
+    expect(eli.gender).toBe('female');
     expect(eli.pitch).toBeGreaterThan(0);
     expect(eli.speed).toBeGreaterThan(1.0);
     expect(eli.sampleGreeting).toContain('Eli here');
@@ -44,22 +44,22 @@ describe('AI Voice Personas (Eli, Rony, Jenny, Sol)', () => {
     expect(jenny.systemInstruction).toContain('cheerful');
   });
 
-  it('correctly configures Sol as the calm and soothing female concierge', () => {
-    const sol = getVoicePersona('sol');
-    expect(sol.name).toBe('Sol');
-    expect(sol.gender).toBe('female');
-    expect(sol.pitch).toBeLessThan(0); // Mellow contralto pitch
-    expect(sol.speed).toBeLessThan(1.0); // Relaxed gentle pace
-    expect(sol.sampleGreeting).toContain('Sol');
-    expect(sol.sampleGreeting).toContain('Take a breath');
-    expect(sol.systemInstruction).toContain('calm');
+  it('correctly configures Suka as the calm and soothing male concierge', () => {
+    const suka = getVoicePersona('suka');
+    expect(suka.name).toBe('Suka');
+    expect(suka.gender).toBe('male');
+    expect(suka.pitch).toBeLessThan(0); // Mellow pitch
+    expect(suka.speed).toBeLessThan(1.0); // Relaxed gentle pace
+    expect(suka.sampleGreeting).toContain('Suka');
+    expect(suka.sampleGreeting).toContain('Take a breath');
+    expect(suka.systemInstruction).toContain('calm');
   });
 
   it('gracefully falls back to Eli when persona is invalid or missing', () => {
     expect(getVoicePersona(null).id).toBe('eli');
     expect(getVoicePersona(undefined).id).toBe('eli');
     expect(getVoicePersona('unknown_voice').id).toBe('eli');
-    expect(getVoicePersona('  SOL  ').id).toBe('sol');
+    expect(getVoicePersona('  SUKA  ').id).toBe('suka');
   });
 
   it('ensures each persona defines a valid TTS voice code and non-empty tagline', () => {

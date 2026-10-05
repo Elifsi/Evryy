@@ -3,14 +3,14 @@
  * Elifsi Technologies Private Limited
  *
  * Connects Web portals to server-side AI Gateway for:
- * - 4 Persona AI Voice Agents: Eli (Energetic), Rony (Executive), Jenny (Hospitable), Sol (Calm)
+ * - 4 Persona AI Voice Agents: Eli (Energetic Female), Rony (Executive Male), Jenny (Hospitable Female), Suka (Calm Male)
  * - WebRTC LiveKit room creation for low-latency voice streaming
  * - Menu Vision OCR & Catalog onboarding
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-export type VoicePersonaId = 'eli' | 'rony' | 'jenny' | 'sol';
+export type VoicePersonaId = 'eli' | 'rony' | 'jenny' | 'suka';
 
 export interface VoicePersonaMetadata {
   id: VoicePersonaId;

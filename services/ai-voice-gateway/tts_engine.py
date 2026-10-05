@@ -66,10 +66,10 @@ class TtsEngine:
 
         # Base pitch per persona
         base_freq = {
-            "eli": 220.0,
-            "rony": 130.0,
-            "jenny": 260.0,
-            "sol": 185.0
+            "eli": 240.0,    # Bright energetic female pitch
+            "rony": 130.0,   # Resonant deep male baritone
+            "jenny": 260.0,  # Sweet cheerful female soprano
+            "suka": 145.0    # Calm, soothing, mellow male voice
         }.get(persona.id, 200.0)
 
         # Apply persona pitch adjustment
