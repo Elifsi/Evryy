@@ -127,3 +127,5 @@ For in-depth domain specifications, reference these dedicated subsystem document
 - [AI Voice Gateway, Dependencies & Docker Engines](file:///home/rahul/codes/Evrry/docs/architecture/dependencies-master.md)
 - [Consumer Client Architecture](file:///home/rahul/codes/Evrry/docs/architecture/consumer.md)
 - [Partner Client Architecture](file:///home/rahul/codes/Evrry/docs/architecture/partner.md)
+- [Superadmin Operations & KYC Platform](file:///home/rahul/codes/Evrry/docs/architecture/superadmin.md)
+
