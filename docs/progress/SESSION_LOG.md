@@ -134,6 +134,9 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
     - Web Common: `apps/web/common/routing.ts`
     - Prototype: `prototype/Phone/lib/maps/polyline.ts` & `routing.ts`
   - Created unit tests in `prototype/Phone/lib/maps/routing.test.ts`. Committed `00a5cf3`.
+- **Superadmin Operations & Zero-SQL Control Center Specification**:
+  - Authored comprehensive architecture document `docs/architecture/superadmin-panel-control-center.md` providing complete UI wireframes, form schemas, and RPC workflows.
+  - Covers dynamic delivery fees by vertical (Food, Mart, Parcel), global & partner-level commissions, platform fees (Rs 5 default + promotional waiver toggle), voucher creation wizard with budget & per-user limits, split-screen KYC document verification, midnight settlement payouts, and emergency ward kill-switches—all completely dynamic without manual SQL commands.
 - **Full Verification**:
   - Ran complete test suite: 15/15 test files passed, 90/90 unit and integration tests passed (100% success).
 
@@ -143,7 +146,10 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
 
 The backend is 100% complete and self-contained. The roadmap now transitions to the UI screens:
 1. **Superadmin Operations Console (`apps/web/admin`)**:
-   - Split-screen Partner KYC Document Review Queue.
+   - Zero-SQL Pricing & Commission Control Hub (`/admin/pricing`).
+   - Voucher Creation Wizard & Budget Tracker (`/admin/marketing/vouchers`).
+   - Split-screen Partner KYC Document Review Queue (`/admin/compliance/kyc`).
+   - Midnight Settlement Batch Approval & ConnectIPS Export (`/admin/finance/payouts`).
    - Midnight Settlement Batch Approval & ConnectIPS Export Console.
    - User & Rider Moderation (Bans, Cash Reconciliation).
 2. **Partner Web Portal (`apps/web/partner`)**:

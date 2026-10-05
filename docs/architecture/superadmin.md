@@ -131,3 +131,10 @@ When a customer reports an issue (missing items, spoiled food, driver no-show):
 | **Analytics & Metrics** | Tremor / Recharts / Tailwind CSS | `apps/web/admin/components/metrics` |
 | **Maps & Tracking** | Mapbox GL / Leaflet (driver pins, ward polygons) | `apps/web/admin/components/map` |
 | **Backend & Auth** | Supabase Auth (`admin` role check) + `@supabase/ssr` | `apps/web/admin/lib/supabase` |
+
+---
+
+## 4. Comprehensive Zero-SQL Control Center Specification
+For full UI wireframes, form fields, and operational workflows for dynamic delivery fees, commissions, platform fees, vouchers, KYC queues, and payout controls with zero SQL, see:
+👉 **[`docs/architecture/superadmin-panel-control-center.md`](superadmin-panel-control-center.md)**
+
