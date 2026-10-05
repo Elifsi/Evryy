@@ -228,3 +228,67 @@ flowchart TD
      LLM_MODEL="Qwen/Qwen2.5-14B-Instruct"
      ```
 
+---
+
+## 7. AI Memory, Personalization & OpenRouter Gateway Architecture
+
+To maximize revenue through personalized upsells while keeping API and database storage costs near zero, the platform decouples long-term user memory from transient chat logs.
+
+```mermaid
+flowchart TD
+    subgraph Client Session Lifecycle
+        A["App Opened / New Session"] --> B["Generate Fresh Clean Chat Window"]
+        B --> C["Fetch Distilled User Memory (5KB Supabase)"]
+        C --> D["Inject 150-Token Context Block into System Prompt"]
+    end
+
+    subgraph OpenRouter Gateway Routing
+        D --> E["OpenRouter Unified API"]
+        E -->|"Attempt 1 (Zero Cost)"| F["Free Tier: google/gemini-2.0-flash-exp:free"]
+        F -->|"On 429/Timeout (Auto-Fallback)"| G["Production: google/gemini-2.0-flash-001 ($0.10/M tokens)"]
+        G -->|"High Volume Fallback"| H["Ultra-Low Cost: google/gemini-2.0-flash-lite ($0.075/M tokens)"]
+    end
+
+    subgraph Data Separation & Storage Optimization
+        I["Orders, Rides, Bookings"] -->|"Saved Permanently"| J["Relational Tables: orders, order_items"]
+        K["High-Signal User Habits"] -->|"Distilled into"| L["user_ai_profile & user_memories"]
+        M["Raw Chat Transcripts"] -->|"Auto-Purged After 30 Days"| N["pg_cron: DELETE > 30 days"]
+    end
+```
+
+### A. OpenRouter Gateway & Cost Control
+- **Unified Interface**: All LLM requests conform to standard OpenAI Chat Completion schemas (`/v1/chat/completions`) with tool definitions (`addToCart`, `checkRideFare`, `bookHotelRoom`).
+- **Tiered Model Routing**:
+  1. *Testing Phase*: `google/gemini-2.0-flash-exp:free` and `meta-llama/llama-3.3-70b-instruct:free`.
+  2. *Production Phase*: `google/gemini-2.0-flash-001` (~$0.10/1M tokens) with `google/gemini-2.0-flash-lite` backup.
+- **Billing Transparency**: OpenRouter bills strictly for successful token generations; failed or rate-limited upstream attempts incur $0.00.
+
+### B. Distilled User Memory & Profit Maximization
+Rather than resending expensive chat histories, the AI maintains a persistent behavioral profile in Supabase:
+1. **Deterministic Behavioral Profile (`public.user_ai_profile`)**:
+   - `spending_tier`: `budget` | `mid` | `premium` (computed from 90-day Average Order Value).
+   - `top_categories`: Frequency-weighted tags (e.g., `["food:momo", "grocery:dairy", "ride:moto"]`).
+   - `routine_schedule`: Habit markers (e.g., lunch order at 13:00, office commute at 09:15).
+   - `dietary_constraints`: `["vegetarian", "halal", "peanut-allergy"]`.
+2. **Semantic Memory Extraction (`public.user_memories`)**:
+   - Extracted during conversation via background tool `save_user_memory(category, fact)`.
+   - Stored as concise bullet points (max 50 facts per user, taking < 5 KB total).
+3. **Upsell Context Injection**:
+   - Each fresh session receives a compressed prompt block:
+     ```text
+     USER PROFILE & REVENUE DIRECTIVES:
+     - Name: Rahul | Tier: Premium Spender
+     - Frequent Habits: Orders Newari/Momo lunch ~1:00 PM; buys dairy on Tuesday.
+     - Commute: Motorbike to Baneshwor on weekday mornings.
+     - Profit Goal: Suggest complementary sides/drinks, highlight flash grocery deals, and prompt routine re-orders.
+     ```
+
+### C. 30-Day Chat Retention & Separation of Orders
+- **Fresh Window on Launch**: The user receives a clean, uncluttered conversation window upon app launch, avoiding infinite scrolling of stale interactions.
+- **30-Day Purge**: Automated background job cleans up raw conversational logs:
+  ```sql
+  DELETE FROM public.ai_chat_messages WHERE created_at < NOW() - INTERVAL '30 days';
+  ```
+- **Historical Order Lookups**: When asked *"What did I order last Friday?"*, the AI calls `query_user_orders()` directly against the permanent `public.orders` and `public.order_items` tables, completely unaffected by chat purges.
+
+

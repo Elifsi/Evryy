@@ -34,10 +34,19 @@ The Consumer application provides the customer-facing experience for **evrry**, 
 3. **Payment Initiation**: Server generates a payment session using the selected payment provider (eSewa, Khalti, Fonepay, Card).
 4. **Authorization & Confirmation**: On successful payment callback verification, the order transitions from `draft` to `acknowledged`.
 
-### D. Order Tracking & Realtime Updates
-- Order status state transitions (`acknowledged` → `preparing` → `ready_for_pickup` → `dispatched` → `delivered`).
-- Subscriptions to Supabase Realtime channels scoped to the consumer's `order_id`.
-- Driver location streaming for active delivery/ride trips.
+### D. Order Tracking & Activity Subsystem (Daraz Model)
+- **High-Level Activity Feed**:
+  - Eliminates micro-event notification spam in the main feed.
+  - Displays one consolidated card per order, booking, or ride trip showing: Merchant/Service name, status badge (`Acknowledged`, `In Kitchen`, `On the Way`, `Delivered`, `Cancelled`), order date, summary item count, and total NPR price.
+- **Dedicated Order Details View (On Card Tap)**:
+  - Tapping an order card opens a detailed order status modal/page containing:
+    1. **5-Stage Visual Progress Stepper**: `Placed` → `Confirmed` → `Prepared` → `Out for Delivery` → `Delivered`.
+    2. **Rider HUD Card**: Live rider name, phone contact, vehicle number, and real-time GPS coordinate streaming over Redis.
+    3. **Itemized Receipt**: Complete breakdown of products, quantities, add-ons, subtotal, delivery fee, and net paid amount.
+    4. **Payment Method & Address**: Clear display of payment method (Fonepay Dynamic QR / eSewa / COD) and delivery address details.
+    5. **Quick Actions**: One-tap *"Reorder All"*, *"Need Help / Ask AI"*, and *"Download Tax Invoice"*.
+- **Realtime Synchronization**:
+  - Subscriptions to Supabase Realtime channels scoped to the consumer's `order_id`.
 
 ### E. Profile, Addresses & Preferences
 - Supabase Auth session handling (email/password, phone OTP, OAuth).
