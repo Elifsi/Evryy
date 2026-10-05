@@ -218,6 +218,11 @@ Every transaction that touches money writes an append-only entry in `public.plat
 - **Idempotency**: `uq_email_order_invoice (reference_id, action)` prevents duplicate invoice dispatches.
 - **Client Security Invariant**: Kotlin (Android) and Swift (iOS) binaries NEVER hold `RESEND_API_KEY`. All dispatches route through Supabase Edge Function `send-email/`. See [email-service-resend.md](email-service-resend.md).
 
+### Migration 0014: SMS Verification, Dispatch Logs & Anti-Bombing Rate Limiter
+- **`sms_dispatch_logs`**: Tracks all SMS dispatches (Sparrow SMS, Aakash SMS, Mock) with delivery status and `cost_paisa` expenditure.
+- **`sms_rate_limits` & `check_sms_rate_limit()`**: Protects platform from SMS bombing attacks. Enforces 45s cooldown, max 3 OTP requests / 10-minute window, and automated 15-minute lockout upon violation.
+- **Adaptive Nepal SMS Architecture**: Runs in Mock Mode for zero-cost local testing until `SPARROW_SMS_TOKEN` is provisioned. See [sms-verification-and-auth.md](sms-verification-and-auth.md).
+
 ---
 
 ## 5. Partner Operations: Hybrid Architecture (Full Manual Control Dashboard + AI Co-Pilot)

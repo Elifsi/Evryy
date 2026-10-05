@@ -35,6 +35,17 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
+[auth.sms]
+enable_signup = true
+enable_confirmations = true
+template = "Your evrry security code is {{ .Code }}. Valid for 10 minutes."
+
+# Whitelisted test phone numbers with fixed OTP (bypasses live SMS for dev)
+[auth.sms.test_otp]
+"+9779800000001" = "123456"
+"+9779800000002" = "123456"
+"+9779800000003" = "123456"
+
 [storage]
 # Maximum file upload size (bytes)
 file_size_limit = "50MiB"

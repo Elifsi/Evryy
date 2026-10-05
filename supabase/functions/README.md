@@ -6,6 +6,7 @@ This directory is designated for server-side TypeScript Edge Functions running o
 
 ✅ **Active Production Functions**:
 - `send-email/`: Universal Resend email dispatch engine serving Android (Kotlin), iOS (Swift), Web (Next.js), and PostgreSQL outbox triggers.
+- `send-sms/`: Universal Nepal SMS OTP engine supporting Sparrow SMS, Aakash SMS, Dev Mock Mode, and database-level anti-bombing rate limits.
 
 🔮 **Planned Financial Functions**:
 - Payment initiation & verification (`payment-initiate/`, `payment-verify/`)
