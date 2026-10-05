@@ -123,9 +123,19 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
   - Client checkout calculation in `prototype/Phone/lib/pricing.ts` enforces `platformFee = 5`.
   - Database trigger `post_order_settlement` posts customer platform fees directly to `platform_revenue` in the double-entry general ledger.
   - Invoice generation in `email_dispatch_queue` itemizes `platformFeePaisa` transparently on receipts.
-  - Fully dynamic: Superadmin can alter the fee (e.g. increase or set to 0 for promotions) by updating `public.platform_settings` without requiring any code deployment or mobile app update.
+- **Zero-Fee Map Routing & Navigation Engine (OSRM & Google Maps)**:
+  - Setup pipeline script `infra/osrm/setup-osrm-nepal.sh` to download and preprocess Geofabrik `nepal-latest.osm.pbf` for the self-hosted OSRM container (`docker-compose.yml`).
+  - Implemented `supabase/functions/routing/index.ts` supporting `action: 'route'`, `action: 'nearest'` (GPS road snapping), and `action: 'matrix'` (multi-driver dispatch matching) with automatic fallback to high-precision Haversine + 1.28 circuity model.
+  - Built multiplatform client routing bridges:
+    - Consumer Android: `EvrryMapRoutingService.kt`
+    - Partner Driver/Rider Android: `EvrryPartnerMapRoutingService.kt`
+    - Consumer iOS: `EvrryMapRoutingService.swift`
+    - Partner Driver/Rider iOS: `EvrryPartnerMapRoutingService.swift`
+    - Web Common: `apps/web/common/routing.ts`
+    - Prototype: `prototype/Phone/lib/maps/polyline.ts` & `routing.ts`
+  - Created unit tests in `prototype/Phone/lib/maps/routing.test.ts`. Committed `00a5cf3`.
 - **Full Verification**:
-  - Ran complete test suite: 14/14 test files passed, 86/86 unit and integration tests passed (100% success).
+  - Ran complete test suite: 15/15 test files passed, 90/90 unit and integration tests passed (100% success).
 
 ---
 
