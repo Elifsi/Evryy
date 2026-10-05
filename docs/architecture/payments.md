@@ -69,12 +69,20 @@
   - Bank 3D-Secure OTP verification occurs entirely on the issuer bank's portal.
   - Zero raw cardholder data (PAN, CVV, expiry dates) is ever stored or transmitted through evrry servers.
 
-### D. Cash on Delivery (COD)
-- Available for physical goods delivery (Food, Grocery, Retail).
-- **Order Placement**: Order transitions immediately to `confirmed` with `payment_method = 'cod'` and `payment_status = 'pending_delivery'`.
-- **Fulfillment**: The delivery rider collects physical cash upon arrival.
-- **Handshake Verification**: The customer provides a 4-digit delivery OTP to the rider; the rider inputs the OTP in the Rider HUD to confirm handoff and cash collection.
-- **Midnight Rider Cash Reconciliation**: The rider's platform cash account is debited for the collected order total and platform commission during the midnight settlement cycle.
+### D. Cash on Delivery (COD) & Zero-Hub Digital Settlement
+- **Order Placement**: Order transitions immediately to `acknowledged` with `payment_method = 'cod'`.
+- **Fulfillment & Handshake**: The delivery rider collects physical cash upon arrival. The customer provides a 4-digit delivery OTP to the rider (`order_handoff_codes`); the rider inputs the OTP in the Rider HUD to confirm handoff and cash collection.
+- **Zero Physical Hubs & Zero Bank Queues**:
+  1. **Automatic Earnings Offset**: A rider earns delivery fees from completed orders. The platform automatically offsets what the rider owes in COD cash against their earned delivery fees during midnight settlement. If earnings exceed cash, the difference is paid out. No physical cash needs to be transferred.
+  2. **In-App Digital Settlement (`settle_rider_cod_digital`)**: If a rider accumulates more cash than their earnings, they tap **"Settle Cash"** in the rider app and pay Elifsi directly from their phone via **eSewa**, **Khalti**, or by scanning Elifsi's **Fonepay Dynamic QR**. The system verifies the digital transaction instantly and extinguishes their cash liability (`rider_details.cod_cash_in_hand_paisa`).
+  3. **COD Safety Limit (`rider_cod_limit_paisa`)**: Configured in `platform_settings` (default: NPR 5,000 / 500,000 paisa). If a rider's cash in hand exceeds this threshold, COD order dispatches are paused until they settle digitally. Prepaid orders remain fully active.
+  4. **Admin Manual Reconciliation (`admin_reconcile_rider_cash`)**: For rare situations where cash is handed over in an office or deposited directly to a corporate bank account, an admin can manually reconcile the rider's cash balance with full audit logging in `admin_audit_logs`.
+
+### E. Tax & VAT Architecture (Pre-Registration 0% Default)
+- **Current Status**: Elifsi Technologies is pre-VAT registration with the Inland Revenue Department (IRD).
+- **Dynamic Configuration (`vat_bps`)**: Governed by `public.platform_settings.key = 'vat_bps'`.
+- **Default**: Set to `0` basis points (**0% VAT**). The platform charges zero tax across all orders.
+- **Future Scale**: When business turnover crosses the IRD statutory threshold (NPR 50 Lakhs for goods / NPR 20 Lakhs for services), Superadmin updates `vat_bps = 1300` (13%) in `platform_settings`. The database immediately starts computing 13% VAT with zero code changes or app updates.
 
 ---
 
