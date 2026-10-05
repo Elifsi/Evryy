@@ -19,10 +19,16 @@ const corsHeaders = {
 };
 
 interface PayoutExecuteRequest {
-  action: 'build_batch' | 'approve_batch' | 'execute_batch' | 'export_connectips';
+  action: 'build_batch' | 'approve_batch' | 'execute_batch' | 'export_connectips' | 'on_demand_payout';
   batch_id?: string;
   batch_date?: string; // YYYY-MM-DD
   reason?: string;
+  // On-demand payout fields
+  partner_id?: string;
+  amount_paisa?: number;
+  destination_type?: 'bank' | 'esewa' | 'khalti';
+  wallet_phone?: string;
+  payout_id?: string;
 }
 
 Deno.serve(async (req: Request) => {
@@ -333,6 +339,119 @@ Deno.serve(async (req: Request) => {
           'Content-Disposition': `attachment; filename="connectips_batch_${batch_id}.csv"`,
         },
       });
+    }
+
+    // -------------------------------------------------------------
+    // ACTION 5: On-Demand Instant Payout (24/7 Partner Cash Out)
+    // -------------------------------------------------------------
+    if (action === 'on_demand_payout') {
+      let activePayoutId = payload.payout_id;
+      let netNpr = 0;
+
+      // 1. If payout record doesn't exist yet, call database RPC to validate and insert
+      if (!activePayoutId) {
+        if (!payload.partner_id || !payload.amount_paisa) {
+          return new Response(
+            JSON.stringify({ error: 'partner_id and amount_paisa are required for on_demand_payout' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        const { data: requestResult, error: reqError } = await supabase.rpc('request_on_demand_payout', {
+          p_partner_id: payload.partner_id,
+          p_amount_paisa: payload.amount_paisa,
+          p_destination_type: payload.destination_type || 'bank',
+          p_wallet_phone: payload.wallet_phone || null,
+        });
+
+        if (reqError) {
+          return new Response(JSON.stringify({ success: false, error: reqError.message }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        activePayoutId = requestResult.payout_id;
+        netNpr = parseFloat(requestResult.net_payout_npr);
+      }
+
+      // Fetch payout details for banking dispatch
+      const { data: payout, error: pError } = await supabase
+        .from('payouts')
+        .select(`
+          id, net_paisa, destination_type, destination_wallet, instant_fee_paisa,
+          partner:partner_id (
+            trade_name,
+            owner:owner_id ( email, phone )
+          ),
+          bank_account:bank_account_id (
+            bank_code, account_name, account_number
+          )
+        `)
+        .eq('id', activePayoutId)
+        .single();
+
+      if (pError || !payout) {
+        return new Response(JSON.stringify({ error: 'Payout record not found' }), {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      netNpr = payout.net_paisa / 100;
+      const utrRef = `INSTANT-NCHL-${Date.now()}-${payout.id.substring(0, 6).toUpperCase()}`;
+
+      // 2. Execute RPC mark_payout_paid to commit balanced ledger postings
+      const { error: markError } = await supabase.rpc('mark_payout_paid', {
+        p_payout: payout.id,
+        p_provider_ref: utrRef,
+      });
+
+      if (markError) {
+        return new Response(JSON.stringify({ success: false, error: markError.message }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // 3. Dispatch instant email confirmation
+      const partnerEmail = payout.partner?.owner?.email;
+      const tradeName = payout.partner?.trade_name || 'evrry Partner';
+
+      if (partnerEmail) {
+        await supabase.functions.invoke('send-email', {
+          body: {
+            action: 'payout_statement',
+            to: partnerEmail,
+            payoutData: {
+              tradeName,
+              settlementDate: new Date().toISOString().split('T')[0],
+              netNpr,
+              bankRef: utrRef,
+              bankName: payout.destination_type === 'bank' ? payout.bank_account?.bank_code : `${payout.destination_type?.toUpperCase()} Wallet`,
+              accountNumberMasked: payout.destination_type === 'bank'
+                ? `••••${payout.bank_account?.account_number?.slice(-4)}`
+                : payout.destination_wallet,
+            },
+          },
+        });
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          action: 'on_demand_payout',
+          payout_id: payout.id,
+          trade_name: tradeName,
+          destination_type: payout.destination_type,
+          net_npr: netNpr,
+          instant_fee_npr: payout.instant_fee_paisa / 100,
+          utr: utrRef,
+          status: 'paid',
+          message: 'Instant on-demand payout disbursed successfully.',
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {

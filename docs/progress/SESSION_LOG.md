@@ -49,6 +49,7 @@
 | `20261005000013_automated_invoice_dispatch_and_email_queue.sql` | `email_dispatch_queue`, trigger `trigger_queue_delivered_order_invoice` on order delivery |
 | `20261005000014_sms_verification_and_rate_limiting.sql` | `sms_dispatch_logs`, `sms_rate_limits`, anti-bombing rate limiter RPC `check_sms_rate_limit` |
 | `20261005000015_device_push_tokens.sql` | `user_device_tokens` (FCM/APNs), RPC `register_device_token`, dead-token pruning |
+| `20261005000016_on_demand_instant_payouts.sql` | On-demand instant cash-out, RPC `request_on_demand_payout`, COD lock, instant fee |
 
 ---
 

@@ -50,7 +50,7 @@ Settlement payouts do not occur ad-hoc or manually per order. Instead, they are 
 
 ---
 
-## 3. The 4 Operational Actions
+## 3. The 5 Operational Actions
 
 | Action | HTTP Method | Initiator | Description |
 |---|---|---|---|
@@ -58,10 +58,29 @@ Settlement payouts do not occur ad-hoc or manually per order. Instead, they are 
 | `approve_batch` | POST | Superadmin | Approves draft batch for disbursement; locks figures from modification. |
 | `execute_batch` | POST | Admin Console | Executes disbursement, commits ledger postings, and sends email statements. |
 | `export_connectips` | GET / POST | Admin Console | Generates compliant CSV file for corporate banking bulk upload. |
+| `on_demand_payout` | POST | Partner App (Owner) | 24/7 instant cash-out to verified bank account or eSewa/Khalti wallet. |
 
 ---
 
-## 4. ConnectIPS NCHL CSV Export Format
+## 4. On-Demand Instant Cash Out (Migration 0016)
+
+Instead of waiting for midnight settlement, verified partners can withdraw their available earnings **anytime (24/7)**:
+
+1. **Zero-Hub COD Balance Lock**:
+   - `Withdrawable Balance = MAX(0, Payable Earnings - Rider Cash-in-Hand)`.
+   - A rider holding cash never receives on-demand payouts until their physical cash debt is settled.
+2. **Instant Convenience Fee (Monetization)**:
+   - Midnight scheduled batches are **100% FREE**.
+   - On-demand instant cash-out charges a flat **NPR 15 fee** (`instant_fee_paisa = 1500`), covering interbank transfer fees and posting directly to `platform_revenue`.
+3. **Anti-Theft Frequency Cap**:
+   - Maximum **2 on-demand withdrawals per rolling 24-hour period**.
+   - Minimum withdrawal amount: **NPR 200.00**.
+4. **Multi-Rail Flexibility**:
+   - Supports **Bank Account** (via ConnectIPS Real-Time) and **Mobile Wallet** (eSewa / Khalti).
+
+---
+
+## 5. ConnectIPS NCHL CSV Export Format
 
 For institutions uploading bulk payments directly to corporate internet banking:
 ```csv

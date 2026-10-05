@@ -117,4 +117,31 @@ export class EvrrySettlementAdminClient {
     });
     return await response.text();
   }
+
+  /**
+   * 5. Partner requests 24/7 on-demand instant cash out
+   */
+  async requestOnDemandPayout(params: {
+    partnerId: string;
+    amountNpr: number;
+    destinationType?: 'bank' | 'esewa' | 'khalti';
+    walletPhone?: string;
+  }) {
+    try {
+      const { data, error } = await this.supabase.functions.invoke('payout-execute', {
+        body: {
+          action: 'on_demand_payout',
+          partner_id: params.partnerId,
+          amount_paisa: Math.round(params.amountNpr * 100),
+          destination_type: params.destinationType || 'bank',
+          wallet_phone: params.walletPhone,
+        },
+      });
+
+      if (error) return { success: false, error: error.message };
+      return data;
+    } catch (err: any) {
+      return { success: false, error: err.message || 'On-demand payout exception' };
+    }
+  }
 }

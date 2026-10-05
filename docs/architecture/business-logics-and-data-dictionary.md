@@ -227,6 +227,11 @@ Every transaction that touches money writes an append-only entry in `public.plat
 - **`user_device_tokens`**: Stores active FCM v1 (Android), APNs (iOS), and Web Push tokens with isolation across `app_variant` ('consumer', 'partner', 'admin').
 - **Token Lifecycle**: `register_device_token()` automatically rebinds tokens on user switch; `unregister_device_token()` deactivates upon sign-out. Edge Function automatically cleans up dead tokens (`UNREGISTERED`). See [push-notifications-fcm.md](push-notifications-fcm.md).
 
+### Migration 0016: On-Demand Instant Payouts & Multi-Rail Disbursements
+- **On-Demand Cash Out**: Partners can withdraw earnings 24/7 via ConnectIPS Real-Time or eSewa/Khalti.
+- **`request_on_demand_payout()` RPC**: Enforces Zero-Hub COD lock (`Withdrawable = MAX(0, Payable - Rider Cash-in-Hand)`), minimum withdrawal (NPR 200), and max 2 withdrawals / 24h anti-theft cap.
+- **Instant Convenience Fee**: Configurable flat fee (NPR 15) posted to `platform_revenue`, creating a new revenue stream while covering bank transfer costs. See [midnight-settlement-connectips.md](midnight-settlement-connectips.md).
+
 ---
 
 ## 5. Partner Operations: Hybrid Architecture (Full Manual Control Dashboard + AI Co-Pilot)
