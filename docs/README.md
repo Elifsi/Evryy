@@ -6,6 +6,9 @@ Welcome to the **evrry** Super App platform documentation, developed by **Elifsi
 
 ## Documentation Index
 
+### ⚡ Start Here
+- [**Master Session & Progress Log**](./progress/SESSION_LOG.md) — **Read First**: Chronological progress tracker, completed migrations, active Edge Functions, and golden architecture invariants.
+
 ### 1. Architecture & Specifications
 - [Super App Specification & Reference Matrix](./architecture/superapp-specification.md) — Comprehensive technical architecture, tech stack protocols, and official repository reference matrix.
 - [System Architecture Overview](./architecture/system-overview.md) — Topology, platform pillars, and component separation.
