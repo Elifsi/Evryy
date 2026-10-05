@@ -212,6 +212,12 @@ Every transaction that touches money writes an append-only entry in `public.plat
 - **Vehicle Visuals**: Adds `vehicle_model` and `vehicle_color` to `rider_details`.
 - **Digital COD Settlement**: `settle_rider_cod_digital()` and `admin_reconcile_rider_cash()`.
 
+### Migration 0013: Automated Invoicing & Resend Email Queue
+- **`email_dispatch_queue`**: Resilient outbox queue for transactional emails (Invoices, OTPs, KYC notices, Payout statements).
+- **`trigger_queue_delivered_order_invoice()`**: Automated PostgreSQL trigger firing on order `status = 'delivered'`. Automatically extracts items, taxes (0% VAT), store PAN, customer address, and queues tax invoice with zero manual client intervention.
+- **Idempotency**: `uq_email_order_invoice (reference_id, action)` prevents duplicate invoice dispatches.
+- **Client Security Invariant**: Kotlin (Android) and Swift (iOS) binaries NEVER hold `RESEND_API_KEY`. All dispatches route through Supabase Edge Function `send-email/`. See [email-service-resend.md](email-service-resend.md).
+
 ---
 
 ## 5. Partner Operations: Hybrid Architecture (Full Manual Control Dashboard + AI Co-Pilot)

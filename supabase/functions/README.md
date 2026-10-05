@@ -4,8 +4,12 @@ This directory is designated for server-side TypeScript Edge Functions running o
 
 ## Status
 
-🔮 **Awaiting Open-Source Contributor / Developer Implementation.**
-No production code files or functions have been implemented here yet. This document provides the architectural guidelines and requirements for developers implementing Edge Functions.
+✅ **Active Production Functions**:
+- `send-email/`: Universal Resend email dispatch engine serving Android (Kotlin), iOS (Swift), Web (Next.js), and PostgreSQL outbox triggers.
+
+🔮 **Planned Financial Functions**:
+- Payment initiation & verification (`payment-initiate/`, `payment-verify/`)
+- Partner payout execution (`payout-execute/`)
 
 ---
 
