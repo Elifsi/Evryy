@@ -196,3 +196,22 @@ Every transaction that touches money writes an append-only entry in `public.plat
 - **`submit_review()`**: Verified submission ensuring user completed the order/ride/stay. Recomputes average rating and count atomically.
 - **Vehicle Visuals**: Adds `vehicle_model` and `vehicle_color` to `rider_details`.
 - **Digital COD Settlement**: `settle_rider_cod_digital()` and `admin_reconcile_rider_cash()`.
+
+---
+
+## 5. Partner Operations: Hybrid Architecture (Full Manual Control Dashboard + AI Co-Pilot)
+
+The platform adheres to an uncompromising **"AI-Assisted, Human-Controlled"** principle for all merchant, rider, driver, landlord, and hotel operations:
+
+1. **100% Full Manual Dashboards**:
+   - Every single operational workflow can be executed completely manually through standard UI screens (forms, tables, sliders, buttons, and switches).
+   - Partners never need to use AI for day-to-day operations if they prefer manual entry, or if their device is offline.
+2. **AI as an Accelerator (Co-Pilot)**:
+   - AI is an assistant that eliminates tedious friction (e.g. photo-scanning a 100-item paper menu to auto-fill draft catalog forms).
+   - **Human-in-the-Loop Approval**: AI generated outputs (menu drafts, auto-replies, voice status changes) always present visual confirmations or preview drafts for partner verification before committing to the database.
+3. **Core Hybrid Features by Vertical**:
+   - **Restaurants & Kitchens**: Full manual KDS order board + Optional photo-to-menu OCR & kitchen voice out-of-stock toggles (*"Momo sakiyo"*).
+   - **Kirana & Grocery**: Manual barcode/SKU inventory counters + Optional shelf/bill photo catalog ingestion.
+   - **Hotels & Landlords**: Manual room availability calendar & rate inputs + Optional 3-bullet listing drafter & guest FAQ chat auto-responder.
+   - **Riders & Drivers**: Interactive map, bidding slider, and manual 4-digit start OTP keypad + Optional hands-free voice co-pilot while driving.
+   - **Business Analytics**: Detailed ledger tables and downloadable invoices + Optional plain-Nepali 8:00 AM business voice/text briefing.

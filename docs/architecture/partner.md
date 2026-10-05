@@ -110,3 +110,48 @@ Within any partner entity, staff accounts are restricted via PostgreSQL Row Leve
 - Partner isolation is enforced via database policies using `partner_id` foreign keys.
 - Authenticated requests resolve the caller's authorized partners via `partner_members`.
 - Under no circumstances can Partner A read orders, customer details, or financials of Partner B.
+
+---
+
+## 5. Hybrid Operational Architecture: Manual Control Dashboard + AI Co-Pilot
+
+A core platform principle is **"AI-Assisted, Human-Controlled"**:
+- **Never a Black Box**: AI is an accelerator, **not a replacement for partner control**.
+- **100% Full Manual Control**: Every single feature, price, order status, room availability, and setting has a robust, intuitive manual dashboard (buttons, forms, toggles, tables). Small or quick tasks can be done manually in seconds without touching AI.
+- **AI as a Co-Pilot**: AI assists busy partners (e.g. scanning a 100-item paper menu with a photo, hands-free voice commands while driving or cooking). All AI actions present a preview for human confirmation before publishing.
+
+### A. Manual Controls vs. AI Co-Pilot Feature Matrix
+
+```
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                               HYBRID PARTNER OPERATIONAL MATRIX                                       │
+├─────────────────────┬───────────────────────────────────────────┬─────────────────────────────────────┤
+│ Domain / Task       │ 🛠️ Full Manual Dashboard (Always Available)│ 🤖 AI Co-Pilot Accelerator (Optional)│
+├─────────────────────┼───────────────────────────────────────────┼─────────────────────────────────────┤
+│ Menu & Inventory    │ • Form-based item creation & edit         │ • Photo-to-Menu OCR & Digitizer     │
+│                     │ • Manual price changes & stock counters   │   (snaps physical menu, auto-fills) │
+│                     │ • Image upload & tag selectors            │ • Nepali voice toggle: "Momo sakiyo"│
+│                     │ • Out-of-stock toggle switches            │   (instantly toggles availability)  │
+├─────────────────────┼───────────────────────────────────────────┼─────────────────────────────────────┤
+│ Live Order & KDS    │ • KDS board with Accept / Reject buttons  │ • Voice order status updates        │
+│                     │ • Custom prep time selector (10m, 20m)    │ • Automated print ticket triggers   │
+│                     │ • Manual handoff code input               │ • Kitchen audio chime on new orders │
+├─────────────────────┼───────────────────────────────────────────┼─────────────────────────────────────┤
+│ Rooms & Stays       │ • Visual calendar with drag-to-book       │ • 3-bullet listing generator        │
+│                     │ • Manual room rates & blackout dates      │ • AI Draft FAQ auto-responder for   │
+│                     │ • Form inputs for amenities & house rules │   amenity/parking questions on chat │
+├─────────────────────┼───────────────────────────────────────────┼─────────────────────────────────────┤
+│ Rides & Drivers     │ • Interactive map with Accept / Bid slider│ • Hands-free voice HUD while driving│
+│                     │ • Manual 4-digit start OTP keypad         │ • Audio route & pickup advisories   │
+│                     │ • One-tap "Arrived" / "Completed" buttons │ • "Customer lai call gara" command  │
+├─────────────────────┼───────────────────────────────────────────┼─────────────────────────────────────┤
+│ Financials & COD    │ • Daily ledger balance & settlement tables│ • Plain-Nepali morning audio/text   │
+│                     │ • Bank account entry & invoice downloads  │   briefing (sales, high-demand tips,│
+│                     │ • In-app "Settle Cash" via eSewa/Khalti   │   customer review sentiment summary)│
+└─────────────────────┴───────────────────────────────────────────┴─────────────────────────────────────┘
+```
+
+### B. Human-in-the-Loop Safeguards
+1. **Catalog Previews**: When an AI scans a paper menu photo, it populates a draft form in the manual dashboard. The merchant reviews the names, prices, and tags, makes any quick edits, and clicks **"Save & Publish"**.
+2. **Chat Auto-Response Approval**: AI drafts replies to guest inquiries based on verified property amenities. The host can either tap **"Send"**, edit the text, or toggle full auto-reply on/off at will.
+3. **Manual Fallback**: If the device is offline or the user prefers manual operation, 100% of workflows operate independently of AI services.
