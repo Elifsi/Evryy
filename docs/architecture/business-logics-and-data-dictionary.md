@@ -223,6 +223,10 @@ Every transaction that touches money writes an append-only entry in `public.plat
 - **`sms_rate_limits` & `check_sms_rate_limit()`**: Protects platform from SMS bombing attacks. Enforces 45s cooldown, max 3 OTP requests / 10-minute window, and automated 15-minute lockout upon violation.
 - **Adaptive Nepal SMS Architecture**: Runs in Mock Mode for zero-cost local testing until `SPARROW_SMS_TOKEN` is provisioned. See [sms-verification-and-auth.md](sms-verification-and-auth.md).
 
+### Migration 0015: Device Push Tokens & Realtime Dispatch
+- **`user_device_tokens`**: Stores active FCM v1 (Android), APNs (iOS), and Web Push tokens with isolation across `app_variant` ('consumer', 'partner', 'admin').
+- **Token Lifecycle**: `register_device_token()` automatically rebinds tokens on user switch; `unregister_device_token()` deactivates upon sign-out. Edge Function automatically cleans up dead tokens (`UNREGISTERED`). See [push-notifications-fcm.md](push-notifications-fcm.md).
+
 ---
 
 ## 5. Partner Operations: Hybrid Architecture (Full Manual Control Dashboard + AI Co-Pilot)

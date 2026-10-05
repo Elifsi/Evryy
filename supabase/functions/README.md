@@ -10,9 +10,9 @@ This directory is designated for server-side TypeScript Edge Functions running o
 - `payment-initiate/`: Direct Nepal payment session creator for eSewa ePay v2 (HMAC-SHA256), Khalti ePayment v2 (pidx), and Fonepay dynamic QR.
 - `payment-verify/`: Direct payment gateway verification receiver executing atomic ledger postings via `public.confirm_payment()`.
 - `payout-execute/`: Midnight settlement batch auditor, ConnectIPS NCHL exporter, and partner disbursement engine.
+- `push-notify/`: High-priority FCM v1 and APNs notification engine with dead-token cleanup.
 
 🔮 **Planned Platform Functions**:
-- Push notifications service (`push-notify/`)
 - Outbox retry worker (`process-outbox/`)
 - Server-side AI concierge gateway (`ai-gateway/`)
 
