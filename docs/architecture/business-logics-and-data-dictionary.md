@@ -24,6 +24,21 @@
    - AI personalization runs strictly on an opt-in basis (`ai_personalization_consent = true`).
    - If a user withdraws consent, all memories and distilled profiles are immediately deleted via database triggers.
    - Raw chat transcripts are automatically purged after 30 days.
+5. **Dual Identity Verification (Phone SMS + Email)**:
+   - **Phone Number (SMS OTP)**: Primary sign-in identifier for consumers, riders, and drivers in Nepal.
+   - **Email Address (6-Digit OTP / Magic Link)**: Required for partner onboarding, monthly payout statements, and account security.
+   - **Unified in Supabase Auth**: Both credentials link to a single `auth.users` entity (`supabase.auth.linkIdentity()`).
+   - **Transactional Email Provider Strategy**:
+     - *Phase 1 (Testing & Launch)*: **Resend Free Tier** (3,000 emails/month free) for zero-friction Next.js integration.
+     - *Phase 2 (High Volume Scale)*: **Amazon SES** ($0.10 per 1,000 emails) for enterprise cost efficiency at scale.
+6. **Multi-Business Architecture (Instagram-Style Profile Switcher)**:
+   - A single human account (`profiles.id`) can own multiple commercial entities via `partner_profiles.owner_id` (1:N relationship).
+   - Partners do **NOT** create multiple accounts to operate different businesses (e.g. a restaurant owner who also rents out a flat upstairs).
+   - In-app **Profile Switcher** allows instant 1-tap switching between business profiles without logging out.
+   - Tapping **"+ Add New Business"** creates a new profile under a chosen vertical and attaches vertical-specific KYC documents.
+7. **Platform Device Division of Responsibility**:
+   - **Mobile Partner App (`apps/partner`)**: Supports **ALL 5 verticals** because phone cameras are essential for scanning paper menus, photographing rental rooms, and phone GPS is required for driving.
+   - **Desktop Web Dashboard (`apps/web/partner`)**: Strictly for **Stationary Merchants & Hosts** (KDS queues, thermal receipt printers, barcode scanners, room calendars). Zero driving/riding interfaces on web.
 
 ---
 
