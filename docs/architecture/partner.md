@@ -155,3 +155,88 @@ A core platform principle is **"AI-Assisted, Human-Controlled"**:
 1. **Catalog Previews**: When an AI scans a paper menu photo, it populates a draft form in the manual dashboard. The merchant reviews the names, prices, and tags, makes any quick edits, and clicks **"Save & Publish"**.
 2. **Chat Auto-Response Approval**: AI drafts replies to guest inquiries based on verified property amenities. The host can either tap **"Send"**, edit the text, or toggle full auto-reply on/off at will.
 3. **Manual Fallback**: If the device is offline or the user prefers manual operation, 100% of workflows operate independently of AI services.
+
+---
+
+## 6. Single Adaptive Partner App vs. Fragmented Apps & Onboarding Lifecycle
+
+### A. Why a Single Adaptive App is Strictly Superior
+Instead of maintaining 5 separate apps ("EVRRY Driver", "EVRRY Restaurant", "EVRRY Hotel", "EVRRY Grocery", "EVRRY Landlord"), **evrry uses ONE unified Partner Application** (`apps/partner` on mobile, `apps/web/partner` on desktop/web):
+
+1. **Zero Clutter via Dynamic HUD**: A bike rider never sees restaurant kitchen buttons; a hotel manager never sees bike-taxi maps. The app detects the partner's verified `partner_profiles.type` and renders **only** the relevant operational interface.
+2. **Single Codebase & Shared Infra**: One app to test, publish, and maintain. Authentication (SMS OTP), KYC uploaders, Bank Account management, and Ledger Payouts are 100% shared.
+3. **Multi-Role Switching for Nepali Business Owners**: Many individuals in Nepal operate multiple ventures (e.g. a restaurant owner who also rents out a flat upstairs on EVRRY Stays). A profile switcher in the app bar allows instant 1-tap switching without logging in and out.
+4. **Desktop/Web vs. Mobile Optimization**:
+   - **Riders & Drivers**: Onboard and operate 100% on **Mobile** (`apps/partner/android`).
+   - **Restaurants, Supermarkets & Hotels**: Onboard and operate primarily on **Desktop Web** (`apps/web/partner`) for large KDS screens, physical barcode scanners, and thermal receipt printing.
+
+### B. End-to-End Partner Onboarding Workflow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor P as Partner (Phone/Web)
+    participant App as EVRRY Partner App
+    participant DB as Supabase DB & Storage
+    actor Admin as Elifsi Superadmin Console
+
+    P->>App: 1. Sign in with Phone Number (SMS OTP)
+    App->>DB: Resolves/creates auth profile
+
+    P->>App: 2. Selects Business Vertical: [Restaurant | Grocery | Rider | Driver | Hotel | Landlord]
+
+    P->>App: 3. Enters Business Profile (Trade Name, Legal Name, Palika, Ward, Address, GPS)
+    App->>DB: INSERT into partner_profiles (status = 'draft', type = chosen_type)
+
+    P->>App: 4. Uploads KYC Documents (Citizenship, License, Bluebook, PAN/VAT, or Lalpurja)
+    App->>DB: Uploads to private 'kyc' bucket; INSERT partner_kyc_documents (status = 'pending')
+
+    P->>App: 5. Inputs Bank Account for Midnight Payouts (Bank Code, Account Name & Number)
+    App->>DB: INSERT partner_bank_accounts (is_verified = false)
+
+    P->>App: 6. Clicks "Submit for Verification"
+    App->>DB: UPDATE partner_profiles SET status = 'pending_verification'
+
+    Note over Admin,DB: Instant notification in Superadmin Console (apps/web/admin)
+    Admin->>DB: 7. Inspects documents in split-screen viewer & verifies IRD PAN / Bluebook stamp
+    Admin->>DB: Calls admin_review_partner(p_partner, p_approve, p_reason)
+
+    alt Approved
+        DB-->>App: partner_profiles.status = 'active'
+        App-->>P: Push Notification / SMS: "Welcome to EVRRY! Your store/vehicle is now LIVE!"
+        Note over P,App: Dynamic HUD unlocks! Restaurant sees KDS; Rider sees Map HUD.
+    else Rejected
+        DB-->>App: partner_profiles.status = 'rejected' (rejection_reason = "Bluebook tax stamp unclear")
+        App-->>P: Notification: "Action required: Please re-upload your Bluebook document."
+    end
+```
+
+---
+
+## 7. Kitchen Voice Wake-Word & Zero-Leak Audio Architecture
+
+Streaming continuous 24/7 kitchen audio to cloud LLMs would bankrupt the platform, record private chatter, and cause hallucinations. 
+
+evrry enforces a **3-Layer Local Audio Filter** so cloud AI is asleep 99.9% of the day:
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│                   3-LAYER ZERO-LEAK KITCHEN AUDIO ARCHITECTURE                       │
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│ 1. 100% OFFLINE LOCAL WAKE-WORD (Device CPU - Zero Cloud Cost, Zero Data Sent)       │
+│    • Tiny open-source model (Porcupine / Vosk WebAssembly) runs locally in browser.  │
+│    • Listens ONLY for the exact wake phrase: "Hey Evrry" or "Namaste Evrry".         │
+│    • All background chatter (cricket, music, customer conversations) is 100% ignored.│
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│ 2. VISUAL CHIME & 4-SECOND LISTENING WINDOW                                          │
+│    • Screen flashes a bright green ring & plays a pleasant "Ting" chime.             │
+│    • Opens a strict 4-second listening window.                                       │
+│    • Local VAD (Voice Activity Detection) detects silence and closes mic in 1 sec.   │
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│ 3. 2-SECOND AUDIO SNIPPET DISPATCH & PHYSICAL ALTERNATIVES                           │
+│    • Only the 2-second command audio is sent to the cloud STT API (< NPR 0.05 cost).  │
+│    • Physical Alternatives for Loud Kitchens:                                        │
+│      - Big On-Screen Tap Button (wrist/elbow tap).                                    │
+│      - Bluetooth Kitchen Foot Pedal (step to talk, release to send).                 │
+└──────────────────────────────────────────────────────────────────────────────────────┘
+```
