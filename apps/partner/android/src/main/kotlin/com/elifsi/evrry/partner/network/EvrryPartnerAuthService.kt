@@ -12,31 +12,66 @@ import javax.inject.Singleton
  * Evrry Partner Auth Service (Partner Android)
  * Elifsi Technologies Private Limited
  *
- * Facilitates merchant/rider/driver phone login via Nepal domestic SMS.
+ * Facilitates merchant/rider/driver phone login via WhatsApp OTP (primary) with Domestic SMS fallback.
  */
 
 @Serializable
-data class PartnerSmsRequest(
+data class PartnerOtpRequest(
     val phone: String,
-    val otp: String? = null
+    val channel: String = "whatsapp",
+    val otp: String? = null,
+    val message: String? = null,
+    val template: String? = null
 )
 
 @Serializable
-data class PartnerSmsResponse(
+data class PartnerOtpResponse(
     val success: Boolean,
+    val channel: String? = "whatsapp",
     val provider: String? = null,
     val mock: Boolean? = false,
     val otp: String? = null,
     val error: String? = null,
+    val message: String? = null,
     val retry_after_seconds: Int? = null
 )
+
+// Backward compatibility alias
+typealias PartnerSmsRequest = PartnerOtpRequest
+typealias PartnerSmsResponse = PartnerOtpResponse
 
 @Singleton
 class EvrryPartnerAuthService @Inject constructor(
     private val supabase: SupabaseClient
 ) {
     /**
-     * Request partner login OTP via domestic SMS.
+     * Request partner login OTP via WhatsApp Cloud API.
+     */
+    suspend fun requestWhatsAppOtp(phoneNumber: String): Result<PartnerOtpResponse> = runCatching {
+        supabase.functions.invoke(
+            function = "send-otp",
+            body = PartnerOtpRequest(
+                phone = normalizeNepalPhone(phoneNumber),
+                channel = "whatsapp"
+            )
+        )
+    }
+
+    /**
+     * Request partner login OTP via domestic SMS or WhatsApp channel.
+     */
+    suspend fun requestOtp(phoneNumber: String, channel: String = "whatsapp"): Result<PartnerOtpResponse> = runCatching {
+        supabase.functions.invoke(
+            function = "send-otp",
+            body = PartnerOtpRequest(
+                phone = normalizeNepalPhone(phoneNumber),
+                channel = channel
+            )
+        )
+    }
+
+    /**
+     * Request partner login OTP via Supabase Auth SMS channel.
      */
     suspend fun signInWithPhone(phoneNumber: String): Result<Unit> = runCatching {
         supabase.auth.signInWith(OTP) {
@@ -55,7 +90,7 @@ class EvrryPartnerAuthService @Inject constructor(
         )
     }
 
-    private fun normalizeNepalPhone(raw: String): String {
+    fun normalizeNepalPhone(raw: String): String {
         val digitsOnly = raw.replace(Regex("[^0-9]"), "")
         return if (digitsOnly.startsWith("977")) {
             "+$digitsOnly"

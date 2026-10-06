@@ -210,6 +210,7 @@ Deno.serve(async (req: Request) => {
       try {
         await supabase.from('sms_dispatch_logs').insert({
           phone: e164Phone,
+          channel: 'sms',
           provider,
           status: dispatchSuccess ? 'sent' : 'failed',
           message,

@@ -12,34 +12,68 @@ import javax.inject.Singleton
  * Evrry Authentication Service (Consumer Android)
  * Elifsi Technologies Private Limited
  *
- * Implements Phone SMS OTP Authentication with Nepal mobile carriers (NTC/Ncell).
- * In development, operates in Mock Mode (zero SMS cost).
+ * Implements WhatsApp OTP Authentication (primary) with Domestic SMS Fallback.
+ * In development, operates in Mock Mode (zero cost).
  */
 
 @Serializable
-data class SendSmsRequest(
+data class SendOtpRequest(
     val phone: String,
+    val channel: String = "whatsapp",
     val otp: String? = null,
-    val message: String? = null
+    val message: String? = null,
+    val template: String? = null
 )
 
 @Serializable
-data class SendSmsResponse(
+data class SendOtpResponse(
     val success: Boolean,
+    val channel: String? = "whatsapp",
     val provider: String? = null,
     val mock: Boolean? = false,
     val otp: String? = null,
     val error: String? = null,
+    val message: String? = null,
     val retry_after_seconds: Int? = null
 )
+
+// Legacy alias for backward compatibility
+typealias SendSmsRequest = SendOtpRequest
+typealias SendSmsResponse = SendOtpResponse
 
 @Singleton
 class EvrryAuthService @Inject constructor(
     private val supabase: SupabaseClient
 ) {
     /**
-     * Request a 6-digit SMS OTP code for a Nepal mobile number.
+     * Request a 6-digit WhatsApp OTP verification code for a Nepal mobile number.
      * Number format can be "+97798XXXXXXXX" or "98XXXXXXXX".
+     */
+    suspend fun requestWhatsAppOtp(phoneNumber: String): Result<SendOtpResponse> = runCatching {
+        supabase.functions.invoke(
+            function = "send-otp",
+            body = SendOtpRequest(
+                phone = normalizeNepalPhone(phoneNumber),
+                channel = "whatsapp"
+            )
+        )
+    }
+
+    /**
+     * Request OTP via specified channel ("whatsapp" or "sms").
+     */
+    suspend fun requestOtp(phoneNumber: String, channel: String = "whatsapp"): Result<SendOtpResponse> = runCatching {
+        supabase.functions.invoke(
+            function = "send-otp",
+            body = SendOtpRequest(
+                phone = normalizeNepalPhone(phoneNumber),
+                channel = channel
+            )
+        )
+    }
+
+    /**
+     * Request a 6-digit SMS OTP code for a Nepal mobile number via Supabase Auth.
      */
     suspend fun signInWithPhone(phoneNumber: String): Result<Unit> = runCatching {
         supabase.auth.signInWith(OTP) {
@@ -48,7 +82,7 @@ class EvrryAuthService @Inject constructor(
     }
 
     /**
-     * Verify the 6-digit SMS OTP code and establish authenticated session.
+     * Verify the 6-digit OTP code and establish authenticated session.
      */
     suspend fun verifyPhoneOtp(phoneNumber: String, token: String): Result<Unit> = runCatching {
         supabase.auth.verifyPhoneOtp(
@@ -59,19 +93,22 @@ class EvrryAuthService @Inject constructor(
     }
 
     /**
-     * Direct fallback to "send-sms" Edge Function for testing / mock OTP.
+     * Fallback to direct "send-sms" Edge Function for testing / mock SMS.
      */
-    suspend fun requestDirectSms(phoneNumber: String): Result<SendSmsResponse> = runCatching {
+    suspend fun requestDirectSms(phoneNumber: String): Result<SendOtpResponse> = runCatching {
         supabase.functions.invoke(
             function = "send-sms",
-            body = SendSmsRequest(phone = normalizeNepalPhone(phoneNumber))
+            body = SendOtpRequest(
+                phone = normalizeNepalPhone(phoneNumber),
+                channel = "sms"
+            )
         )
     }
 
     /**
      * Normalizes Nepal mobile numbers to standard E.164 (+97798XXXXXXXX).
      */
-    private fun normalizeNepalPhone(raw: String): String {
+    fun normalizeNepalPhone(raw: String): String {
         val digitsOnly = raw.replace(Regex("[^0-9]"), "")
         return if (digitsOnly.startsWith("977")) {
             "+$digitsOnly"
