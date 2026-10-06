@@ -39,7 +39,18 @@ describe("priceCart", () => {
     expect(breakdown.deliveryFee).toBe(80);
     expect(breakdown.platformFee).toBe(10);
   });
+
+  it("Option A: orders >= Rs 1,000 waive base delivery (Rs 50 free) but pay only extra distance fee beyond 3 km", () => {
+    // 5x food-001 = Rs 1,245 (>= 1,000 threshold), at 5 km (2 km extra @ Rs 15 = Rs 30)
+    // Base Rs 50 is waived (FREE), so customer pays only Rs 30 delivery fee!
+    const breakdown = priceCart([{ itemId: "food-001", qty: 5 }], 5.0);
+    expect(breakdown.itemTotal).toBe(1245);
+    expect(breakdown.deliveryFee).toBe(30); // 0 base + 30 extra
+    expect(breakdown.platformFee).toBe(10);
+    expect(breakdown.total).toBe(1245 + 30 + 10 + Math.round(1245 * 0.05));
+  });
 });
+
 
 describe("calculateDriverDeliveryEarnings", () => {
   it("pays driver Rs 40 base payout for deliveries within 3 km", () => {

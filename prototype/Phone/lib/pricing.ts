@@ -34,14 +34,16 @@ export function priceCart(cart: CartItem[], distanceKm = 2.5): PriceBreakdown {
 
   const extraKm = Math.max(0, Math.ceil(distanceKm) - baseDeliveryRadiusKm);
   const extraFee = extraKm * extraPerKmFee;
-  const calculatedDeliveryFee = baseDeliveryFee + extraFee;
 
-  const deliveryFee = itemTotal >= freeDeliveryThreshold ? 0 : calculatedDeliveryFee;
+  // Option A: Orders >= Rs 1,000 get base delivery (first 3 km) FREE.
+  // If distance exceeds 3 km, customer pays only the extra distance fee (Rs 15/km).
+  const deliveryFee = itemTotal >= freeDeliveryThreshold ? extraFee : baseDeliveryFee + extraFee;
   const platformFee = 10;
   const gst = Math.round(itemTotal * 0.05);
 
   return { itemTotal, deliveryFee, platformFee, gst, total: itemTotal + deliveryFee + platformFee + gst };
 }
+
 
 export interface DriverDeliveryEarnings {
   basePayout: number;

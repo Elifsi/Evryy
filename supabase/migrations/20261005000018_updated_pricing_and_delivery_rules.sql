@@ -148,9 +148,12 @@ BEGIN
     RAISE EXCEPTION 'minimum order value for this store is NPR %', (v_store.min_order_paisa / 100.0);
   END IF;
 
-  -- Free delivery if order exceeds free delivery threshold (NPR 1,000)
+  -- Option A: Free delivery waives the base 3 km delivery fee (NPR 50).
+  -- If distance exceeds 3 km, customer pays only the extra distance fee (NPR 15/km).
   IF v_subtotal >= v_free_thresh THEN
-    v_delivery := 0;
+    v_delivery := v_extra_km * v_per_km;
+  ELSE
+    v_delivery := v_base_fee + (v_extra_km * v_per_km);
   END IF;
 
   v_tax   := round((v_subtotal + v_delivery + v_platform) * v_vat / 10000.0);
@@ -173,8 +176,7 @@ END;
 $$;
 
 -- ---------------------------------------------------------------------------
--- Update post_order_settlement to credit rider Rs 40 base + 80% extra distance
--- and balance double-entry ledger with free delivery subsidy
+-- Update post_order_settlement: Option A double-entry general ledger
 -- ---------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.post_order_settlement()
 RETURNS trigger
@@ -182,47 +184,55 @@ LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
-  v_store          public.stores;
-  v_commission     BIGINT;
-  v_driver_base    BIGINT;
-  v_driver_bps     BIGINT;
-  v_per_km         BIGINT;
-  v_extra_km       INTEGER;
-  v_extra_charged  BIGINT;
-  v_rider_earning  BIGINT;
-  v_delivery_margin BIGINT;
-  v_lines          JSONB;
+  v_store              public.stores;
+  v_commission         BIGINT;
+  v_driver_base        BIGINT;
+  v_driver_bps         BIGINT;
+  v_per_km             BIGINT;
+  v_free_thresh        BIGINT;
+  v_extra_km           INTEGER;
+  v_extra_charged      BIGINT;
+  v_driver_extra       BIGINT;
+  v_rider_earning      BIGINT;
+  v_platform_extra     BIGINT;
+  v_delivery_margin    BIGINT;
+  v_lines              JSONB;
 BEGIN
   IF NEW.status <> 'delivered' OR OLD.status = 'delivered' THEN RETURN NEW; END IF;
   SELECT * INTO v_store FROM public.stores WHERE id = NEW.store_id;
   v_commission := round(NEW.subtotal_paisa * NEW.commission_bps / 10000.0);
 
-  SELECT coalesce(value_int, 4000) INTO v_driver_base FROM public.platform_settings WHERE key = 'driver_base_payout_paisa';
-  SELECT coalesce(value_int, 8000) INTO v_driver_bps  FROM public.platform_settings WHERE key = 'driver_extra_share_bps';
-  SELECT coalesce(value_int, 1500) INTO v_per_km      FROM public.platform_settings WHERE key = 'delivery_per_km_fee_paisa';
+  SELECT coalesce(value_int, 4000)   INTO v_driver_base FROM public.platform_settings WHERE key = 'driver_base_payout_paisa';
+  SELECT coalesce(value_int, 8000)   INTO v_driver_bps  FROM public.platform_settings WHERE key = 'driver_extra_share_bps';
+  SELECT coalesce(value_int, 1500)   INTO v_per_km      FROM public.platform_settings WHERE key = 'delivery_per_km_fee_paisa';
+  SELECT coalesce(value_int, 100000) INTO v_free_thresh FROM public.platform_settings WHERE key = 'delivery_free_threshold_paisa';
 
-  -- Calculate driver earning: Rs 40 up to 3 km, plus 80% of extra distance fee
+  -- Calculate driver earnings: Rs 40 base + 80% of extra distance fee
   v_extra_km := GREATEST(0, ceil(NEW.delivery_distance_m / 1000.0)::int - 3);
   v_extra_charged := v_extra_km * v_per_km;
-  v_rider_earning := v_driver_base + round(v_extra_charged * v_driver_bps / 10000.0);
+  v_driver_extra := round(v_extra_charged * v_driver_bps / 10000.0);
+  v_rider_earning := v_driver_base + v_driver_extra;
+  v_platform_extra := v_extra_charged - v_driver_extra; -- 20% of extra delivery fee
 
   IF NEW.rider_partner_id IS NULL THEN
     RAISE EXCEPTION 'cannot settle an order that has no rider';
   END IF;
 
-  IF NEW.delivery_fee_paisa = 0 THEN
-    -- FREE DELIVERY (Order >= Rs 1,000): Platform subsidizes rider payout as marketing expense
+  IF NEW.subtotal_paisa >= v_free_thresh THEN
+    -- OPTION A: Orders >= Rs 1,000 have base 3km delivery waived.
+    -- Platform subsidizes the base driver payout (Rs 40) as marketing expense.
     v_lines := jsonb_build_array(
       CASE WHEN NEW.payment_method = 'cod'
         THEN jsonb_build_object('account_type', 'rider_cash_in_hand', 'account_id', NEW.rider_partner_id, 'direction', 'debit', 'amount', NEW.total_paisa)
         ELSE jsonb_build_object('account_type', 'gateway_clearing', 'direction', 'debit', 'amount', NEW.total_paisa) END,
-      jsonb_build_object('account_type', 'marketing_expense', 'direction', 'debit',  'amount', NEW.discount_paisa + v_rider_earning),
+      jsonb_build_object('account_type', 'marketing_expense', 'direction', 'debit',  'amount', NEW.discount_paisa + v_driver_base),
       jsonb_build_object('account_type', 'merchant_payable', 'account_id', v_store.partner_id, 'direction', 'credit', 'amount', NEW.subtotal_paisa - v_commission),
       jsonb_build_object('account_type', 'rider_payable', 'account_id', NEW.rider_partner_id, 'direction', 'credit', 'amount', v_rider_earning),
-      jsonb_build_object('account_type', 'platform_revenue', 'direction', 'credit', 'amount', v_commission + NEW.platform_fee_paisa),
+      jsonb_build_object('account_type', 'platform_revenue', 'direction', 'credit', 'amount', v_commission + NEW.platform_fee_paisa + v_platform_extra),
       jsonb_build_object('account_type', 'vat_payable',      'direction', 'credit', 'amount', NEW.tax_paisa));
   ELSE
-    -- PAID DELIVERY: Customer paid delivery fee; platform retains margin (Rs 10 base + 20% extra)
+    -- Orders < Rs 1,000: Customer paid base delivery (Rs 50) + extra fee.
+    -- Platform retains Rs 10 base delivery margin + 20% extra fee share.
     v_delivery_margin := NEW.delivery_fee_paisa - v_rider_earning;
     v_lines := jsonb_build_array(
       CASE WHEN NEW.payment_method = 'cod'
@@ -244,3 +254,4 @@ BEGIN
   RETURN NEW;
 END;
 $$;
+
