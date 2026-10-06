@@ -4,7 +4,7 @@
  * Elifsi Technologies Private Limited
  *
  * Supported Actions:
- * 1. voice_concierge: User conversational assistant with user memory injection & 4 Voice Personas (Eli, Rony, Jenny, Sol).
+ * 1. voice_concierge: User conversational assistant with user memory injection & 4 Voice Personas (Eli, Rony, Jenny, Suka).
  * 2. create_voice_room: Generates WebRTC LiveKit room credentials & persona session tokens for ultra-low latency voice streaming.
  * 3. get_personas: Returns the 4 Persona Voice Agents and their vocal profiles.
  * 4. photo_to_menu: Partner vision OCR to extract structured draft catalogs from paper menus.

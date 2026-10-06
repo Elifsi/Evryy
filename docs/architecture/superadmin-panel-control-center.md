@@ -275,7 +275,7 @@ apps/web/admin/
 │   │   ├── layout.tsx                   # Sidebar navigation, admin avatar, role badge
 │   │   ├── page.tsx                     # Real-time GMV, active rides, order ticker
 │   │   ├── pricing/
-│   │   │   ├── platform-fees/page.tsx   # Platform fee Rs 5, waivers, stay service fees
+│   │   │   ├── platform-fees/page.tsx   # Platform fee Rs 10, waivers, stay service fees
 │   │   │   ├── delivery-fees/page.tsx   # Vertical distance tiers, basket thresholds
 │   │   │   └── commissions/page.tsx     # Global vertical sliders & partner overrides
 │   │   ├── marketing/

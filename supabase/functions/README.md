@@ -4,15 +4,18 @@ This directory is designated for server-side TypeScript Edge Functions running o
 
 ## Status
 
-✅ **Active Production Functions (100% Implemented)**:
-- `send-email/`: Universal Resend email dispatch engine serving Android (Kotlin), iOS (Swift), Web (Next.js), and PostgreSQL outbox triggers.
-- `send-sms/`: Universal Nepal SMS OTP engine supporting Sparrow SMS, Aakash SMS, Dev Mock Mode, and database-level anti-bombing rate limits.
-- `payment-initiate/`: Direct Nepal payment session creator for eSewa ePay v2 (HMAC-SHA256), Khalti ePayment v2 (pidx), and Fonepay dynamic QR.
+✅ **Active Production Functions (100% Implemented — 11 Functions)**:
+- `send-otp/`: Primary Meta WhatsApp Cloud API OTP dispatcher with automatic Sparrow/Aakash domestic SMS failover.
+- `send-sms/`: Domestic Nepal SMS OTP engine supporting Sparrow SMS, Aakash SMS, and Dev Mock Mode.
+- `whatsapp-webhook/`: Meta WhatsApp Cloud API webhook handler for real-time delivery status receipts (sent, delivered, read) and inbound responses.
+- `routing/`: OSRM routing engine calculating turn-by-turn geometry, trip duration, and exact road distances across Nepal.
+- `send-email/`: Universal Resend email dispatch engine serving Android, iOS, Web, and PostgreSQL invoice queue triggers.
+- `payment-initiate/`: Direct Nepal payment session creator for eSewa ePay v2, Khalti v2 (pidx), and ConnectIPS.
 - `payment-verify/`: Direct payment gateway verification receiver executing atomic ledger postings via `public.confirm_payment()`.
 - `payout-execute/`: Midnight settlement batch auditor, ConnectIPS NCHL exporter, and partner disbursement engine.
 - `push-notify/`: High-priority FCM v1 and APNs notification engine with dead-token cleanup.
 - `process-outbox/`: Resilient outbox retry worker processing pending/failed email and notification jobs.
-- `ai-gateway/`: Server-side AI Concierge, Photo-to-Menu Vision OCR, and Kitchen Voice command router with user consent memory injection.
+- `ai-gateway/`: Server-side AI Concierge, 4 Voice Personas (Eli, Rony, Jenny, Suka), Photo-to-Menu Vision OCR, and Kitchen Voice router.
 
 ---
 

@@ -8,7 +8,7 @@
 
 The **evrry AI Voice Concierge** delivers an ultra-low latency (< 300ms round trip), voice-first ordering and conversational experience across all 5 core platform verticals (Food, Grocery, InDrive Cab/Bike Bidding, Stays/Hotels, and Rentals).
 
-Rather than relying on a single generic synthetic voice, the platform provides **4 Persona Voice Agents** inspired by top voice models like ChatGPT Voice (e.g., Sol, Breeze, Cove):
+Rather than relying on a single generic synthetic voice, the platform provides **4 Persona Voice Agents**:
 1. **Eli** — Youthful, energetic, and quick-witted female concierge (flagship everyday guide).
 2. **Rony** — Deep baritone, authoritative, and formal (executive concierge).
 3. **Jenny** — Sweet, warm, cheerful, and hospitable (grocery & travel companion).

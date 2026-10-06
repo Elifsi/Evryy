@@ -31,9 +31,29 @@ Partner Web ───────────┤    ├── PostgreSQL Databas
 
 ---
 
-## Core Domain Models (Planned)
+## Core Domain Models (100% Implemented — 20 Migrations)
 
-1. **Authentication & Identity**:
+All 20 forward-only migrations are active in [`migrations/`](./migrations/):
+1. **Extensions & Enums** (`0001`): PostGIS, pgcrypto, btree_gist, pgvector, role enums.
+2. **Administrative Spine of Nepal** (`0002`): 7 provinces, 77 districts, 753 municipalities & wards.
+3. **Identity, Partners & Multi-Store** (`0003`): 1:N multi-business profiles, bank accounts, KYC docs.
+4. **Catalog, Inventory & Orders** (`0004`): Multi-vertical catalog, atomic stock deduction, order state machine.
+5. **Stays, Rooms & InDrive Bidding** (`0005`): Anti-double-booking GiST exclusion, real-time ride counter-bids.
+6. **Payments & Double-Entry Ledger** (`0006`): Balanced general ledger, atomic `confirm_payment` trigger.
+7. **E2EE Chat & Ephemeral Snaps** (`0007`): Signal-style JWK key exchange, auto-burn snaps, 24h stories.
+8. **Loyalty Leagues & Vouchers** (`0008`): Asia/Kathmandu check-in streaks, dynamic promotional discounts.
+9. **AI Memory & Preferences** (`0009`): User consent context store (`get_ai_context`), 30-day auto-purge.
+10. **Storage Buckets & Privileges** (`0010`): RLS for `catalog`, `kyc`, `avatars`, `snaps`, `chat-media`.
+11. **Nepal Geographic Seed** (`0011`): Deterministic administrative boundaries across Nepal.
+12. **Reviews & Digital COD** (`0012`): Verified customer reviews, 0% VAT default, rider digital COD settlement.
+13. **Delivered Invoice Queue** (`0013`): Automated transactional tax invoice generator and outbox trigger.
+14. **SMS Verification & Anti-Bombing** (`0014`): Domestic SMS logs, rate limiter RPC (max 3 per 10 mins).
+15. **Device Push Tokens** (`0015`): Multi-app FCM v1 / APNs tokens with dead-token cleanup.
+16. **On-Demand Instant Payouts** (`0016`): Instant cash-out for drivers/riders with COD reconciliation locks.
+17. **4 AI Voice Personas** (`0017`): Eli female, Rony male, Jenny female, Suka male personas & RPCs.
+18. **Updated Delivery & Ledger Pricing** (`0018`): Rs 1000 free threshold, Rs 50 3km base, Rs 15/km, Rs 40 driver payout + 80% split, Rs 10 platform fee, marketing subsidy.
+19. **WhatsApp Cloud API OTP** (`0019`): Primary WhatsApp OTP dispatch with automatic domestic SMS failover.
+20. **Automated pg_cron Schedules** (`0020`): Midnight ConnectIPS bank settlement & automated cleanup cron jobs.
    - `auth.users` linked to `public.profiles` (consumers) and `public.partner_profiles` (businesses).
    - `public.partner_members` mapping staff members to partner entities with RBAC roles.
 

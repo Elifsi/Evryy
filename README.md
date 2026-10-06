@@ -18,9 +18,10 @@
 > | **Working Reference Prototype** | [`prototype/Phone/`](./prototype/Phone/) | ✅ **Current & Runnable** | Complete working Next.js 16 prototype with catalog, voice AI concierge, encrypted chat, WebRTC, and ride/order simulations. |
 > | **Consumer Mobile Apps** | [`apps/consumer/`](./apps/consumer/) | 🔮 Planned | Production native apps: [Android (Kotlin/Compose)](./apps/consumer/android/) and [iOS (Swift/SwiftUI)](./apps/consumer/ios/). |
 > | **Partner / Merchant Apps** | [`apps/partner/`](./apps/partner/) | 🔮 Planned | Production business apps: [Android (KDS/POS)](./apps/partner/android/) and [iOS (Merchant)](./apps/partner/ios/). |
-> | **Production Web Portals** | [`apps/web/`](./apps/web/) | 🔮 Planned | Production web clients: [Consumer Web](./apps/web/consumer/) and [Partner Dashboard](./apps/web/partner/). |
-> | **Centralized Shared Backend** | [`supabase/`](./supabase/) | 🔮 Planned (Configured) | Shared Supabase backend: [Migrations](./supabase/migrations/), [Edge Functions](./supabase/functions/), seed data, and RLS. |
-> | **Architecture & Tech Specs** | [`docs/architecture/`](./docs/architecture/) | 📚 Complete | Detailed system, consumer, partner, payment, and payout architecture documents. |
+> | **Centralized Shared Backend** | [`supabase/`](./supabase/) | ✅ **100% Implemented** | Shared Supabase backend: [20 Migrations](./supabase/migrations/), [11 Edge Functions](./supabase/functions/), PostGIS, Storage, and pg_cron. |
+> | **Self-Hosting & Hardware Sizing** | [`docs/architecture/self-hosting-and-infrastructure-guide.md`](./docs/architecture/self-hosting-and-infrastructure-guide.md) | 📚 Complete | Docker architecture, resource sizing (RAM, CPU, NVMe), image storage, and backup disaster recovery. |
+> | **Unified Mobile UI & Navigation** | [`docs/architecture/unified-mobile-ui-and-ios-navigation.md`](./docs/architecture/unified-mobile-ui-and-ios-navigation.md) | 📚 Complete | Strict 1:1 UI parity between Android and iOS with mandatory iOS in-app back buttons. |
+> | **Architecture & Tech Specs** | [`docs/architecture/`](./docs/architecture/) | 📚 Complete | Detailed system, consumer, partner, payment, WhatsApp OTP, and payout architecture documents. |
 
 ---
 

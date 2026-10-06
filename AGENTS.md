@@ -16,7 +16,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 > | `apps/consumer/` | Native Android & iOS consumer applications | 🔮 Planned |
 > | `apps/partner/` | Native Android & iOS partner applications | 🔮 Planned |
 > | `apps/web/` | Production consumer & partner web applications | 🔮 Planned |
-> | `supabase/` | Centralized shared backend (DB, Auth, RLS, Edge Functions) | 🔮 Planned |
+> | `supabase/` | Centralized shared backend (20 Migrations, 11 Edge Functions, PostGIS, Storage, pg_cron) | ✅ 100% Implemented |
 >
 > **Running the Prototype**:
 > Run `next dev` (and all npm commands) from `prototype/Phone/`, not the repository root.
