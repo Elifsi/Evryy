@@ -60,6 +60,9 @@ npm-debug.log*
 
 # ── Tooling ───────────────────────────────────────────────────────────────────
 .claude/
+__pycache__/
+*.pyc
 
 # ── Third-party reference clones (see reference/README.md) ───────────────────
 reference/*/
+

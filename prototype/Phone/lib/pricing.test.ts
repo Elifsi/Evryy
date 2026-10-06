@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nightsBetween, priceCart, priceRide, priceStay } from "@/lib/pricing";
+import { calculateDriverDeliveryEarnings, nightsBetween, priceCart, priceRide, priceStay } from "@/lib/pricing";
 import { RideType } from "@/lib/data/rideTypes";
 
 describe("priceCart", () => {
@@ -14,26 +14,51 @@ describe("priceCart", () => {
     });
   });
 
-  it("charges a food delivery fee below the ₹149 free-delivery threshold", () => {
-    // food-001 = North Indian Thali, ₹249 — already above the food threshold on its own,
-    // so use qty 1 of a cheaper approach: gro-001 is grocery, not food, so pick a food item
-    // and check the fee disappears once total crosses 149.
-    const breakdown = priceCart([{ itemId: "food-001", qty: 1 }]);
+  it("charges Rs 50 delivery fee + Rs 10 platform fee within 3 km when below Rs 1,000 threshold", () => {
+    // food-001 = North Indian Thali, NPR 249 (< 1000 threshold)
+    const breakdown = priceCart([{ itemId: "food-001", qty: 1 }], 2.5);
     expect(breakdown.itemTotal).toBe(249);
-    expect(breakdown.deliveryFee).toBe(0); // 249 >= 149 free-delivery threshold
-    expect(breakdown.platformFee).toBe(5);
+    expect(breakdown.deliveryFee).toBe(50); // within 3 km
+    expect(breakdown.platformFee).toBe(10);
     expect(breakdown.gst).toBe(Math.round(249 * 0.05));
-    expect(breakdown.total).toBe(breakdown.itemTotal + breakdown.deliveryFee + breakdown.platformFee + breakdown.gst);
+    expect(breakdown.total).toBe(249 + 50 + 10 + Math.round(249 * 0.05));
   });
 
-  it("charges the grocery delivery fee below the ₹99 free-delivery threshold", () => {
-    // gro-001 is ₹549 on its own (above threshold) — verify a case below 99 instead
-    // isn't possible with real catalog items, so assert the free-delivery case holds.
-    const breakdown = priceCart([{ itemId: "gro-001", qty: 1 }]);
-    expect(breakdown.itemTotal).toBe(549);
-    expect(breakdown.deliveryFee).toBe(0); // 549 >= 99 free-delivery threshold
+  it("provides FREE delivery when order exceeds NPR 1,000 threshold", () => {
+    // 5x food-001 = 5 * 249 = 1,245 (>= 1,000 free threshold)
+    const breakdown = priceCart([{ itemId: "food-001", qty: 5 }], 2.5);
+    expect(breakdown.itemTotal).toBe(1245);
+    expect(breakdown.deliveryFee).toBe(0); // FREE delivery!
+    expect(breakdown.platformFee).toBe(10);
+    expect(breakdown.total).toBe(1245 + 0 + 10 + Math.round(1245 * 0.05));
+  });
+
+  it("charges extra distance fee of Rs 15 per km beyond 3 km radius", () => {
+    // 5 km distance = 3 km base + 2 km extra @ Rs 15 = Rs 50 + Rs 30 = Rs 80
+    const breakdown = priceCart([{ itemId: "food-001", qty: 1 }], 5.0);
+    expect(breakdown.deliveryFee).toBe(80);
+    expect(breakdown.platformFee).toBe(10);
   });
 });
+
+describe("calculateDriverDeliveryEarnings", () => {
+  it("pays driver Rs 40 base payout for deliveries within 3 km", () => {
+    const earnings = calculateDriverDeliveryEarnings(2.5);
+    expect(earnings.basePayout).toBe(40);
+    expect(earnings.extraDistanceShare).toBe(0);
+    expect(earnings.totalPayout).toBe(40);
+  });
+
+  it("pays driver Rs 40 + 80% of extra distance fee beyond 3 km", () => {
+    // 5 km distance = 2 extra km * Rs 15 = Rs 30 extra delivery fee
+    // Driver gets 80% of Rs 30 = Rs 24 -> Total = 40 + 24 = Rs 64
+    const earnings = calculateDriverDeliveryEarnings(5.0);
+    expect(earnings.basePayout).toBe(40);
+    expect(earnings.extraDistanceShare).toBe(24);
+    expect(earnings.totalPayout).toBe(64);
+  });
+});
+
 
 describe("nightsBetween", () => {
   it("computes whole nights between two dates", () => {

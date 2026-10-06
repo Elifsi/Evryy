@@ -24,10 +24,10 @@ describe('Email Templates & Service', () => {
         { name: 'Mountain Dew Can', quantity: 1, unitPricePaisa: 8000, packagingUnit: '250 ml' },
       ],
       subtotalPaisa: 44000,
-      deliveryFeePaisa: 4000,
-      platformFeePaisa: 500,
+      deliveryFeePaisa: 5000,
+      platformFeePaisa: 1000,
       taxPaisa: 0,
-      totalPaisa: 48500,
+      totalPaisa: 50000,
     });
 
     expect(html).toContain('TAX INVOICE');
@@ -36,7 +36,7 @@ describe('Email Templates & Service', () => {
     expect(html).toContain('Himalayan Momo House');
     expect(html).toContain('Buff Momo (Steamed)');
     expect(html).toContain('Fonepay Dynamic QR (Paid)');
-    expect(html).toContain('NPR 485.00');
+    expect(html).toContain('NPR 500.00');
   });
 
   it('renders a 6-digit OTP verification email', () => {
@@ -61,10 +61,10 @@ describe('Email Templates & Service', () => {
       paymentMethod: 'cod',
       items: [{ name: 'Chiya', quantity: 1, unitPricePaisa: 3000 }],
       subtotalPaisa: 3000,
-      deliveryFeePaisa: 4000,
-      platformFeePaisa: 500,
+      deliveryFeePaisa: 5000,
+      platformFeePaisa: 1000,
       taxPaisa: 0,
-      totalPaisa: 7500,
+      totalPaisa: 9000,
     });
 
     expect(result.success).toBe(true);

@@ -52,35 +52,34 @@ Located at: `/admin/pricing/platform-fees`
 
 | Setting | Default Value | Database Key | UI Control | Impact |
 |---|---|---|---|---|
-| **Standard Order Platform Fee** | **Rs 5.00** (`500` paisa) | `platform_fee_paisa` | Currency Number Input | Charged to customer on Food, Mart, and Parcel checkout. |
-| **Promotional Fee Waiver** | `false` (Active) | `platform_fee_waiver` | 1-Click Toggle Switch | Instantly waives the Rs 5 fee platform-wide (e.g., during Dashain / Tihar promotions). |
+| **Standard Order Platform Fee** | **Rs 10.00** (`1000` paisa) | `platform_fee_paisa` | Currency Number Input | Charged to customer on Food, Mart, and Parcel checkout. |
+| **Promotional Fee Waiver** | `false` (Active) | `platform_fee_waiver` | 1-Click Toggle Switch | Instantly waives the Rs 10 fee platform-wide (e.g., during Dashain / Tihar promotions). |
 | **Ride Booking Fee (Optional)** | `0` (Disabled) | `ride_platform_fee_paisa` | Number Input + Toggle | If enabled, adds a flat Rs 5 or Rs 10 platform fee to passenger cab/bike rides. |
 | **Stay Guest Service Fee** | `5.0%` (`500` bps) | `stay_service_fee_bps` | Percentage Slider (0%–15%) | Guest-side booking fee on hotel rooms and homestays. |
 
 ### B. Vertical Delivery Fee & Distance Band Rules
 Located at: `/admin/pricing/delivery-fees`
 
-The admin panel allows configuring base delivery rates, free delivery thresholds, and distance tiers separately per vertical:
+The admin panel allows configuring base delivery rates, free delivery thresholds, distance tiers, and driver payouts dynamically:
 
-#### 1. Food Delivery Rules
-- **Base Delivery Fee**: Rs 25 (applied up to 3 km).
-- **Free Delivery Basket Threshold**: Rs 149 (orders above this value receive free delivery; platform absorbs or negotiates with merchant).
-- **Per-Km Distance Fee**: Rs 10 per km beyond base radius.
-- **Max Delivery Distance Cap**: 12 km (prevents cold food delivery).
+#### 1. Core Delivery & Distance Rules
+- **Free Delivery Basket Threshold**: **Rs 1,000** (`100,000` paisa). Orders exceeding Rs 1,000 get FREE delivery (delivery fee = Rs 0).
+- **Base Delivery Radius**: **3 km** (`3,000` meters).
+- **Base Customer Delivery Fee**: **Rs 50** (`5,000` paisa) for orders under Rs 1,000 within 3 km.
+- **Extra Distance Fee**: **Rs 15 per km** (`1,500` paisa) for delivery distances exceeding 3 km.
 
-#### 2. Grocery & Mart Quick-Commerce Rules
-- **Base Delivery Fee**: Rs 15 (applied up to 2 km).
-- **Free Delivery Basket Threshold**: Rs 99.
-- **Heavy Basket Surcharge**: Rs 20 additional fee if cart weight exceeds 10 kg.
+#### 2. Driver / Rider Delivery Earnings Model
+- **Base Driver Payout (0–3 km)**: **Rs 40** (`4,000` paisa) per delivery.
+- **Extra Distance Share (>3 km)**: **80%** (`8,000` bps) of the extra delivery fee charged to the customer.
+  - *Example*: At 5 km (2 km extra @ Rs 15 = Rs 30 extra fee), driver earns:
+    $$\text{Driver Payout} = \text{Rs } 40 + (80\% \times \text{Rs } 30) = \text{Rs } 40 + \text{Rs } 24 = \text{Rs } 64$$
+  - Platform retains remaining 20% (Rs 6) + Rs 10 base delivery margin = Rs 16.
+- **Free Delivery Subsidy**: When an order exceeds Rs 1,000 and the customer gets free delivery, the platform subsidizes the driver's payout (`marketing_expense`), ensuring the driver is always fully paid their Rs 40 + extra share.
 
-#### 3. Parcel / Courier Delivery Rules
-- **Base Fee (0–2 km)**: Rs 40.
-- **Per-Km Rate (>2 km)**: Rs 15/km.
-- **Express / Rush Multiplier**: 1.5x (priority rider assignment).
-
-#### 4. Surcharges & Multipliers
+#### 3. Surcharges & Multipliers
 - **Late-Night Surcharge**: Toggleable flat fee (e.g., +Rs 20) or multiplier (1.2x) between 10:00 PM and 6:00 AM.
 - **Monsoon / Severe Weather Surge**: 1-click slider (1.0x to 2.0x) applied to rider delivery payouts and customer delivery fees during heavy rainfall.
+
 
 ---
 

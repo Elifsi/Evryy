@@ -51,12 +51,14 @@
 | `20261005000015_device_push_tokens.sql` | `user_device_tokens` (FCM/APNs), RPC `register_device_token`, dead-token pruning |
 | `20261005000016_on_demand_instant_payouts.sql` | On-demand instant cash-out, RPC `request_on_demand_payout`, COD lock, instant fee |
 | `20261005000017_ai_voice_personas.sql` | 4 Voice Personas (Eli female, Rony male, Jenny female, Suka male), `ai_voice_personas` table, voice preferences, RPCs |
+| `20261005000018_updated_pricing_and_delivery_rules.sql` | Rs 1000 free delivery threshold, 3km Rs 50 base, Rs 15/km extra, Rs 40 driver payout + 80% extra fee share, Rs 10 platform fee, ledger balancing |
 
 ---
 
 ## 3. Supabase Edge Functions Inventory (`supabase/functions/`)
 
-All 8 functions are **100% implemented, production-ready, and support Dev Mock Mode** (running at zero cost when keys are omitted):
+All 9 functions are **100% implemented, production-ready, and support Dev Mock Mode** (running at zero cost when keys are omitted):
+
 
 | Function | Primary Purpose | Supported Adapters & Features |
 |---|---|---|
@@ -137,8 +139,18 @@ All 8 functions are **100% implemented, production-ready, and support Dev Mock M
 - **Superadmin Operations & Zero-SQL Control Center Specification**:
   - Authored comprehensive architecture document `docs/architecture/superadmin-panel-control-center.md` providing complete UI wireframes, form schemas, and RPC workflows.
   - Covers dynamic delivery fees by vertical (Food, Mart, Parcel), global & partner-level commissions, platform fees (Rs 5 default + promotional waiver toggle), voucher creation wizard with budget & per-user limits, split-screen KYC document verification, midnight settlement payouts, and emergency ward kill-switches—all completely dynamic without manual SQL commands.
+- **Updated Delivery Fees, Free Threshold, Driver Earning Share & Platform Fee**:
+  - Implemented Migration `0018` (`20261005000018_updated_pricing_and_delivery_rules.sql`):
+    - **Free Delivery Threshold**: Set to **Rs 1,000** (`100,000` paisa). Orders >= Rs 1,000 get free delivery.
+    - **Customer Delivery Fee**: **Rs 50** (`5,000` paisa) within 3 km; **Rs 15 per km** (`1,500` paisa) extra beyond 3 km.
+    - **Driver Delivery Payout**: **Rs 40** (`4,000` paisa) base up to 3 km; plus **80%** (`8,000` bps) of extra delivery fee beyond 3 km.
+    - **Platform Delivery Share**: Platform retains Rs 10 base delivery margin + 20% of extra delivery fee.
+    - **Free Delivery Subsidy**: When order >= Rs 1,000, platform subsidizes driver payout as marketing expense (`marketing_expense`), maintaining exact mathematical double-entry balance.
+    - **Platform Fee**: Updated to **Rs 10.00** (`1,000` paisa) flat per order.
+  - Updated `prototype/Phone/lib/pricing.ts` and unit tests in `prototype/Phone/lib/pricing.test.ts`.
 - **Full Verification**:
-  - Ran complete test suite: 15/15 test files passed, 90/90 unit and integration tests passed (100% success).
+  - Ran complete test suite: 15/15 test files passed, 96/96 unit and integration tests passed (100% success).
+  - Next.js 16 build passed: 41/41 routes compiled successfully with 0 type errors.
 
 ---
 
